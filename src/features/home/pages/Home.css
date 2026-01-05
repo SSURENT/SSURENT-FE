@@ -164,7 +164,7 @@
 
 .return-info-section {
     position: relative;
-    width: 100vw;
+    width: 100%;
     padding: clamp(30px, 5vw, 50px) clamp(15px, 3vw, 30px);
     margin-top: clamp(2rem, 5vw,4rem);
     overflow: hidden;
