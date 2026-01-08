@@ -182,6 +182,19 @@
     border-radius: 20px;
 }
 
+@media (min-width: 769px) {
+    .return-info-section {
+        padding-right: 0;
+    }
+
+    .return-info-section::before {
+        left: clamp(0px, 3vw, 80px);
+        right: 0;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+}
+
 .return-info-content h3.right {
     color: #000000;
     font-size: clamp(1.2rem, 5vw, 2.3rem);
