@@ -58,6 +58,30 @@ function Home() {
             <section className="carousel-section">
                 <CardCarousel />
             </section>
+            <div className="return-info-section">
+                <div className="return-info-content">
+                    <h3 className="right">대여한 물건</h3>
+                    <h3 className="right"><span className="highlight">언제까지 반납해야</span> 해요?</h3>
+                    <br/>
+                    <br/>
+                    <h3 className="left">당일로부터 <span style={{ color: '#AA0000', fontWeight: 'bold' }}>3일 이내</span>에</h3>
+                    <h3 className="left">반납하면 됩니다</h3>
+                    <h4>주말 및 공유일이 포함된 경우 해당 날짜들을 제외한 3일입니다.</h4>
+                    <br/>
+                    <h4>기간을 넘길 시 경고 1회가 누적되며</h4>
+                    <h4><span style={{ color: '#AA0000', fontWeight: 'bold' }}>경고 3회 누적 시 이용이 제한될 수 있습니다.</span></h4>
+                </div>
+            </div>
+            <div className="bottom-ask">
+                <h4 style={{ color: '#3278F9', fontWeight: 'bold' }}>더 궁금하거나 요청사항이 있으신가요?</h4>
+                <div className="d-flex justify-content-between align-items-center">
+                    <h2>대여사업 관리자에게 직접 문의해보세요</h2>
+                    <Link to="/" className="contact-link">
+                        문의하러가기
+                    </Link>
+                </div>
+
+            </div>
         </main>
     );
 }

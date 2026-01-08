@@ -44,7 +44,7 @@
     font-size: clamp(0.8rem, 2vw, 1.2rem);      /* 글자 크기 */
     font-weight: bold;    /* 글자 굵기 (normal, bold, 700 등) */
     color: #ffffff;       /* 글자 색상 (하얀색) */
-    padding: clamp(0.5rem, 1.5vw, 1rem) clamp(0.6rem, 2vw, 1.2rem);;
+    padding: clamp(0.5rem, 1.5vw, 1rem) clamp(0.6rem, 2vw, 1.2rem);
 }
 
 .middle-describes {
@@ -161,3 +161,103 @@
     font-weight: 400;
     font-size: clamp(1rem, 3vw, 2rem);
 }
+
+.return-info-section {
+    position: relative;
+    width: 100%;
+    padding: clamp(30px, 5vw, 50px) clamp(15px, 3vw, 30px);
+    margin-top: clamp(2rem, 5vw,4rem);
+    overflow: hidden;
+}
+
+.return-info-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: clamp(20px, 10vw, 200px);
+    height: 100%;
+    background-color: #f5f5f5;
+    z-index: -1;
+    border-radius: 20px;
+}
+
+@media (min-width: 769px) {
+    .return-info-section {
+        padding-right: 0;
+    }
+
+    .return-info-section::before {
+        left: clamp(0px, 3vw, 80px);
+        right: 0;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+}
+
+.return-info-content h3.right {
+    color: #000000;
+    font-size: clamp(1.2rem, 5vw, 2.3rem);
+    padding-right: clamp(1rem, 4vw, 3rem);
+    line-height: 1.2;
+    text-align: right;
+}
+.return-info-content h3 .highlight{
+    color : #3278F9;
+    font-weight: bold;
+}
+.return-info-content h3.left{
+    text-align: left;
+    font-size: clamp(1.2rem, 5vw, 2.3rem);
+    padding-left: clamp(2.5rem, 6vw, 3.4rem);
+    line-height: 1.2;
+}
+.return-info-content h4{
+    text-align: left;
+    font-size: clamp(0.7rem, 3vw, 1.5rem);
+    padding-left: clamp(2.5rem, 6vw, 3.4rem);
+}
+.return-info-content {
+    max-width: 1200px; /* 컨텐츠 최대 너비 */
+    margin: 0 auto;
+}
+
+.bottom-ask{
+    align-self: flex-start;
+    margin-top: clamp(2rem, 5vw,4rem);
+    width: 100%;
+}
+
+.bottom-ask h4{
+    padding-left: clamp(0.8rem,3vw,1.3rem);
+    font-size: clamp(0.5rem, 3vw, 1.2rem);
+    text-align: left;
+}
+
+.bottom-ask h2{
+    font-size: clamp(0.9rem, 2vw, 2rem);
+    padding-left: clamp(0.5rem,3vw,1.3rem);
+    font-weight: 600;
+    flex: 1;
+    text-align: left;
+}
+.contact-link {
+    font-size: clamp(0.7rem, 2vw, 1.2rem);
+    color: #3278F9;
+    text-decoration: underline;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+    margin-top: clamp(0.5rem, 3vw, 2rem);
+}
+.bottom-ask .d-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 100%;
+    padding-right: clamp(0.8rem, 3vw, 1.3rem);
+}
+
+.contact-link:hover {
+    color: #3278F9;
+}
+
