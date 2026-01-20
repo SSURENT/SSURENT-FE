@@ -1,3 +1,100 @@
+import { NavLink } from 'react-router-dom';
+import { useState } from 'react';
+
+const userName: string = '@@@';
+const studentId: number = 20240000;
+const userRole: string = '일반학우';
+const usageState: string = '이용가능';
+const phoneNumber: string = '010-xxxx-xxxx';
+
 export default function MyPage() {
-    return <h1>마이페이지</h1>;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [phoneError, setphoneError] = useState(true);
+  return (
+    <div>
+      {/* 내용 보여주는 박스 */}
+      <div className="flex flex-col items-center mt-[150px]">
+        <h1 className="text text-left py-5 text-4xl font-bold self-start ml-100">
+          마이페이지
+        </h1>
+        <div className="flex flex-col items-center gap-2">
+          {/* border, rounded-lg, p-8: 테두리와 둥근 모서리, 패딩 */}
+          <div className="border border-[#B3B3B3] border-5 p-8 w-[400px] shadow-sm">
+            <h1 className="font-bold">이름: {userName}</h1>
+            <h1 className="font-bold">학번: ({studentId})</h1>
+            <h1>{userRole}</h1>
+            <h1>{usageState}</h1>
+            <div className="flex flex-row gap-3">
+              <h1>전화번호: {phoneNumber}</h1>
+              <button
+                onClick={() => {
+                  setIsModalOpen(true);
+                }}
+                className="text text-left font-bold border border-[#DC3545] rounded-lg text-[#DC3545] px-2 py-0"
+              >
+                번호변경
+              </button>
+            </div>
+          </div>
+
+          {/* 징계내역보기 & 로그아웃 */}
+          <div className="flex justify-between w-[400px]">
+            <button className="text text-left font-bold border border-[#6610F2] rounded-lg text-[#6610F2] px-8 py-3">
+              징계내역보기
+            </button>
+            <button className="text text-right font-bold border border-[#6610F2] rounded-lg text-[#6610F2] px-8 py-3">
+              로그아웃
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* 변경 버튼 클릭 시 모달 띄우기 */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-white p-8 relative w-[480px] rounded-xl shadow-2xl flex flex-col gap-6 border border-gray-100">
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-4 right-4 text-gray-1000"
+            >
+              ✕
+            </button>
+            <h1 className="text-2xl font-bold text-center">전화번호 변경</h1>
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-row gap-8">
+                <p className="ml-4 font-bold">번호 변경:</p>
+                <input
+                  type="text"
+                  className="border border-gray-100 w-64 border rounded-sm px-2"
+                  placeholder="전화번호 입력(010-xxxx-xxxx)"
+                />
+              </div>
+              {phoneError && (
+                <p className="text-[#AA0000] text-[11px] font-bold ml-26">
+                  유효하지 않은 입력입니다
+                </p>
+              )}
+              {/* <hr className="border border-t-0.5 border-black-300 "></hr> */}
+              <hr></hr>
+              {/* 징계내역보기 & 로그아웃 */}
+              <div className="flex justify-between w-[400px]">
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="text text-left text-white font-bold border border-[#6610F2] bg-[#6610F2] rounded-lg text-[#6610F2] px-8 py-3 ml-24"
+                >
+                  확인
+                </button>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="text text-left font-bold border border-[#6610F2] rounded-lg text-[#6610F2] px-8 py-3 mr-24"
+                >
+                  취소
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
