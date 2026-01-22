@@ -1,6 +1,24 @@
-import { NavLink } from 'react-router-dom';
+import { useState } from 'react';
+import axios from 'axios';
+import { useNavigate, NavLink } from 'react-router-dom';
 
 export default function Login() {
+  const [studentId, setStudentId] = useState('');
+  const [password, setPassword] = useState('');
+
+  // 로그인 요청 보내는 함수
+  const handleLogin = async () => {
+    try {
+      const response = await axios.patch('https:/ssurent.com/v1/auth/login', {
+        // NOTE: 아직 API Key 값 안 정함
+        student_id: studentId,
+        password: password,
+      });
+    } catch {
+      alert('로그인에 실패했습니다.');
+    }
+    alert('로그인 성공');
+  };
   return (
     // flex flex-col: 세로 정렬 (LinearLayout orientation="vertical")
     // items-center: 가로축 중앙 정렬
@@ -16,6 +34,8 @@ export default function Login() {
           </label>
           <input
             type="text"
+            value={studentId}
+            onChange={(e) => setStudentId(e.target.value)}
             placeholder="학번 (ex. 2024XXXX)"
             className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
           />
@@ -28,6 +48,10 @@ export default function Login() {
           </label>
           <input
             type="password"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
             placeholder="비밀번호"
             className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
           />
@@ -40,7 +64,12 @@ export default function Login() {
 
         {/* 로그인 버튼 */}
         <div className="flex justify-center">
-          <button className="w-1/2 py-3 px-5 text-[#6610F2] border border-[#6610F2] rounded-lg hover:bg-blue-50 transition-colors font-semibold">
+          <button
+            onClick={handleLogin}
+            // 디버깅용
+            // onClick={() => alert(`ID: ${studentId}, PW: ${password}`)}
+            className="w-1/2 py-3 px-5 text-[#6610F2] border border-[#6610F2] rounded-lg hover:bg-blue-50 transition-colors font-semibold"
+          >
             로그인
           </button>
         </div>
@@ -52,7 +81,7 @@ export default function Login() {
           to="/changePW"
           className="text-[#6610F2] hover:underline text-sm"
         >
-          비밀번호 재설정
+          비밀번호 변경하기
         </NavLink>
       </div>
     </div>
