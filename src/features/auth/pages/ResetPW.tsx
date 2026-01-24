@@ -18,6 +18,7 @@ export default function ResetPW() {
             type="text"
             // focus 시 보라색(#6610F2)으로 강조선이 생기도록 설정
             className="w-full p-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-[#6610F2] focus:border-[#6610F2] outline-none"
+            placeholder="학번 (ex. 2024XXXX)"
           />
         </div>
 
