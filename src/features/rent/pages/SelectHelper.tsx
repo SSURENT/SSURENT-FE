@@ -91,7 +91,7 @@ export default function SelectHelper({ item, onPrev }: Props) {
             console.log('도우미:', helperName);
           }}
         >
-          다음으로
+          제출하기
         </button>
       </div>
     </>
