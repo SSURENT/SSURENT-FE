@@ -1,6 +1,10 @@
+import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 
 export default function ChangePW() {
+  const [studentId, setStudentId] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+
   return (
     // flex flex-col: 세로 정렬 (LinearLayout orientation="vertical")
     // items-center: 중앙 정렬 (layout_gravity="center")
@@ -16,6 +20,10 @@ export default function ChangePW() {
           </label>
           <input
             type="text"
+            value={studentId}
+            onChange={(e) => {
+              setStudentId(e.target.value);
+            }}
             placeholder="학번 (ex. 2024XXXX)"
             // focus 시 보라색(#6610F2)으로 강조선이 생기도록 설정
             className="w-full p-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-[#6610F2] focus:border-[#6610F2] outline-none"
@@ -29,6 +37,10 @@ export default function ChangePW() {
           </label>
           <input
             type="text"
+            value={phoneNumber}
+            onChange={(e) => {
+              const num = e.target.value;
+            }}
             placeholder="전화번호 (ex. 010XXXXXXXX)"
             className="w-full p-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-[#6610F2] focus:border-[#6610F2] outline-none"
           />
