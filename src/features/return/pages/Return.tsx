@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react';
 import ReturnItemCard, {
   type ReturnItems,
-} from '../components/ReturnItemCard/ReturnItemCard.tsx';
+} from '../components/ReturnItemCard/ReturnItemCard';
+import ReturnModal from '../components/modal/ReturnModal.tsx';
+import ReportModal from '../components/modal/ReportModal.tsx';
 
 export default function Return() {
   const [items, setItems] = useState<ReturnItems[]>([]);
+  const [selectedItem, setSelectedItem] = useState<ReturnItems | null>(null);
+  const [modalType, setModalType] = useState<'return' | 'report' | null>(null);
 
   useEffect(() => {
-    const mockData: ReturnItems[] = [
+    setItems([
       {
         id: 101,
         name: '보조배터리(101)',
@@ -22,21 +26,22 @@ export default function Return() {
         isOverdue: true,
         isExtended: true,
       },
-    ];
-
-    setItems(mockData);
+    ]);
   }, []);
 
-  const handleReturn = (id: number) => {
-    console.log('반납하기', id);
+  const openReturnModal = (item: ReturnItems) => {
+    setSelectedItem(item);
+    setModalType('return');
   };
 
-  const handleExtend = (id: number) => {
-    console.log('기한연장', id);
+  const openReportModal = (item: ReturnItems) => {
+    setSelectedItem(item);
+    setModalType('report');
   };
 
-  const handleReport = (id: number) => {
-    console.log('문제신고', id);
+  const closeModal = () => {
+    setSelectedItem(null);
+    setModalType(null);
   };
 
   return (
@@ -46,20 +51,28 @@ export default function Return() {
 
       <div
         className="border rounded p-4"
-        style={{ maxHeight: '420px', overflowY: 'auto' }}
+        style={{ maxHeight: 420, overflowY: 'auto' }}
       >
         <div className="item-grid">
           {items.map((item) => (
             <ReturnItemCard
               key={item.id}
               item={item}
-              onReturn={handleReturn}
-              onExtend={handleExtend}
-              onReport={handleReport}
+              onReturn={() => openReturnModal(item)}
+              onExtend={() => console.log('기한연장', item.id)}
+              onReport={() => openReportModal(item)}
             />
           ))}
         </div>
       </div>
+
+      {modalType === 'return' && selectedItem && (
+        <ReturnModal item={selectedItem} onClose={closeModal} />
+      )}
+
+      {modalType === 'report' && selectedItem && (
+        <ReportModal item={selectedItem} onClose={closeModal} />
+      )}
     </div>
   );
 }
