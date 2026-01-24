@@ -10,16 +10,32 @@ const phoneNumber: string = '010-xxxx-xxxx';
 export default function MyPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [phoneError, setphoneError] = useState(true);
+  const [newPhoneNumber, setNewPhoneNumber] = useState('');
+
+  //   휴대전화 내용물
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setNewPhoneNumber(value);
+
+    const phoneRegex = /^010-\d{4}-\d{4}$/;
+
+    if (value === '') {
+      setphoneError(true);
+    } else {
+      setphoneError(!phoneRegex.test(value));
+    }
+  };
+
   return (
     <div>
       {/* 내용 보여주는 박스 */}
-      <div className="flex flex-col items-center mt-[150px]">
-        <h1 className="text text-left py-5 text-4xl font-bold self-start ml-100">
+      <div className="flex flex-col items-center">
+        <h1 className="text text-left py-5 text-4xl font-bold self-start ml-70">
           마이페이지
         </h1>
         <div className="flex flex-col items-center gap-2">
           {/* border, rounded-lg, p-8: 테두리와 둥근 모서리, 패딩 */}
-          <div className="border border-[#B3B3B3] border-5 p-8 w-[400px] shadow-sm">
+          <div className="border border-[#B3B3B3] border-3 p-8 w-[400px] shadow-sm">
             <h1 className="font-bold">이름: {userName}</h1>
             <h1 className="font-bold">학번: ({studentId})</h1>
             <h1>{userRole}</h1>
@@ -65,6 +81,8 @@ export default function MyPage() {
                 <p className="ml-4 font-bold">번호 변경:</p>
                 <input
                   type="text"
+                  value={newPhoneNumber}
+                  onChange={handlePhoneChange}
                   className="border border-gray-100 w-64 border rounded-sm px-2"
                   placeholder="전화번호 입력(010-xxxx-xxxx)"
                 />
