@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Item } from '../components/ItemCard';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
   item: Item | null;
@@ -9,6 +10,7 @@ type Props = {
 export default function SelectHelper({ item, onPrev }: Props) {
   const [helperName, setHelperName] = useState('');
   const [agreed, setAgreed] = useState(false);
+  const navigate = useNavigate();
 
   const isValid = helperName.trim().length > 0 && agreed;
 
@@ -85,10 +87,26 @@ export default function SelectHelper({ item, onPrev }: Props) {
         <button
           className="btn btn-primary px-4"
           disabled={!isValid}
-          onClick={() => {
-            // 🔹 여기서 최종 제출 or API 호출 예정
-            console.log('선택 물품:', item);
-            console.log('도우미:', helperName);
+          onClick={async () => {
+            try {
+              // 예시 API 통신
+              // await fetch('/api/rent', {
+              //   method: 'POST',
+              //   headers: {
+              //     'Content-Type': 'application/json',
+              //   },
+              //   body: JSON.stringify({
+              //     itemId: item.id,
+              //     helperName,
+              //   }),
+              // });
+
+              // ✅ 성공 시 메인 페이지 이동
+              navigate('/');
+            } catch (error) {
+              console.error('대여 요청 실패', error);
+              alert('대여 처리 중 오류가 발생했습니다.');
+            }
           }}
         >
           제출하기
