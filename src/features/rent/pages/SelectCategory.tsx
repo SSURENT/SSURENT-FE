@@ -43,12 +43,16 @@ export default function SelectCategory({ onNext }: Props) {
       {/* ===== 1행 : 물품 선택 / 대여 안내 ===== */}
       <div className="row mb-4">
         <div className="col-md-6">
-          <h5 className="fw-bold mb-3">대여하고싶은 물품을 선택해주세요</h5>
+          {/*<h5 className="fw-bold mb-3">대여하고싶은 물품을 선택해주세요</h5>*/}
+          <h5 id="rentCategoryLabel" className="fw-bold mb-3">
+            대여하고싶은 물품을 선택해주세요
+          </h5>
 
           <select
             className="form-select"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
+            aria-labelledby="rentCategoryLabel"
           >
             <option value="">선택하세요</option>
             {categories.map((item) => (
@@ -77,7 +81,10 @@ export default function SelectCategory({ onNext }: Props) {
       {/* ===== 2행 : 전화번호 / 전화번호 안내 ===== */}
       <div className="row mb-4">
         <div className="col-md-6">
-          <h5 className="fw-bold mb-3">전화번호를 확인해주세요</h5>
+          {/*<h5 className="fw-bold mb-3">전화번호를 확인해주세요</h5>*/}
+          <h5 id="rentPhoneLabel" className="fw-bold mb-3">
+            전화번호를 확인해주세요
+          </h5>
 
           <input
             type="text"
@@ -85,6 +92,7 @@ export default function SelectCategory({ onNext }: Props) {
             placeholder="010-1234-5678"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
+            aria-labelledby="rentPhoneLabel"
           />
 
           {phoneError && (
