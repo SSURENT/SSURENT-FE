@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import ItemCard, { Item } from '../components/ItemCard';
+import { mockItems } from '../../data/mock.tsx';
 
 type Props = {
   onPrev: () => void;
@@ -11,63 +12,6 @@ export default function SelectItem({ onPrev, onNext }: Props) {
   const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
 
   useEffect(() => {
-    const mockItems: Item[] = [
-      {
-        id: 101,
-        name: '보조배터리(101)',
-        description: '300W 보조배터리입니다.',
-        status: 'AVAILABLE',
-      },
-      {
-        id: 102,
-        name: '보조배터리(102)',
-        description: '300W 보조배터리입니다.',
-        status: 'RENTED',
-      },
-      {
-        id: 103,
-        name: '보조배터리(103)',
-        description: '300W 보조배터리입니다.',
-        status: 'AVAILABLE',
-      },
-      {
-        id: 104,
-        name: '보조배터리(104)',
-        description: '300W 보조배터리입니다.',
-        status: 'AVAILABLE',
-      },
-      {
-        id: 105,
-        name: '보조배터리(105)',
-        description: '300W 보조배터리입니다.',
-        status: 'RENTED',
-      },
-      {
-        id: 106,
-        name: '보조배터리(106)',
-        description: '300W 보조배터리입니다.',
-        status: 'REPAIR',
-      },
-      {
-        id: 107,
-        name: '보조배터리(107)',
-        description: '300W 보조배터리입니다.',
-        status: 'AVAILABLE',
-      },
-      {
-        id: 108,
-        name: '보조배터리(108)',
-        description: '300W 보조배터리입니다.',
-        status: 'AVAILABLE',
-      },
-      {
-        id: 109,
-        name: '보조배터리(109)',
-        description: '300W 보조배터리입니다.',
-        status: 'AVAILABLE',
-      },
-    ];
-
     setItems(mockItems);
   }, []);
 

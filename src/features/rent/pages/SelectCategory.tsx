@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { categories } from '../../data/mock.tsx';
 
 type Props = {
   onNext: () => void;
@@ -8,14 +9,6 @@ export default function SelectCategory({ onNext }: Props) {
   const [category, setCategory] = useState('');
   const [phone, setPhone] = useState('');
   const [phoneError, setPhoneError] = useState('');
-
-  const categories = [
-    '우산',
-    '헤어드라이어',
-    '고데기',
-    '보조배터리',
-    '무소음마우스',
-  ];
 
   const validatePhone = (value: string) => {
     const phoneRegex = /^010-\d{4}-\d{4}$/;
