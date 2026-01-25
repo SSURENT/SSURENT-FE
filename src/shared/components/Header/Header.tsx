@@ -45,6 +45,7 @@ export default function Header() {
           </button>
 
           <div
+            id="navbarNav"
             className={`navbar-collapse ${isOpen ? 'd-block' : 'd-none'} d-lg-flex`}
           >
             <ul className="navbar-nav me-auto ms-lg-5 mb-3 mb-lg-0">
