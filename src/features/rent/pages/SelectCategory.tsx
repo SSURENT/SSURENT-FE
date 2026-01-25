@@ -10,6 +10,24 @@ export default function SelectCategory({ onNext }: Props) {
   const [phone, setPhone] = useState('');
   const [phoneError, setPhoneError] = useState('');
 
+  const formatPhoneNumber = (value: string) => {
+    // 숫자만 남기기
+    const numbersOnly = value.replace(/\D/g, '');
+
+    if (numbersOnly.length <= 3) {
+      return numbersOnly;
+    }
+
+    if (numbersOnly.length <= 7) {
+      return `${numbersOnly.slice(0, 3)}-${numbersOnly.slice(3)}`;
+    }
+
+    return `${numbersOnly.slice(0, 3)}-${numbersOnly.slice(
+      3,
+      7,
+    )}-${numbersOnly.slice(7, 11)}`;
+  };
+
   const validatePhone = (value: string) => {
     const phoneRegex = /^010-\d{4}-\d{4}$/;
     return phoneRegex.test(value);
@@ -82,7 +100,10 @@ export default function SelectCategory({ onNext }: Props) {
             className={`form-control ${phoneError ? 'is-invalid' : ''}`}
             placeholder="010-1234-5678"
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            onChange={(e) => {
+              const formatted = formatPhoneNumber(e.target.value);
+              setPhone(formatted);
+            }}
             aria-labelledby="rentPhoneLabel"
           />
 
