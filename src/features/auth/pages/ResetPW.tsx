@@ -19,6 +19,8 @@ export default function ResetPW() {
             // focus 시 보라색(#6610F2)으로 강조선이 생기도록 설정
             className="w-full p-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-[#6610F2] focus:border-[#6610F2] outline-none"
             placeholder="학번 (ex. 2024XXXX)"
+            // NOTE: 근데 재입력으로 확인도 안 하는 비번인데 안 보이게 하는게 맞나 싶음.
+            // 눈모양 버튼 클릭해서 보였다 말았다 하는 형식으로 할까 싶음
           />
         </div>
 
