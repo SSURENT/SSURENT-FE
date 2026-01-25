@@ -23,11 +23,12 @@ export default function SelectHelper({ item, onPrev }: Props) {
       <div className="row g-4">
         {/* 왼쪽 입력 영역 */}
         <div className="col-md-5">
-          <label className="form-label small text-muted">
+          <label className="form-label small text-muted" htmlFor="helperName">
             도우미 이름을 입력하세요.
           </label>
 
           <input
+            id="helperName"
             type="text"
             className="form-control"
             placeholder="정확한 이름을 입력해주세요"
