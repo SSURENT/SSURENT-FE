@@ -27,8 +27,9 @@ export default function SelectCategory({ onNext }: Props) {
       alert('대여할 물품을 선택해주세요.');
       return;
     }
+    const normalizedPhone = phone.replace(/\s+/g, '');
 
-    if (!validatePhone(phone)) {
+    if (!validatePhone(normalizedPhone)) {
       setPhoneError('유효하지 않은 입력입니다.');
       return;
     }
