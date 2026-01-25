@@ -50,11 +50,12 @@ export default function ReturnModal({ item, onClose }: Props) {
         <h4 className="fw-bold">{item.name}</h4>
         <p className="text-muted">반납기간 : {item.dueDate}</p>
 
-        <label className="fw-bold mb-1">
+        <label className="fw-bold mb-1" htmlFor="helper-name-input">
           대여사업 도우미 이름을 입력해주세요
         </label>
 
         <input
+          id="helper-name-input"
           className="form-control mb-2"
           value={helperName}
           onChange={(e) => setHelperName(e.target.value)}
