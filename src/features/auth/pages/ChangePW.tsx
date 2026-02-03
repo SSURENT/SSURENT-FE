@@ -1,8 +1,11 @@
-import { useState } from 'react';
+import { use, useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { useUserInfo } from '../../../store/userStore';
 
 export default function ChangePW() {
-  const [studentId, setStudentId] = useState('');
+  const { studentId: savedId } = useUserInfo();
+
+  const [studentId, setStudentId] = useState(savedId || '');
   const [phoneNumber, setPhoneNumber] = useState('');
 
   return (

@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useUserInfo } from '../../../store/userStore';
 
 const userName: string = '@@@';
 const studentId: number = 20240000;
@@ -9,9 +10,13 @@ const usageState: string = '이용가능';
 const phoneNumber: string = '010-xxxx-xxxx';
 
 export default function MyPage() {
+  const { studentId: savedId } = useUserInfo();
+  const setUserInfo = useUserInfo((state) => state.setUserInfo);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [phoneError, setphoneError] = useState(true);
   const [newPhoneNumber, setNewPhoneNumber] = useState('');
+  // TODO: API연결해서 학번(savedId)으로 사용자 정보 불러오기
+  // TODO: 불러오고 setUserInfo로 값 저장하기
 
   //   휴대전화 내용물
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
