@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const userName: string = '@@@';
 const studentId: number = 20240000;
@@ -24,6 +25,12 @@ export default function MyPage() {
     } else {
       setphoneError(!phoneRegex.test(value));
     }
+  };
+  // 이동함수
+  const navigate = useNavigate();
+  // 징계내역 페이지로 이동하는 함수
+  const goToPenalty = () => {
+    navigate('/penalty');
   };
 
   return (
@@ -55,7 +62,10 @@ export default function MyPage() {
 
           {/* 징계내역보기 & 로그아웃 */}
           <div className="flex justify-between w-[400px]">
-            <button className="text text-left font-bold border border-[#6610F2] rounded-lg text-[#6610F2] px-8 py-3">
+            <button
+              className="text text-left font-bold border border-[#6610F2] rounded-lg text-[#6610F2] px-8 py-3"
+              onClick={goToPenalty}
+            >
               징계내역보기
             </button>
             <button className="text text-right font-bold border border-[#6610F2] rounded-lg text-[#6610F2] px-8 py-3">
