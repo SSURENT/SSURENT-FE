@@ -6,7 +6,7 @@ import { useUserInfo } from '../../../store/userStore';
 export default function Login() {
   const [studentId, setStudentId] = useState('');
   const [password, setPassword] = useState('');
-  const setUserInfo = useUserInfo((state) => state.setUserInfo);
+  const setUserId = useUserInfo((state) => state.setUserId);
 
   const handleLogin = async () => {
     if (!studentId || !password) {
@@ -24,7 +24,7 @@ export default function Login() {
       if (response.status === 200) {
         alert('로그인 성공!');
         // TODO: 페이지 이동 기능 넣으셈
-        // TODO: setUserInfo로 정보 (일단은 학번만) 넣기
+        // TODO: setUserId 정보 (일단은 학번만) 넣기
       }
     } catch (error) {
       alert('로그인에 실패했습니다. 학번이나 비밀번호를 확인해주세요.');

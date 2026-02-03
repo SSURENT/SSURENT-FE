@@ -13,6 +13,7 @@ interface UserInfo {
     usable: string,
     phoneNumber: string,
   ) => void;
+  setUserId: (id: number) => void;
 }
 
 export const useUserInfo = create<UserInfo>((set) => ({
@@ -35,6 +36,7 @@ export const useUserInfo = create<UserInfo>((set) => ({
       usable: usable,
       phoneNumber: phoneNumber,
     }),
+  setUserId: (id: number) => set({ studentId: id }),
 }));
 
 // 이름: @@@
