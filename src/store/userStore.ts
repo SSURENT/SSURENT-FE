@@ -1,42 +1,42 @@
 import { create } from 'zustand';
 
 interface UserInfo {
-  studentId: number | null;
+  studentNum: number | null;
   name: string;
-  userRole: string;
-  usable: string;
-  phoneNumber: string;
+  role: string;
+  status: string;
+  phoneNum: string;
   setUserInfo: (
     id: number,
     name: string,
     state: string,
-    usable: string,
-    phoneNumber: string,
+    status: string,
+    phoneNum: string,
   ) => void;
   setUserId: (id: number) => void;
 }
 
 export const useUserInfo = create<UserInfo>((set) => ({
-  studentId: null,
+  studentNum: null,
   name: '',
-  userRole: '일반학우',
-  usable: '이용가능',
-  phoneNumber: '',
+  role: '일반학우',
+  status: '이용가능',
+  phoneNum: '',
   setUserInfo: (
-    id: number,
+    studentNum: number,
     name: string,
-    userRole: string,
-    usable: string,
-    phoneNumber: string,
+    role: string,
+    status: string,
+    phoneNum: string,
   ) =>
     set({
-      studentId: id,
+      studentNum: studentNum,
       name: name,
-      userRole: userRole,
-      usable: usable,
-      phoneNumber: phoneNumber,
+      role: role,
+      status: status,
+      phoneNum: phoneNum,
     }),
-  setUserId: (id: number) => set({ studentId: id }),
+  setUserId: (studentNum: number) => set({ studentNum: studentNum }),
 }));
 
 // 이름: @@@

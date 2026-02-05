@@ -4,12 +4,12 @@ import { NavLink } from 'react-router-dom';
 import { useUserInfo } from '../../../store/userStore';
 
 export default function Login() {
-  const [studentId, setStudentId] = useState('');
+  const [studentNum, setstudentNum] = useState('');
   const [password, setPassword] = useState('');
   const setUserId = useUserInfo((state) => state.setUserId);
 
   const handleLogin = async () => {
-    if (!studentId || !password) {
+    if (!studentNum || !password) {
       alert('학번과 비밀번호를 모두 입력해주세요.');
       return;
     }
@@ -17,7 +17,7 @@ export default function Login() {
     try {
       const response = await axios.post('https://ssurent.com/v1/auth/login', {
         // NOTE: 아직 키값 안 정해서 이거 나중애 수정해야 함
-        student_id: studentId,
+        student_id: studentNum,
         password: password,
       });
 
@@ -43,8 +43,8 @@ export default function Login() {
           <input
             type="text"
             placeholder="학번 (ex. 2024XXXX)"
-            value={studentId}
-            onChange={(e) => setStudentId(e.target.value)}
+            value={studentNum}
+            onChange={(e) => setstudentNum(e.target.value)}
             className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none"
           />
         </div>

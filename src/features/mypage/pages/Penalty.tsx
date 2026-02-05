@@ -14,7 +14,7 @@ const CONSUME_DATA: PenaltyRecord[] = [
   { id: 3, date: '2028.01.01', itemName: '우산(105)', reason: '반납기한 초과' },
 ];
 export default function Penalty() {
-  const { studentId: savedId } = useUserInfo();
+  const { studentNum: savedId } = useUserInfo();
   // TODO: savedId로 실제 데이터 불러오기
   // TODO: 불러올 데이터를 PenaltyRecord 형식으로 PenaltyRecord[]에 저장하기
   // NOTE: 임시 데이터 CONSUME_DATA로 샘플 화면 보여준 것

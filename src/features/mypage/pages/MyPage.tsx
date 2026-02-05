@@ -3,25 +3,25 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserInfo } from '../../../store/userStore';
 
-const userName: string = '@@@';
-const studentId: number = 20240000;
-const userRole: string = '일반학우';
-const usageState: string = '이용가능';
-const phoneNumber: string = '010-xxxx-xxxx';
+const name: string = '@@@';
+const studentNum: number = 20240000;
+const role: string = '일반학우';
+const status: string = '이용가능';
+const phoneNum: string = '010-xxxx-xxxx';
 
 export default function MyPage() {
-  const { studentId: savedId } = useUserInfo();
+  const { studentNum: savedNum } = useUserInfo();
   const setUserInfo = useUserInfo((state) => state.setUserInfo);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [phoneError, setphoneError] = useState(true);
-  const [newPhoneNumber, setNewPhoneNumber] = useState('');
-  // TODO: API연결해서 학번(savedId)으로 사용자 정보 불러오기
+  const [newphoneNum, setNewphoneNum] = useState('');
+  // TODO: API연결해서 학번(savedNum)으로 사용자 정보 불러오기
   // TODO: 불러오고 setUserInfo로 값 저장하기
 
   //   휴대전화 내용물
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setNewPhoneNumber(value);
+    setNewphoneNum(value);
 
     const phoneRegex = /^010-\d{4}-\d{4}$/;
 
@@ -48,12 +48,12 @@ export default function MyPage() {
         <div className="flex flex-col items-center gap-2">
           {/* border, rounded-lg, p-8: 테두리와 둥근 모서리, 패딩 */}
           <div className="border border-[#B3B3B3] border-3 p-8 w-[400px] shadow-sm">
-            <h1 className="font-bold">이름: {userName}</h1>
-            <h1 className="font-bold">학번: ({studentId})</h1>
-            <h1>{userRole}</h1>
-            <h1>{usageState}</h1>
+            <h1 className="font-bold">이름: {name}</h1>
+            <h1 className="font-bold">학번: ({studentNum})</h1>
+            <h1>{role}</h1>
+            <h1>{status}</h1>
             <div className="flex flex-row gap-3">
-              <h1>전화번호: {phoneNumber}</h1>
+              <h1>전화번호: {phoneNum}</h1>
               <button
                 onClick={() => {
                   setIsModalOpen(true);
@@ -96,7 +96,7 @@ export default function MyPage() {
                 <p className="ml-4 font-bold">번호 변경:</p>
                 <input
                   type="text"
-                  value={newPhoneNumber}
+                  value={newphoneNum}
                   onChange={handlePhoneChange}
                   className="border border-gray-100 w-64 border rounded-sm px-2"
                   placeholder="전화번호 입력(010-xxxx-xxxx)"

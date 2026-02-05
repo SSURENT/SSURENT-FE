@@ -3,10 +3,10 @@ import { NavLink } from 'react-router-dom';
 import { useUserInfo } from '../../../store/userStore';
 
 export default function ChangePW() {
-  const { studentId: savedId } = useUserInfo();
+  const { studentNum: savedNum } = useUserInfo();
 
-  const [studentId, setStudentId] = useState(savedId || '');
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [studentId, setStudentId] = useState(savedNum || '');
+  const [phoneNum, setPhoneNum] = useState('');
 
   return (
     // flex flex-col: 세로 정렬 (LinearLayout orientation="vertical")
@@ -40,7 +40,7 @@ export default function ChangePW() {
           </label>
           <input
             type="text"
-            value={phoneNumber}
+            value={phoneNum}
             onChange={(e) => {
               const num = e.target.value;
             }}
