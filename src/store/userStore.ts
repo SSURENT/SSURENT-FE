@@ -3,17 +3,18 @@ import { create } from 'zustand';
 interface UserInfo {
   studentNum: number | null;
   name: string;
-  role: string;
-  status: string;
+  role: '일반학우' | '관리자' | '최고 관리자';
+  status: '이용가능' | '정지회원' | '비활성화(회원삭제)';
   phoneNum: string;
   setUserInfo: (
     id: number,
     name: string,
-    state: string,
-    status: string,
+    role: '일반학우' | '관리자' | '최고 관리자',
+    status: '이용가능' | '정지회원' | '비활성화(회원삭제)',
     phoneNum: string,
   ) => void;
   setUserId: (id: number) => void;
+  clearUSerInfo: () => void;
 }
 
 export const useUserInfo = create<UserInfo>((set) => ({
@@ -25,8 +26,8 @@ export const useUserInfo = create<UserInfo>((set) => ({
   setUserInfo: (
     studentNum: number,
     name: string,
-    role: string,
-    status: string,
+    role: '일반학우' | '관리자' | '최고 관리자',
+    status: '이용가능' | '정지회원' | '비활성화(회원삭제)',
     phoneNum: string,
   ) =>
     set({
@@ -37,6 +38,14 @@ export const useUserInfo = create<UserInfo>((set) => ({
       phoneNum: phoneNum,
     }),
   setUserId: (studentNum: number) => set({ studentNum: studentNum }),
+  clearUSerInfo: () =>
+    set({
+      studentNum: null,
+      name: '',
+      role: '일반학우',
+      status: '이용가능',
+      phoneNum: '',
+    }),
 }));
 
 // 이름: @@@
