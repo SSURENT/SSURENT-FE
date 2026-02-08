@@ -14,7 +14,7 @@ interface UserInfo {
     phoneNum: string,
   ) => void;
   setUserId: (id: number) => void;
-  clearUSerInfo: () => void;
+  clearUserInfo: () => void;
 }
 
 export const useUserInfo = create<UserInfo>((set) => ({
@@ -38,7 +38,7 @@ export const useUserInfo = create<UserInfo>((set) => ({
       phoneNum: phoneNum,
     }),
   setUserId: (studentNum: number) => set({ studentNum: studentNum }),
-  clearUSerInfo: () =>
+  clearUserInfo: () =>
     set({
       studentNum: null,
       name: '',
