@@ -2,34 +2,12 @@ import { useState } from 'react';
 import axios from 'axios';
 import { NavLink } from 'react-router-dom';
 import { useUserInfo } from '../../../store/userStore';
+import { requestLogin } from '../../../api/services';
 
 export default function Login() {
   const [studentNum, setstudentNum] = useState('');
   const [password, setPassword] = useState('');
   const setUserId = useUserInfo((state) => state.setUserId);
-
-  const handleLogin = async () => {
-    if (!studentNum || !password) {
-      alert('학번과 비밀번호를 모두 입력해주세요.');
-      return;
-    }
-
-    try {
-      const response = await axios.post('https://ssurent.com/v1/auth/login', {
-        // NOTE: 아직 키값 안 정해서 이거 나중애 수정해야 함
-        student_id: studentNum,
-        password: password,
-      });
-
-      if (response.status === 200) {
-        alert('로그인 성공!');
-        // TODO: 페이지 이동 기능 넣으셈
-        // TODO: setUserId 정보 (일단은 학번만) 넣기
-      }
-    } catch (error) {
-      alert('로그인에 실패했습니다. 학번이나 비밀번호를 확인해주세요.');
-    }
-  };
 
   return (
     <div className="flex flex-col items-center mt-[50px]">
@@ -69,7 +47,7 @@ export default function Login() {
 
         <div className="flex justify-center">
           <button
-            onClick={handleLogin} // 4. 클릭 이벤트 연결
+            onClick={() => requestLogin(Number(studentNum), password)} // 4. 클릭 이벤트 연결
             className="w-1/2 py-3 px-5 text-[#6610F2] border border-[#6610F2] rounded-lg hover:bg-blue-50 transition-colors font-semibold"
           >
             로그인

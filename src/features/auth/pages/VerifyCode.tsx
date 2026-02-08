@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom';
+import { postVerifyCode } from '../../../api/services';
 
 export default function VerifyCode() {
   return (
@@ -23,7 +24,10 @@ export default function VerifyCode() {
 
         {/* 전송 버튼: 보라색(#6610F2) 테두리 버전 */}
         <div className="flex justify-center">
-          <button className="w-1/2 py-3 px-5 text-[#6610F2] border border-[#6610F2] rounded-lg hover:bg-[#6610f205] transition-colors font-semibold text-sm">
+          <button
+            className="w-1/2 py-3 px-5 text-[#6610F2] border border-[#6610F2] rounded-lg hover:bg-[#6610f205] transition-colors font-semibold text-sm"
+            onClick={() => postVerifyCode}
+          >
             인증하기
           </button>
         </div>
@@ -31,7 +35,10 @@ export default function VerifyCode() {
 
       {/* 하단 안내 문구: 파란색(#102ACF) 적용 */}
       <div className="text-center mt-6 max-w-[400px]">
-        <p className="text-[#102ACF] text-xs leading-relaxed hover:underline">
+        <p
+          className="text-[#102ACF] text-xs leading-relaxed hover:underline"
+          onClick={() => postVerifyCode}
+        >
           인증번호가 오지 않을 경우 여기를 눌러 재전송을 요청해주세요
         </p>
       </div>
