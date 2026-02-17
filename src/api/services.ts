@@ -61,19 +61,10 @@ export const patchChangePW = async (changedPw: string) => {
 };
 
 // #5 사용자 정보 불러오기 API
-export const getUserInfo = async (studentNum: number) => {
+export const getUserInfo = async () => {
   try {
-    interface PenaltyRecord {
-      id: number;
-      date: string;
-      itemName: string;
-      reason: string;
-    }
-    const res = await axios.get('/api/users', {
-      // NOTE: 나중에 키값 변경
-      params: { student_id: studentNum },
-    });
-    return res.data.penalty_history;
+    const res = await axios.get('/api/users', {});
+    return res.data.data;
   } catch (error) {
     alert('사용자의 정보를 불러오는데에 실패했습니다.');
   }
