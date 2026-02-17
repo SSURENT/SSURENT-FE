@@ -1,23 +1,32 @@
+import { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useUserInfo } from '../../../store/userStore';
+import { getPenaltyHistory } from '../../../api/services';
 
-interface PenaltyRecord {
-  id: number;
-  date: string;
+interface PenaltyInfo {
+  userPenaltyId: number;
+  createdAt: string;
   itemName: string;
-  reason: string;
+  penaltyType: string;
 }
 
-const CONSUME_DATA: PenaltyRecord[] = [
-  { id: 1, date: '2027.01.02', itemName: '우산(102)', reason: '반납기한 초과' },
-  { id: 2, date: '2027.05.03', itemName: '우산(104)', reason: '반납기한 초과' },
-  { id: 3, date: '2028.01.01', itemName: '우산(105)', reason: '반납기한 초과' },
-];
 export default function Penalty() {
+  const [penaltyRecord, setPenaltyRecord] = useState<PenaltyInfo[]>([]);
   const { studentNum: savedId } = useUserInfo();
-  // TODO: savedId로 실제 데이터 불러오기
-  // TODO: 불러올 데이터를 PenaltyRecord 형식으로 PenaltyRecord[]에 저장하기
-  // NOTE: 임시 데이터 CONSUME_DATA로 샘플 화면 보여준 것
+
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const res = await getPenaltyHistory();
+        setPenaltyRecord(res.data.data || []);
+      } catch (error) {
+        alert('징계내역을 불러오는 데에 실패했습니다.');
+      }
+    };
+
+    fetchHistory();
+  }, [savedId]);
+
   return (
     <div className="flex flex-col items-center">
       <h1 className="text-4xl font-bold mb-8 self-start">나의 징계내역</h1>
@@ -47,19 +56,19 @@ export default function Penalty() {
             </tr>
           </thead>
           <tbody>
-            {CONSUME_DATA.map((item) => (
+            {penaltyRecord.map((item) => (
               <tr>
                 <td className="border border-[#DEE2E6] border-[2px] p-3">
-                  {item.id}
+                  {item.userPenaltyId}
                 </td>
                 <td className="border border-[#DEE2E6] border-[2px] p-3">
-                  {item.date}
+                  {item.createdAt}
                 </td>
                 <td className="border border-[#DEE2E6] border-[2px] p-3">
                   {item.itemName}
                 </td>
                 <td className="border border-[#DEE2E6] border-[2px] p-3">
-                  {item.reason}
+                  {item.penaltyType}
                 </td>
               </tr>
             ))}
