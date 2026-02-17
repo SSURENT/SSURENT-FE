@@ -60,22 +60,22 @@ export const patchChangePW = async (changedPw: string) => {
   }
 };
 
-// #5 사용자 정보 불러오기 API
+// #5 로그아웃 API
+export const postLogout = async () => {
+  try {
+    const res = await axios.post('/auth/logout', {});
+  } catch (error) {
+    alert('로그아웃에 실패했습니다.');
+  }
+};
+
+// #6 사용자 정보 불러오기 API
 export const getUserInfo = async () => {
   try {
     const res = await axios.get('/api/users', {});
     return res.data.data;
   } catch (error) {
     alert('사용자의 정보를 불러오는데에 실패했습니다.');
-  }
-};
-
-// #6 로그아웃 API
-export const postLogout = async () => {
-  try {
-    const res = await axios.post('/auth/logout', {});
-  } catch (error) {
-    alert('로그아웃에 실패했습니다.');
   }
 };
 
