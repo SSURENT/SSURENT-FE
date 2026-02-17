@@ -1,3 +1,4 @@
+import { Phone } from 'react-bootstrap-icons';
 import { create } from 'zustand';
 
 interface UserInfo {
@@ -14,6 +15,7 @@ interface UserInfo {
     phoneNum: string,
   ) => void;
   setUserId: (id: number) => void;
+  setPhoneNum: (phoneNum: string) => void;
   clearUserInfo: () => void;
 }
 
@@ -38,6 +40,7 @@ export const useUserInfo = create<UserInfo>((set) => ({
       phoneNum: phoneNum,
     }),
   setUserId: (studentNum: number) => set({ studentNum: studentNum }),
+  setPhoneNum: (phoneNum: string) => set({ phoneNum: phoneNum }),
   clearUserInfo: () =>
     set({
       studentNum: null,
