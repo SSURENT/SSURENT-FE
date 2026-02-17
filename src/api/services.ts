@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { all } from 'axios';
 import { useUserInfo } from '../store/userStore';
 // #1 로그인 API
 export const requestLogin = async (studentNum: number, password: string) => {
@@ -89,7 +89,22 @@ export const postLogout = async () => {
 };
 
 // #7 징계내역 불러오기 API
-export const getPenaltyHistory = async () => {};
+export const getPenaltyHistory = async () => {
+  try {
+    const res = await axios.get('/api/users/penalties', {});
+    return res.data.data;
+  } catch (error) {
+    alert('징계내역 불러오기에 실패했습니다');
+  }
+};
 
 // #8 전화번호 변경 API
-export const patchPhoneNum = async () => {};
+export const patchPhoneNum = async (changedPhoneNum: string) => {
+  try {
+    const res = await axios.patch('/api/users/phone-number', {
+      phoneNum: changedPhoneNum,
+    });
+  } catch (error) {
+    alert('전화번호 변경에 실패했습니다.');
+  }
+};
