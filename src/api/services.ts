@@ -29,9 +29,7 @@ export const requestLogin = async (studentNum: number, password: string) => {
 // #2 비밀번호 변경 요청 API
 export const patchChanePwRequset = async () => {
   try {
-    const res = await axios.patch('/auth/sms', {
-      // NOTE: 학번 / 전화번호 둘 중 뭐로 할 지 아직 결정 X
-    });
+    const res = await axios.patch('/auth/sms', {});
   } catch (error) {
     alert('비밀번호 변경 요청에 실패했습니다.');
   }
