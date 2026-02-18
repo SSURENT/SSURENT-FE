@@ -1,7 +1,20 @@
 import { NavLink } from 'react-router-dom';
+import { use, useState } from 'react';
 import { postVerifyCode } from '../../../api/services';
 
 export default function VerifyCode() {
+  const [inputVerifyCode, setInputVerifyCode] = useState('');
+  const handleSubmit = () => {
+    // NOTE: 나중에 inputVerifyCode 형식 검사 로직 짤 듯?
+    try {
+      if (!inputVerifyCode) {
+        alert('인증코드를 입력해주세요.');
+      }
+      setInputVerifyCode(inputVerifyCode);
+    } catch (error) {
+      alert('오류가 발생했습니다. 다시 시도해주세요.');
+    }
+  };
   return (
     // flex flex-col: 세로 정렬 (LinearLayout orientation="vertical")
     // items-center: 중앙 정렬 (layout_gravity="center")
@@ -19,6 +32,9 @@ export default function VerifyCode() {
             type="text"
             // focus 시 보라색(#6610F2)으로 강조선이 생기도록 설정
             className="w-full p-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-[#6610F2] focus:border-[#6610F2] outline-none"
+            onChange={(e) => {
+              setInputVerifyCode(e.target.value);
+            }}
           />
         </div>
 
@@ -26,7 +42,8 @@ export default function VerifyCode() {
         <div className="flex justify-center">
           <button
             className="w-1/2 py-3 px-5 text-[#6610F2] border border-[#6610F2] rounded-lg hover:bg-[#6610f205] transition-colors font-semibold text-sm"
-            onClick={() => postVerifyCode}
+            value={inputVerifyCode}
+            onClick={handleSubmit}
           >
             인증하기
           </button>
