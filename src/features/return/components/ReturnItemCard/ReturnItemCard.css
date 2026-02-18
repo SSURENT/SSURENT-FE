@@ -1,0 +1,40 @@
+.overdue-ribbon {
+  position: absolute;
+  top: 10px;
+  right: 0;
+
+  width: 32px;
+  height: 40px;
+  background-color: #dc3545;
+  color: white;
+  font-weight: bold;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* 👇 위만 둥글게 */
+  border-radius: 5px 5px 0 0;
+
+  transform: translate(-40%, 0);
+  z-index: 10;
+}
+
+/* 아래 삼각형 꼬리 */
+.overdue-ribbon::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-left: 16px solid #dc3545;
+  border-right: 16px solid #dc3545;
+  border-bottom: 8px solid transparent;
+}
+
+.item-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
