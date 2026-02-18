@@ -1,22 +1,69 @@
 import { NavLink } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserInfo } from '../../../store/userStore';
+import { postLogout, getUserInfo } from '../../../api/services';
 
-const name: string = '@@@';
-const studentNum: number = 20240000;
-const role: string = '일반학우';
-const status: string = '이용가능';
-const phoneNum: string = '010-xxxx-xxxx';
+type UserRole = 'normal' | 'admin' | 'superadmin' | '';
+type UserStatus = 'active' | 'banned' | '';
 
 export default function MyPage() {
   const { studentNum: savedNum } = useUserInfo();
   const setUserInfo = useUserInfo((state) => state.setUserInfo);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [phoneError, setphoneError] = useState(true);
-  const [newphoneNum, setNewphoneNum] = useState('');
-  // TODO: API연결해서 학번(savedNum)으로 사용자 정보 불러오기
-  // TODO: 불러오고 setUserInfo로 값 저장하기
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [phoneError, setphoneError] = useState<boolean>(true);
+  const [newphoneNum, setNewphoneNum] = useState<string>('');
+
+  const [name, setName] = useState<string>('@@@');
+  const [studentNum, setStudentNum] = useState<number>(20240000);
+  const [role, setRole] = useState<UserRole>('');
+  const [status, setStatus] = useState<UserStatus>('');
+  const [phoneNum, setPhoneNum] = useState<string>('010-xxxx-xxxx');
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const res = await getUserInfo();
+        if (!res) {
+          alert('사용자 정보를 불러오는데에 실패했습니다.');
+          return;
+        }
+        if (!res.data.name) {
+          alert('이름을 불러오는데에 실패했습니다.');
+          return;
+        }
+        if (!res.data.studentNum) {
+          alert('학번을 불러오는데에 실패했습니다.');
+          return;
+        }
+        if (!res.data.role) {
+          alert('사용자 역할을 불러오는데에 실패했습니다.');
+          return;
+        }
+        if (!res.data.status) {
+          alert('이용 상태를 불러오는데에 실패했습니다.');
+          return;
+        }
+        if (!res.data.phoneNum) {
+          alert('전화번호를 불러오는데에 실패했습니다.');
+          return;
+        }
+
+        setName(res.data.name);
+        setStudentNum(res.data.studentNum);
+        setRole(res.data.role);
+        setStatus(res.data.status);
+        setPhoneNum(res.data.phoneNum);
+      } catch (error) {
+        alert('사용자 정보를 불러오는데에 실패했습니다.');
+      }
+    };
+    fetchUserInfo();
+  }, []);
+
+  const handleLogout = async () => {
+    postLogout();
+  };
 
   //   휴대전화 내용물
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,7 +120,10 @@ export default function MyPage() {
             >
               징계내역보기
             </button>
-            <button className="text text-right font-bold border border-[#6610F2] rounded-lg text-[#6610F2] px-8 py-3">
+            <button
+              className="text text-right font-bold border border-[#6610F2] rounded-lg text-[#6610F2] px-8 py-3"
+              onClick={handleLogout}
+            >
               로그아웃
             </button>
           </div>
