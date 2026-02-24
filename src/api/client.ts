@@ -8,7 +8,8 @@ export const apiClient = async <T>(
   url: string,
   options: RequestInit = {},
 ): Promise<T> => {
-  const token = getAccessToken();
+  const token =
+    'eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyMDE5MjQ0NCIsInR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3NzE5MjkzMDgsImV4cCI6MTc3MTkzMjkwOH0.zUQp7Oyj7uEtdEZpwJGznVoDD9IM85umVY6JpPv_JjyhZTlkJ48xCeZSfi2rpUea'; //getAccessToken();
 
   const response = await fetch(`${BASE_URL}${url}`, {
     method: options.method ?? 'GET',

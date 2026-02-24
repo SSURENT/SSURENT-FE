@@ -1,21 +1,34 @@
-import { useEffect, useState } from 'react';
-import ItemCard, { Item } from '../components/ItemCard';
-import { mockItems } from '../../data/mock.tsx';
+import { useState } from 'react';
+import { getItems } from '../../../hooks/getItems';
+import { Item } from '../../../types/item.ts';
+import ItemCard from '../components/ItemCard.tsx';
 
 type Props = {
+  categoryId: number;
   onPrev: () => void;
   onNext: (item: Item) => void;
 };
 
-export default function SelectItem({ onPrev, onNext }: Props) {
-  const [items, setItems] = useState<Item[]>([]);
+export default function SelectItem({ categoryId, onPrev, onNext }: Props) {
+  const { items, isLoading, isError } = getItems(categoryId);
   const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
 
-  useEffect(() => {
-    setItems(mockItems);
-  }, []);
-
   const selectedItem = items.find((item) => item.id === selectedItemId);
+
+  // 🔹 로딩 UI
+  if (isLoading) {
+    return (
+      <div className="text-center py-5">
+        <div className="spinner-border text-primary mb-3" />
+        <div>물품 불러오는 중...</div>
+      </div>
+    );
+  }
+
+  // 🔹 에러 UI
+  if (isError) {
+    return <div className="alert alert-danger text-center">물품 조회 실패</div>;
+  }
 
   return (
     <>

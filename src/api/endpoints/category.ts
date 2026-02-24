@@ -1,5 +1,6 @@
 import { Category } from '../../types/category';
-import { CategoryResponseDto, BaseResponseDto } from '../dto/category.dto';
+import { CategoryResponseDto } from '../dto/category.dto';
+import { BaseResponseDto } from '../dto/baseResponse.dto.ts';
 import { apiClient } from '../client';
 
 export const getCategory = {
