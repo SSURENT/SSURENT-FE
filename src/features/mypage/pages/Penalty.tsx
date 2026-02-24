@@ -2,23 +2,53 @@ import { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useUserInfo } from '../../../store/userStore';
 import { getPenaltyHistory } from '../../../api/services';
+import { dataTagSymbol } from '@tanstack/react-query';
 
 interface PenaltyInfo {
-  userPenaltyId: number;
-  createdAt: string;
-  itemName: string;
+  penaltyId: number;
   penaltyType: string;
+  itemId: number;
+  rentalHistoryId: number;
+  createdAt: string;
+}
+
+interface PenaltyDisplayInfo {
+  rowNum: number;
+  date: string;
+  itemName: string;
+  reason: string;
 }
 
 export default function Penalty() {
-  const [penaltyRecord, setPenaltyRecord] = useState<PenaltyInfo[]>([]);
+  const [penaltyRecord, setPenaltyRecord] = useState<PenaltyDisplayInfo[]>([]);
   const { studentNum: savedId } = useUserInfo();
+  const getItemName = (itemId: number): string => {
+    // TODO: itemId 보고 빌려간 물품명 알아오는 로직 짜야함
+    return 'itemName';
+  };
+  const getDate = (createdAt: string): string => {
+    const date = createdAt.split('T')[0];
+    return `${date.split('-')[0]}.${date.split('-')[1]}.${date.split('-')[2]}`;
+  };
+  const getReason = (penaltyType: string): string => {
+    // TODO: 페널티 타입에 따라서 "사유"를 번역해서 return하는 로직 추가해야 함
+    return '';
+  };
 
   useEffect(() => {
     const fetchHistory = async () => {
       try {
         const res = await getPenaltyHistory();
-        setPenaltyRecord(res.data.data || []);
+        const data: PenaltyInfo[] = res.data.data || [];
+        const refinedData: PenaltyDisplayInfo[] = data.map((record, index) => {
+          return {
+            rowNum: index + 1,
+            date: getDate(record.createdAt),
+            itemName: getItemName(record.itemId),
+            reason: getReason(record.penaltyType),
+          };
+        });
+        setPenaltyRecord(refinedData);
       } catch (error) {
         alert('징계내역을 불러오는 데에 실패했습니다.');
       }
@@ -59,16 +89,16 @@ export default function Penalty() {
             {penaltyRecord.map((item) => (
               <tr>
                 <td className="border border-[#DEE2E6] border-[2px] p-3">
-                  {item.userPenaltyId}
+                  {item.rowNum}
                 </td>
                 <td className="border border-[#DEE2E6] border-[2px] p-3">
-                  {item.createdAt}
+                  {item.date}
                 </td>
                 <td className="border border-[#DEE2E6] border-[2px] p-3">
                   {item.itemName}
                 </td>
                 <td className="border border-[#DEE2E6] border-[2px] p-3">
-                  {item.penaltyType}
+                  {item.reason}
                 </td>
               </tr>
             ))}
