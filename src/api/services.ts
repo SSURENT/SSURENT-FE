@@ -1,25 +1,37 @@
 import axios, { all } from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { useUserInfo } from '../store/userStore';
 // #1 로그인 API
-export const requestLogin = async (studentNum: number, password: string) => {
+export const requestLogin = async (
+  studentNum: string,
+  password: string,
+  setUserId: (studentNum: string) => void,
+) => {
+  const navigate = useNavigate();
   if (!studentNum || !password) {
     alert('학번과 비밀번호를 모두 입력해주세요.');
     return;
   }
 
   try {
-    const res = await axios.post('/auth/login', {
-      // NOTE: 아직 키값 안 정해서 이거 나중에 수정해야 함
-      student_id: studentNum,
+    // NOTE: 얘는 테스트용 엔드포인트 코드
+    const res = await axios.post('http://168.107.50.60:8080/api/auth/login', {
+      // const res = await axios.post('/auth/login', {
+      studentNum: studentNum,
       password: password,
     });
 
-    if (res.status === 200) {
+    if (res.data.code === '200') {
       alert('로그인 성공!');
-      // TODO: 페이지 이동 기능 넣으셈
-      // TODO: setUserId 정보 (일단은 학번만) 넣기
-      const setUserId = useUserInfo((state) => state.setUserId);
       setUserId(studentNum);
+      // NOTE: 홈으로 가는 위치를 모르겠어서 일단 '/'로 함
+      navigate('/');
+      const token = res.data.accessToken;
+      localStorage.setItem('token', token);
+    } else if (res.data.code === '401') {
+      alert('로그인에 실패했습니다.');
+    } else if (res.data.code === '403') {
+      alert('이미 탈퇴한 사용자입니다.');
     }
   } catch (error) {
     alert('로그인에 실패했습니다. 학번이나 비밀번호를 확인해주세요.');
