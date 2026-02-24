@@ -2,19 +2,19 @@ import { Phone } from 'react-bootstrap-icons';
 import { create } from 'zustand';
 
 interface UserInfo {
-  studentNum: number | null;
+  studentNum: string | null;
   name: string;
   role: '일반학우' | '관리자' | '최고 관리자';
   status: '이용가능' | '정지회원' | '비활성화(회원삭제)';
   phoneNum: string;
   setUserInfo: (
-    id: number,
+    id: string,
     name: string,
     role: '일반학우' | '관리자' | '최고 관리자',
     status: '이용가능' | '정지회원' | '비활성화(회원삭제)',
     phoneNum: string,
   ) => void;
-  setUserId: (id: number) => void;
+  setUserId: (id: string) => void;
   setPhoneNum: (phoneNum: string) => void;
   clearUserInfo: () => void;
 }
@@ -26,7 +26,7 @@ export const useUserInfo = create<UserInfo>((set) => ({
   status: '이용가능',
   phoneNum: '',
   setUserInfo: (
-    studentNum: number,
+    studentNum: string,
     name: string,
     role: '일반학우' | '관리자' | '최고 관리자',
     status: '이용가능' | '정지회원' | '비활성화(회원삭제)',
@@ -39,7 +39,7 @@ export const useUserInfo = create<UserInfo>((set) => ({
       status: status,
       phoneNum: phoneNum,
     }),
-  setUserId: (studentNum: number) => set({ studentNum: studentNum }),
+  setUserId: (studentNum: string) => set({ studentNum: studentNum }),
   setPhoneNum: (phoneNum: string) => set({ phoneNum: phoneNum }),
   clearUserInfo: () =>
     set({

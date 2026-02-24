@@ -15,7 +15,7 @@ export default function MyPage() {
   const [newphoneNum, setNewphoneNum] = useState<string>('');
 
   const [name, setName] = useState<string>('@@@');
-  const [studentNum, setStudentNum] = useState<number>(20240000);
+  const [studentNum, setStudentNum] = useState<string>('20240000');
   const [role, setRole] = useState<UserRole>('');
   const [status, setStatus] = useState<UserStatus>('');
   const [phoneNum, setPhoneNum] = useState<string>('010-xxxx-xxxx');

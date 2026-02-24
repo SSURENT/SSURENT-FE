@@ -5,7 +5,7 @@ import { useUserInfo } from '../../../store/userStore';
 import { requestLogin } from '../../../api/services';
 
 export default function Login() {
-  const [studentNum, setstudentNum] = useState('');
+  const [studentNum, setStudentNum] = useState('');
   const [password, setPassword] = useState('');
   const setUserId = useUserInfo((state) => state.setUserId);
 
@@ -22,7 +22,7 @@ export default function Login() {
             type="text"
             placeholder="학번 (ex. 2024XXXX)"
             value={studentNum}
-            onChange={(e) => setstudentNum(e.target.value)}
+            onChange={(e) => setStudentNum(e.target.value)}
             className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none"
           />
         </div>
@@ -47,7 +47,9 @@ export default function Login() {
 
         <div className="flex justify-center">
           <button
-            onClick={() => requestLogin(Number(studentNum), password)} // 4. 클릭 이벤트 연결
+            onClick={() =>
+              requestLogin(String(studentNum), password, setUserId)
+            } // 4. 클릭 이벤트 연결
             className="w-1/2 py-3 px-5 text-[#6610F2] border border-[#6610F2] rounded-lg hover:bg-blue-50 transition-colors font-semibold"
           >
             로그인
