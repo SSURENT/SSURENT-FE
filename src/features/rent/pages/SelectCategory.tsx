@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { categories } from '../../data/mock.tsx';
+import { Category } from '../../../types/category';
 
 type Props = {
+  categories: Category[];
   onNext: () => void;
 };
 
-export default function SelectCategory({ onNext }: Props) {
+export default function SelectCategory({ categories, onNext }: Props) {
   const [category, setCategory] = useState('');
   const [phone, setPhone] = useState('');
   const [phoneError, setPhoneError] = useState('');
@@ -62,12 +63,11 @@ export default function SelectCategory({ onNext }: Props) {
             className="form-select"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            aria-labelledby="rentCategoryLabel"
           >
             <option value="">선택하세요</option>
             {categories.map((item) => (
-              <option key={item} value={item}>
-                {item}
+              <option key={item.id} value={item.id}>
+                {item.name}
               </option>
             ))}
           </select>
