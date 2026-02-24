@@ -105,6 +105,11 @@ export const patchPhoneNum = async (changedPhoneNum: string) => {
     const res = await axios.patch('/api/users/phone-number', {
       phoneNum: changedPhoneNum,
     });
+    if (res.data.code === '204') {
+      alert('전화번호 변경에 성공했습니다.');
+    } else if (res.data.code === '401') {
+      alert(res.data.message);
+    }
   } catch (error) {
     alert('전화번호 변경에 실패했습니다.');
   }
