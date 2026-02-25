@@ -4,14 +4,14 @@ import { create } from 'zustand';
 interface UserInfo {
   studentNum: string | null;
   name: string;
-  role: '일반학우' | '관리자' | '최고 관리자';
-  status: '이용가능' | '정지회원' | '비활성화(회원삭제)';
+  role: '일반학우' | '관리자' | '최고 관리자' | '';
+  status: '이용가능' | '정지회원' | '비활성화(회원삭제)' | '';
   phoneNum: string;
   setUserInfo: (
     id: string,
     name: string,
-    role: '일반학우' | '관리자' | '최고 관리자',
-    status: '이용가능' | '정지회원' | '비활성화(회원삭제)',
+    role: '일반학우' | '관리자' | '최고 관리자' | '',
+    status: '이용가능' | '정지회원' | '비활성화(회원삭제)' | '',
     phoneNum: string,
   ) => void;
   setUserId: (id: string) => void;
@@ -28,8 +28,8 @@ export const useUserInfo = create<UserInfo>((set) => ({
   setUserInfo: (
     studentNum: string,
     name: string,
-    role: '일반학우' | '관리자' | '최고 관리자',
-    status: '이용가능' | '정지회원' | '비활성화(회원삭제)',
+    role: '일반학우' | '관리자' | '최고 관리자' | '',
+    status: '이용가능' | '정지회원' | '비활성화(회원삭제)' | '',
     phoneNum: string,
   ) =>
     set({
@@ -45,8 +45,8 @@ export const useUserInfo = create<UserInfo>((set) => ({
     set({
       studentNum: null,
       name: '',
-      role: '일반학우',
-      status: '이용가능',
+      role: '',
+      status: '',
       phoneNum: '',
     }),
 }));
