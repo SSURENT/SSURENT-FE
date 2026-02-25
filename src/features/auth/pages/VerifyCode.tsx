@@ -1,19 +1,26 @@
 import { NavLink } from 'react-router-dom';
-import { use, useState } from 'react';
+import { useState } from 'react';
 import { postVerifyCode } from '../../../api/services';
 
 export default function VerifyCode() {
   const [inputVerifyCode, setInputVerifyCode] = useState('');
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // NOTE: 나중에 inputVerifyCode 형식 검사 로직 짤 듯?
+    if (!inputVerifyCode) {
+      alert('인증코드를 입력해주세요.');
+      return;
+    }
     try {
-      if (!inputVerifyCode) {
-        alert('인증코드를 입력해주세요.');
-      }
       setInputVerifyCode(inputVerifyCode);
+      const res = await postVerifyCode(inputVerifyCode);
+      // TODO: 스웨거에 에러코드 뜨면 에러처리하기
+      if (res?.data.code) alert('');
     } catch (error) {
       alert('오류가 발생했습니다. 다시 시도해주세요.');
     }
+  };
+  const handleRequestVerifyCode = async () => {
+    // TODO: 인증코드를 사용자한테 전송하는 api는 아직 sms회사?를 못 정해서 미정인 듯
   };
   return (
     // flex flex-col: 세로 정렬 (LinearLayout orientation="vertical")
@@ -54,7 +61,7 @@ export default function VerifyCode() {
       <div className="text-center mt-6 max-w-[400px]">
         <p
           className="text-[#102ACF] text-xs leading-relaxed hover:underline"
-          onClick={() => postVerifyCode}
+          onClick={handleRequestVerifyCode}
         >
           인증번호가 오지 않을 경우 여기를 눌러 재전송을 요청해주세요
         </p>
