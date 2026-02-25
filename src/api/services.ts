@@ -19,6 +19,7 @@ export const requestLogin = async (
 export const patchChanePwRequset = async () => {
   try {
     const res = await axios.patch('/auth/sms', {});
+    return res;
   } catch (error) {
     alert('비밀번호 변경 요청에 실패했습니다.');
   }
@@ -31,6 +32,7 @@ export const postVerifyCode = async (verifyCode: string) => {
       // NOTE: 나중에 키값 변경
       verify_code: verifyCode,
     });
+    return res;
   } catch (error) {
     alert('인증번호 전송에 실패했습니다.');
   }
@@ -42,6 +44,7 @@ export const patchChangePW = async (changedPw: string) => {
     const res = await axios.patch('/auth/pw', {
       password: changedPw,
     });
+    return res;
   } catch (error) {
     alert('변경된 비밀번호 전송에 실패했습니다.');
   }
@@ -51,6 +54,7 @@ export const patchChangePW = async (changedPw: string) => {
 export const postLogout = async () => {
   try {
     const res = await axios.post('/auth/logout', {});
+    return res;
   } catch (error) {
     alert('로그아웃에 실패했습니다.');
   }
@@ -61,6 +65,7 @@ export const getUserInfo = async () => {
   try {
     const res = await axios.get('/api/users', {});
     return res.data.data;
+    return res;
   } catch (error) {
     alert('사용자의 정보를 불러오는데에 실패했습니다.');
   }
@@ -71,6 +76,7 @@ export const getPenaltyHistory = async () => {
   try {
     const res = await axios.get('/api/users/penalties', {});
     return res.data.data;
+    return res;
   } catch (error) {
     alert('징계내역 불러오기에 실패했습니다');
   }
@@ -82,11 +88,7 @@ export const patchPhoneNum = async (changedPhoneNum: string) => {
     const res = await axios.patch('/api/users/phone-number', {
       phoneNum: changedPhoneNum,
     });
-    if (res.data.code === '204') {
-      alert('전화번호 변경에 성공했습니다.');
-    } else if (res.data.code === '401') {
-      alert(res.data.message);
-    }
+    return res;
   } catch (error) {
     alert('전화번호 변경에 실패했습니다.');
   }
