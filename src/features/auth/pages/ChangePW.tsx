@@ -6,16 +6,17 @@ import { patchChanePwRequset } from '../../../api/services';
 export default function ChangePW() {
   const { phoneNum: savedPhoneNum } = useUserInfo();
   const [inputPhoneNum, setInputPhoneNum] = useState(savedPhoneNum || '');
-
+  const setPhoneNum = useUserInfo((state) => state.setPhoneNum);
   const handleSubmit = async () => {
+    if (!inputPhoneNum) {
+      alert('전화번호를 입력해주세요.');
+      return;
+    }
     try {
-      if (!inputPhoneNum) {
-        alert('전화번호를 입력해주세요.');
-      }
-      await patchChanePwRequset();
-
+      const res = await patchChanePwRequset();
+      // TODO: 스웨거에 에러코드 뜨면 에러처리하기
+      if (res?.data.code === '') alert('');
       // 전역변수 phoneNum에 지역변수 inputPhoneNum의 값 저장하기
-      const setPhoneNum = useUserInfo((state) => state.setPhoneNum);
       setPhoneNum(inputPhoneNum);
     } catch (error) {
       alert('비밀번호 변경에 실패했습니다.');
