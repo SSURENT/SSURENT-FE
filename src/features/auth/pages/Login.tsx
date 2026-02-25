@@ -2,12 +2,40 @@ import { useState } from 'react';
 import axios from 'axios';
 import { NavLink } from 'react-router-dom';
 import { useUserInfo } from '../../../store/userStore';
+import { useNavigate } from 'react-router-dom';
 import { requestLogin } from '../../../api/services';
 
 export default function Login() {
   const [studentNum, setStudentNum] = useState('');
   const [password, setPassword] = useState('');
   const setUserId = useUserInfo((state) => state.setUserId);
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    const res = await requestLogin(studentNum, password, setUserId);
+    if (!studentNum || !password) {
+      alert('학번과 비밀번호를 모두 입력해주세요.');
+      return;
+    }
+    try {
+      // NOTE: 얘는 테스트용 엔드포인트 코드
+
+      if (res.data.code === '200') {
+        alert('로그인 성공!');
+        setUserId(studentNum);
+        // NOTE: 홈으로 가는 위치를 모르겠어서 일단 '/'로 함
+        navigate('/');
+        const token = res.data.accessToken;
+        localStorage.setItem('token', token);
+      } else if (res.data.code === '401') {
+        alert('로그인에 실패했습니다.');
+      } else if (res.data.code === '403') {
+        alert('이미 탈퇴한 사용자입니다.');
+      }
+    } catch (error) {
+      alert('로그인에 실패했습니다. 학번이나 비밀번호를 확인해주세요.');
+    }
+  };
 
   return (
     <div className="flex flex-col items-center mt-[50px]">
@@ -47,9 +75,7 @@ export default function Login() {
 
         <div className="flex justify-center">
           <button
-            onClick={() =>
-              requestLogin(String(studentNum), password, setUserId)
-            } // 4. 클릭 이벤트 연결
+            onClick={handleLogin}
             className="w-1/2 py-3 px-5 text-[#6610F2] border border-[#6610F2] rounded-lg hover:bg-blue-50 transition-colors font-semibold"
           >
             로그인
