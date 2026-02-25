@@ -12,12 +12,12 @@ export default function Login() {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    const res = await requestLogin(studentNum, password, setUserId);
     if (!studentNum || !password) {
       alert('학번과 비밀번호를 모두 입력해주세요.');
       return;
     }
     try {
+      const res = await requestLogin(studentNum, password, setUserId);
       // NOTE: 얘는 테스트용 엔드포인트 코드
 
       if (res.data.code === '200') {
