@@ -4,11 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { useUserInfo } from '../../../store/userStore';
 import { postLogout, getUserInfo } from '../../../api/services';
 
-type UserRole = 'normal' | 'admin' | 'superadmin' | '';
-type UserStatus = 'active' | 'banned' | '';
+type UserRole = '일반학우' | '관리자' | '최고 관리자' | '';
+type UserStatus = '이용가능' | '정지회원' | '비활성화(회원삭제)' | '';
 
 export default function MyPage() {
-  const { studentNum: savedNum } = useUserInfo();
   const setUserInfo = useUserInfo((state) => state.setUserInfo);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [phoneError, setphoneError] = useState<boolean>(true);
@@ -19,6 +18,8 @@ export default function MyPage() {
   const [role, setRole] = useState<UserRole>('');
   const [status, setStatus] = useState<UserStatus>('');
   const [phoneNum, setPhoneNum] = useState<string>('010-xxxx-xxxx');
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -52,8 +53,18 @@ export default function MyPage() {
         setName(res.data.name);
         setStudentNum(res.data.studentNum);
         setRole(res.data.role);
+        const roleName = res.data.role;
+        if (roleName === 'SUPERADMIN') setRole('최고 관리자');
+        else if (roleName === 'ADMIN') setRole('관리자');
+        else if (roleName === 'NORMAL') setRole('일반학우');
+        else {
+          alert('사용자 역할을 불러오는데에 실패했습니다.');
+          return;
+        }
         setStatus(res.data.status);
         setPhoneNum(res.data.phoneNum);
+
+        setUserInfo(studentNum, name, role, status, phoneNum);
       } catch (error) {
         alert('사용자 정보를 불러오는데에 실패했습니다.');
       }
