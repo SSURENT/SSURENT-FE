@@ -10,9 +10,10 @@ import Return from './features/return/pages/Return';
 import MyPage from './features/mypage/pages/MyPage';
 import Login from './features/auth/pages/Login';
 import ChangePW from './features/auth/pages/ChangePW';
-import AdminHome from './features/admin/pages/AdminHome';
 import AdminItems from './features/admin/pages/AdminItems';
 import AdminMembers from './features/admin/pages/AdminMembers';
+import AdminMemberDetail from './features/admin/pages/AdminMemberDetail';
+import AdminPenaltyEdit from './features/admin/pages/AdminPenaltyEdit';
 
 // import AdminRoute from './shared/components/AdminRoute';
 
@@ -99,8 +100,10 @@ const App: React.FC = () => {
         <Route index element={<Navigate to="items" replace />} />
         <Route path="items" element={<AdminItems />} />
         <Route path="users" element={<AdminMembers />} />
-        <Route path="stats" element={<div>통계 페이지 (준비 중)</div>} />
-        <Route path="inspect" element={<div>물품 검수 페이지 (준비 중)</div>} />
+        <Route path="users/:id" element={<AdminMemberDetail />} />
+        <Route path="users/:id/penalty" element={<AdminPenaltyEdit />} />
+        <Route path="inspect" element={<div>물품 검수 페이지</div>} />
+        <Route path="stats" element={<div>통계 페이지</div>} />
       </Route>
     </Routes>
   );
