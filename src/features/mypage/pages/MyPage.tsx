@@ -73,7 +73,12 @@ export default function MyPage() {
   }, []);
 
   const handleLogout = async () => {
-    postLogout();
+    const res = await postLogout();
+    if (res?.data.code === '200') {
+      alert('회원정보를 성공적으로 불러왔습니다.');
+    } else if (res?.data.code === '401') {
+      alert(res.data.message);
+    }
   };
 
   //   휴대전화 내용물
@@ -89,8 +94,6 @@ export default function MyPage() {
       setphoneError(!phoneRegex.test(value));
     }
   };
-  // 이동함수
-  const navigate = useNavigate();
   // 징계내역 페이지로 이동하는 함수
   const goToPenalty = () => {
     navigate('/penalty');
