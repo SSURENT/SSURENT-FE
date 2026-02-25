@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Item } from '../types/item';
-import { getItem } from '../api/endpoints/item';
+import { Item } from '../types/Item.ts';
+import { getItem } from '../api/endpoints/Item.ts';
 
 export const getItems = (categoryId: number) => {
   const [items, setItems] = useState<Item[]>([]);

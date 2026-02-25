@@ -1,7 +1,7 @@
-import { Category } from '../../types/category';
-import { CategoryResponseDto } from '../dto/category.dto';
-import { BaseResponseDto } from '../dto/baseResponse.dto.ts';
-import { apiClient } from '../client';
+import { Category } from '../../types/Category.ts';
+import { CategoryResponseDto } from '../dto/Category.dto.ts';
+import { BaseResponseDto } from '../dto/BaseResponse.dto.ts';
+import { apiClient } from '../Client.ts';
 
 export const getCategory = {
   getCategories: async (): Promise<Category[]> => {

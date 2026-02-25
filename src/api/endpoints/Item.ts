@@ -1,7 +1,7 @@
-import { ItemResponseDto } from '../dto/item.dto';
-import { BaseResponseDto } from '../dto/baseResponse.dto';
-import { apiClient } from '../client';
-import { Item } from '../../types/item.ts';
+import { ItemResponseDto } from '../dto/Item.dto.ts';
+import { BaseResponseDto } from '../dto/BaseResponse.dto.ts';
+import { apiClient } from '../Client.ts';
+import { Item } from '../../types/Item.ts';
 
 export const getItem = {
   getItemsByCategory: async (categoryId: number): Promise<Item[]> => {

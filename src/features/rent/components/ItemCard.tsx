@@ -1,4 +1,4 @@
-import { Item } from '../../../types/item.ts';
+import { Item } from '../../../types/Item.ts';
 
 type Props = {
   item: Item;

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Category } from '../../../types/category';
-import { getCategories } from '../../../hooks/getCategory';
+import { Category } from '../../../types/Category.ts';
+import { getCategories } from '../../../hooks/GetCategory.ts';
 
 type Props = {
   onNext: (categoryId: number) => void;

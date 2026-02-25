@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { getItems } from '../../../hooks/getItems';
-import { Item } from '../../../types/item.ts';
+import { getItems } from '../../../hooks/GetItems.ts';
+import { Item } from '../../../types/Item.ts';
 import ItemCard from '../components/ItemCard.tsx';
 
 type Props = {
