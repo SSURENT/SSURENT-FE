@@ -4,12 +4,15 @@ import { patchChangePW } from '../../../api/services';
 
 export default function ResetPW() {
   const [inputPassword, setInputPassword] = useState('');
+  if (!inputPassword) {
+    alert('새로운 비밀번호를 입력해주세요.');
+    return;
+  }
   const handleSubmit = async () => {
-    if (!inputPassword) {
-      alert('새로운 비밀번호를 입력해주세요.');
-    }
     // NOTE: 비밀번호 형식 지키는 로직 짤 듯?
-    patchChangePW(inputPassword);
+    const res = await patchChangePW(inputPassword);
+    // TODO: 스웨거에 에러코드 뜨면 에러처리하기
+    if (res?.data.code === '') alert('');
   };
   return (
     // flex flex-col: 세로 정렬 (LinearLayout orientation="vertical")
