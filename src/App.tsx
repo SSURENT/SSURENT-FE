@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Header from './shared/components/Header/Header';
 import BottomBar from './shared/components/BottomBar/BottomBar';
 import AdminLayout from './shared/components/Layout/AdminLayout';
@@ -12,6 +12,7 @@ import Login from './features/auth/pages/Login';
 import ChangePW from './features/auth/pages/ChangePW';
 import AdminHome from './features/admin/pages/AdminHome';
 import AdminItems from './features/admin/pages/AdminItems';
+import AdminMembers from './features/admin/pages/AdminMembers';
 
 // import AdminRoute from './shared/components/AdminRoute';
 
@@ -94,21 +95,13 @@ const App: React.FC = () => {
       />
 
       {/* 관리자  */}
-      {/* <Route element={<AdminRoute />}> */}
       <Route path="/admin" element={<AdminLayout />}>
-        <Route index element={<AdminHome />} />
+        <Route index element={<Navigate to="items" replace />} />
         <Route path="items" element={<AdminItems />} />
-        <Route
-          path="users"
-          element={<div>회원 관리 페이지 (UI 제작 예정)</div>}
-        />
-        <Route path="stats" element={<div>통계 페이지 (UI 제작 예정)</div>} />
-        <Route
-          path="inspect"
-          element={<div>물품 검수 페이지 (UI 제작 예정)</div>}
-        />
+        <Route path="users" element={<AdminMembers />} />
+        <Route path="stats" element={<div>통계 페이지 (준비 중)</div>} />
+        <Route path="inspect" element={<div>물품 검수 페이지 (준비 중)</div>} />
       </Route>
-      {/* </Route> */}
     </Routes>
   );
 };
