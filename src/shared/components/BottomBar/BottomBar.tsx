@@ -7,6 +7,7 @@ const BottomBar = () => {
     <Navbar
       bg="secondary"
       variant="dark"
+      fixed="bottom"
       className="py-1 bottom-bar-hide-mobile"
     >
       <Container

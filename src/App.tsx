@@ -15,7 +15,7 @@ const App: React.FC = () => {
     <div className="flex min-h-screen flex-col">
       <Header />
 
-      <main className="mx-auto w-full max-w-[1200px] flex-1 px-4">
+      <main className="mx-auto w-full max-w-[1200px] flex-1 px-4 pb-5">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/rent" element={<Rent />} />
