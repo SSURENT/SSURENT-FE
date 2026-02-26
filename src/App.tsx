@@ -9,6 +9,7 @@ import Return from './features/return/pages/Return';
 import MyPage from './features/mypage/pages/MyPage';
 import Login from './features/auth/pages/Login';
 import ChangePW from './features/auth/pages/ChangePW';
+import Penalty from './features/mypage/pages/Penalty';
 
 const App: React.FC = () => {
   return (
@@ -23,6 +24,7 @@ const App: React.FC = () => {
           <Route path="/mypage" element={<MyPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/changePW" element={<ChangePW />} />
+          <Route path="/penalty" element={<Penalty />} />
         </Routes>
       </main>
 
