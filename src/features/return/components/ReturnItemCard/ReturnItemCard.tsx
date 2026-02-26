@@ -10,9 +10,10 @@ export type ReturnItems = {
 
 type ReturnItemCardProps = {
   item: ReturnItems;
-  onReturn: (id: number) => void;
-  onExtend: (id: number) => void;
-  onReport: (id: number) => void;
+  onReturn: () => void;
+  onExtend: () => void;
+  onReport: () => void;
+  isExtendLoading?: boolean;
 };
 
 export default function ReturnItemCard({
@@ -20,7 +21,10 @@ export default function ReturnItemCard({
   onReturn,
   onExtend,
   onReport,
+  isExtendLoading = false,
 }: ReturnItemCardProps) {
+  const isButtonDisabled = item.isExtended || isExtendLoading;
+
   return (
     <div className="card item-card h-100 position-relative">
       {item.isOverdue && (
@@ -43,19 +47,20 @@ export default function ReturnItemCard({
 
             <button
               className="btn btn-outline-primary btn-sm"
-              onClick={() => onExtend(item.id)}
-              disabled={item.isExtended}
+              onClick={onExtend}
+              disabled={isButtonDisabled}
             >
-              기한연장
+              {isExtendLoading
+                ? '연장 중...'
+                : item.isExtended
+                  ? '연장 완료'
+                  : '기한연장'}
             </button>
           </div>
         </div>
 
         <div className="d-flex justify-content-between">
-          <button
-            className="btn btn-danger btn-sm"
-            onClick={() => onReport(item.id)}
-          >
+          <button className="btn btn-danger btn-sm" onClick={onReport}>
             문제신고
           </button>
 
@@ -63,7 +68,7 @@ export default function ReturnItemCard({
             className={`btn btn-sm ${
               item.isOverdue ? 'btn-outline-danger' : 'btn-outline-primary'
             }`}
-            onClick={() => onReturn(item.id)}
+            onClick={onReturn}
           >
             반납하기
           </button>

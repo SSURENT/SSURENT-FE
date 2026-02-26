@@ -5,6 +5,7 @@ import ReturnItemCard, {
 import ReturnModal from '../components/modal/ReturnModal';
 import ReportModal from '../components/modal/ReportModal';
 import { useRentHistory } from '../../../hooks/UseGetRentHistory';
+import { useExtendItem } from '../../../hooks/UseExtendRent.ts';
 
 export default function Return() {
   const { data, fetchRentHistory, isLoading, isError } = useRentHistory();
@@ -12,12 +13,30 @@ export default function Return() {
   const [items, setItems] = useState<ReturnItems[]>([]);
   const [selectedItem, setSelectedItem] = useState<ReturnItems | null>(null);
   const [modalType, setModalType] = useState<'return' | 'report' | null>(null);
+  const { extend } = useExtendItem();
+  const [extendingId, setExtendingId] = useState<number | null>(null);
 
   // ✅ 페이지 로드시 실행
   useEffect(() => {
     fetchRentHistory();
   }, []);
 
+  const handleExtend = async (item: ReturnItems) => {
+    try {
+      setExtendingId(item.id);
+
+      await extend({ rentalHistoryId: item.id });
+
+      // 성공 시 해당 아이템만 연장 완료 처리
+      setItems((prev) =>
+        prev.map((i) => (i.id === item.id ? { ...i, isExtended: true } : i)),
+      );
+    } catch (error) {
+      alert('기한 연장에 실패했습니다.');
+    } finally {
+      setExtendingId(null);
+    }
+  };
   useEffect(() => {
     if (data) {
       const mapped = data.map((item) => ({
@@ -65,8 +84,9 @@ export default function Return() {
               key={item.id}
               item={item}
               onReturn={() => openReturnModal(item)}
-              onExtend={() => console.log('기한연장', item.id)}
+              onExtend={() => handleExtend(item)}
               onReport={() => openReportModal(item)}
+              isExtendLoading={extendingId === item.id}
             />
           ))}
         </div>
