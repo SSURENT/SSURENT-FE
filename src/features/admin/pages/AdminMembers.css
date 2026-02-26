@@ -1,19 +1,23 @@
-/* 전체 컨테이너: 좁게 갇혀있지 않도록 너비를 확장합니다 */
-.admin-members-page {
+/* --- 회원관리 메인 페이지 전체 레이아웃 --- */
+.admin-members-container {
   width: 100%;
-  max-width: 1280px; /* 시안과 비슷한 넉넉한 너비 */
+  max-width: 1200px; /* PC 화면에서 시원하게 보이도록 확장 */
   margin: 0 auto;
   padding: 40px 20px;
+  background-color: transparent; /* 배경은 투명하게 하여 body와 일치 */
 }
 
-.main-title {
+/* 상단 타이틀 (회원관리) */
+.page-title {
   font-size: 32px;
   font-weight: bold;
-  text-align: left; /* 왼쪽 정렬 */
-  margin-bottom: 20px;
+  text-align: left;
+  margin-bottom: 25px;
+  color: #1a1a1a;
 }
 
-.tab-navigation {
+/* 상단 탭 메뉴 (회원관리, 도우미관리, 전체회원갱신) */
+.tab-menu {
   display: flex;
   justify-content: flex-start;
   gap: 30px;
@@ -21,71 +25,167 @@
   border-bottom: 1px solid #eee;
 }
 
-.tab-navigation span {
-  padding-bottom: 10px;
-  cursor: pointer;
+.tab-menu span {
+  padding-bottom: 12px;
+  font-size: 16px;
   color: #888;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.tab-navigation span.active {
+.tab-menu span.active {
   color: #6c5ce7;
-  border-bottom: 2px solid #6c5ce7;
   font-weight: bold;
+  border-bottom: 2px solid #6c5ce7;
 }
 
-/* 메인 하얀색 박스 */
-.main-content-card {
-  background: white;
+/* 메인 컨텐츠를 감싸는 유일한 흰색 박스 */
+.content-card {
+  background-color: white;
   border: 1px solid #e0e0e0;
   border-radius: 12px;
   padding: 40px;
   min-height: 600px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
 }
 
-/* 상단 검색바 가로 배치 */
-.search-sort-bar {
+/* --- 검색 및 필터 바 (가로 배치) --- */
+.filter-search-bar {
   display: flex;
   align-items: center;
   gap: 15px;
-  margin-bottom: 30px;
+  margin-bottom: 35px;
 }
 
-/* ★ 핵심: 카드 그리드 (세로로 늘어지는 문제 해결) */
-.member-card-grid {
+.dropdown-trigger {
+  padding: 8px 15px;
+  border: 1px solid #e0e0e0;
+  background: white;
+  border-radius: 8px;
+  color: #333;
+  cursor: pointer;
+  min-width: 120px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input-wrapper input {
+  padding: 8px 35px 8px 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  width: 280px;
+  outline: none;
+}
+
+.search-btn {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* --- ★ 핵심: 회원 카드 그리드 (PC 레이아웃) ★ --- */
+.member-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* PC 기준 한 줄에 4개 고정 */
-  gap: 24px;
+  grid-template-columns: repeat(4, 1fr); /* 한 줄에 4개씩 배치 */
+  gap: 25px;
   width: 100%;
 }
 
-/* 개별 카드 디자인 */
-.member-item {
-  background: #ffffff;
-  border: 1px solid #f0f0f0;
+/* 화면이 작아지면 3개로 자동 조정 */
+@media (max-width: 1100px) {
+  .member-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* 개별 회원 카드 디자인 (사라졌던 박스를 다시 생성) */
+.member-item-card {
+  background-color: #ffffff; /* 카드 배경 흰색 고정 */
+  border: 1px solid #f0f0f0; /* 카드 테두리 */
   border-radius: 12px;
   padding: 30px 20px;
   text-align: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+
+  /* 시안과 동일한 부드러운 그림자 효과 */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-.member-item h2 {
+.member-item-card:hover {
+  transform: translateY(-5px); /* 호버 시 위로 살짝 들림 */
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.member-info {
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 700;
   margin-bottom: 10px;
+  color: #1a1a1a;
 }
 
-.role-text {
+.member-role {
   font-size: 14px;
   color: #666;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
-.role-btn {
+.member-role.banned {
+  color: #ff4d4f; /* 정지된 회원 빨간색 강조 */
+}
+
+/* 역할변경 버튼 (빨간 테두리) */
+.role-edit-btn {
+  background-color: white;
+  border: 1px solid #ff4d4f;
+  color: #ff4d4f;
+  padding: 6px 15px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.role-edit-btn:hover {
+  background-color: #fff1f0;
+}
+
+/* --- 도우미 관리용 테이블 추가 스타일 --- */
+.helper-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.helper-table th {
+  text-align: left;
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  color: #888;
+}
+
+.helper-table td {
+  padding: 20px 15px;
+  border-bottom: 1px solid #f9f9f9;
+}
+
+.btn-delete-red {
   border: 1px solid #ff4d4f;
   color: #ff4d4f;
   background: white;
-  padding: 4px 12px;
+  padding: 5px 15px;
   border-radius: 4px;
-  font-size: 12px;
+  font-weight: bold;
   cursor: pointer;
 }

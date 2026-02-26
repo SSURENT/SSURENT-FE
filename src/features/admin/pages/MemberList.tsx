@@ -1,67 +1,63 @@
-import React from 'react';
+import React, { useState } from 'react';
+import RoleChangeModal from '../components/RoleChangeModal';
 
 const MemberList: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedName, setSelectedName] = useState('');
+
   const members = [
-    { name: '양도영', id: '2024XXXX', role: '최고관리자' },
-    { name: '이웅재', id: '2024XXXX', role: '일반학우' },
-    { name: '김세훈', id: '2025XXXX', role: '관리자' },
-    { name: '오승연', id: '2024XXXX', role: '일반학우' },
-    { name: '이다영', id: '2025XXXX', role: '관리자' },
-    { name: '박용호', id: '2024XXXX', role: '정지된 회원' },
-    { name: '최유민', id: '2023XXXX', role: '정지된 회원' },
+    { id: '1', name: '양도영', studentId: '2024XXXX', role: '최고관리자' },
+    { id: '2', name: '이웅재', studentId: '2024XXXX', role: '일반학우' },
+    { id: '3', name: '김세훈', studentId: '2025XXXX', role: '관리자' },
+    { id: '4', name: '오승연', studentId: '2024XXXX', role: '일반학우' },
+    { id: '5', name: '이다영', studentId: '2025XXXX', role: '관리자' },
+    { id: '6', name: '박용호', studentId: '2024XXXX', role: '정지된 회원' },
+    { id: '7', name: '최유민', studentId: '2023XXXX', role: '정지된 회원' },
   ];
 
   return (
-    <div className="sub-wrapper">
-      <div className="search-sort-bar">
-        {/* 드롭다운 스타일 */}
-        <div
-          className="sort-dropdown"
-          style={{
-            border: '1px solid #ddd',
-            padding: '5px 12px',
-            borderRadius: '8px',
-            cursor: 'pointer',
-          }}
-        >
-          전체회원 ▾
+    <div className="member-list-wrapper">
+      {/* 검색 및 필터 바 */}
+      <div className="filter-search-bar">
+        <div className="dropdown-container">
+          <button className="dropdown-trigger">전체회원 ▾</button>
         </div>
-        {/* 검색창 스타일 */}
-        <div className="search-box" style={{ position: 'relative' }}>
-          <input
-            type="text"
-            placeholder="Value"
-            style={{
-              padding: '8px 40px 8px 15px',
-              borderRadius: '20px',
-              border: '1px solid #ddd',
-              width: '250px',
-            }}
-          />
-          <span
-            style={{
-              position: 'absolute',
-              right: '15px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-            }}
-          >
-            🔍
-          </span>
+        <div className="search-input-wrapper">
+          <input type="text" placeholder="Value" />
+          <button className="search-btn">🔍</button>
         </div>
       </div>
 
-      <div className="member-card-grid">
-        {members.map((m, idx) => (
-          <div key={idx} className="member-item">
-            <h2>
-              {m.name} ({m.id})
-            </h2>
-            <p className="role-text">{m.role}</p>
-            <button className="role-btn">역할변경</button>
+      {/* 카드 그리드 영역 */}
+      <div className="member-grid">
+        {members.map((member) => (
+          <div key={member.id} className="member-item-card">
+            <h3 className="member-info">
+              {member.name} ({member.studentId})
+            </h3>
+            <p
+              className={`member-role ${member.role.includes('정지') ? 'banned' : ''}`}
+            >
+              {member.role}
+            </p>
+            <button
+              className="role-edit-btn"
+              onClick={() => {
+                setSelectedName(member.name);
+                setIsModalOpen(true);
+              }}
+            >
+              역할변경
+            </button>
           </div>
         ))}
       </div>
+
+      <RoleChangeModal
+        name={selectedName}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };
