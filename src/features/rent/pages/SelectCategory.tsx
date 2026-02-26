@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Category } from '../../../types/Category.ts';
-import { getCategories } from '../../../hooks/GetCategory.ts';
+import { useGetCategories } from '../../../hooks/UseGetCategory.ts';
 
 type Props = {
   onNext: (categoryId: number) => void;
 };
 
 export default function SelectCategory({ onNext }: Props) {
-  const { categories, isLoading, isError } = getCategories();
+  const { categories, isLoading, isError } = useGetCategories();
 
   const [category, setCategory] = useState('');
   const [phone, setPhone] = useState('');

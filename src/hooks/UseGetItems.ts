@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Item } from '../types/Item.ts';
 import { getItem } from '../api/endpoints/Item.ts';
 
-export const getItems = (categoryId: number) => {
+export const useGetItems = (categoryId: number) => {
   const [items, setItems] = useState<Item[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);

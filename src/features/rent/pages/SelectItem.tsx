@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { getItems } from '../../../hooks/GetItems.ts';
+import { useGetItems } from '../../../hooks/UseGetItems.ts';
 import { Item } from '../../../types/Item.ts';
 import ItemCard from '../components/ItemCard.tsx';
 
@@ -10,12 +10,11 @@ type Props = {
 };
 
 export default function SelectItem({ categoryId, onPrev, onNext }: Props) {
-  const { items, isLoading, isError } = getItems(categoryId);
+  const { items, isLoading, isError } = useGetItems(categoryId);
   const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
 
   const selectedItem = items.find((item) => item.id === selectedItemId);
 
-  // 🔹 로딩 UI
   if (isLoading) {
     return (
       <div className="text-center py-5">
@@ -25,7 +24,6 @@ export default function SelectItem({ categoryId, onPrev, onNext }: Props) {
     );
   }
 
-  // 🔹 에러 UI
   if (isError) {
     return <div className="alert alert-danger text-center">물품 조회 실패</div>;
   }

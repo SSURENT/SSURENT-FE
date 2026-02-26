@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { rentItem } from '../api/endpoints/Rent';
 import { RentRequestDto } from '../api/dto/Rent.dto.ts'; // 엔드포인트 분리 가정
 
-export const rentItems = () => {
+export const useRentItems = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);

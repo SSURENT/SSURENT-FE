@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Item } from '../../../types/Item';
-import { rentItems } from '../../../hooks/RentItem.ts';
+import { useRentItems } from '../../../hooks/UseRentItem.ts';
 import { useNavigate } from 'react-router-dom';
 
 type Props = {
@@ -10,18 +10,19 @@ type Props = {
 
 export default function SelectHelper({ item, onPrev }: Props) {
   const [assistName, setHelperName] = useState('');
-  const { rent, isLoading } = rentItems();
+  const { rent, isLoading } = useRentItems();
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
     if (!item) return;
-
+    const normalizedAssistName = assistName.trim();
+    if (!normalizedAssistName) return;
     console.log('itemId', item.id);
     console.log('assistName', assistName);
     try {
       await rent({
         itemId: item.id,
-        assistName,
+        assistName: normalizedAssistName,
       });
       navigate('/');
     } catch (error) {
@@ -80,7 +81,7 @@ export default function SelectHelper({ item, onPrev }: Props) {
 
         <button
           className="btn btn-primary px-4"
-          disabled={!assistName || isLoading}
+          disabled={assistName.trim().length === 0 || isLoading}
           onClick={handleSubmit}
         >
           {isLoading ? '처리 중...' : '대여하기'}

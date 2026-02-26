@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Category } from '../types/Category.ts';
 import { getCategory } from '../api/endpoints/Category.ts';
 
-export const getCategories = () => {
+export const useGetCategories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
