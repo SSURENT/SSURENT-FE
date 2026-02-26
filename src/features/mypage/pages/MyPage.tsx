@@ -108,9 +108,9 @@ export default function MyPage() {
         </h1>
         <div className="flex flex-col items-center gap-2">
           {/* border, rounded-lg, p-8: 테두리와 둥근 모서리, 패딩 */}
-          <div className="border border-[#B3B3B3] border-3 p-8 w-[400px] shadow-sm">
+          <div className="border border-[#B3B3B3] border-3 p-8 w-[400px] shadow-sm w-[700px]">
             <h1 className="font-bold">이름: {name}</h1>
-            <h1 className="font-bold">학번: ({studentNum})</h1>
+            <h1 className="font-bold">학번: {studentNum}</h1>
             <h1>{role}</h1>
             <h1>{status}</h1>
             <div className="flex flex-row gap-3">
@@ -127,7 +127,7 @@ export default function MyPage() {
           </div>
 
           {/* 징계내역보기 & 로그아웃 */}
-          <div className="flex justify-between w-[400px]">
+          <div className="flex justify-between w-[600px]">
             <button
               className="text text-left font-bold border border-[#6610F2] rounded-lg text-[#6610F2] px-8 py-3"
               onClick={goToPenalty}
