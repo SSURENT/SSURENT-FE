@@ -62,6 +62,7 @@ export const postLogout = async () => {
 
 // #6 사용자 정보 불러오기 API
 export const getUserInfo = async () => {
+  const token = sessionStorage.getItem('token');
   try {
     // const res = await axios.get('/api/users', {});
     const res = await axios.get('http://168.107.50.60:8080/v1/api/users', {
@@ -77,6 +78,7 @@ export const getUserInfo = async () => {
 
 // #7 징계내역 불러오기 API
 export const getPenaltyHistory = async () => {
+  const token = sessionStorage.getItem('token');
   try {
     // const res = await axios.get('/api/users/penalties', {});
     const res = await axios.get(
