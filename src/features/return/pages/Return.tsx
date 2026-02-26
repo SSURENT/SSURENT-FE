@@ -16,7 +16,6 @@ export default function Return() {
   const { extend } = useExtendItem();
   const [extendingId, setExtendingId] = useState<number | null>(null);
 
-  // ✅ 페이지 로드시 실행
   useEffect(() => {
     fetchRentHistory();
   }, []);
@@ -27,7 +26,6 @@ export default function Return() {
 
       await extend({ rentalHistoryId: item.id });
 
-      // 성공 시 해당 아이템만 연장 완료 처리
       setItems((prev) =>
         prev.map((i) => (i.id === item.id ? { ...i, isExtended: true } : i)),
       );

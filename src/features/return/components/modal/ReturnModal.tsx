@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import './modal.css';
+import { useReturnItem } from '../../../../hooks/UseReturnItem.ts';
 
 interface Props {
   item: {
+    id: number;
     name: string;
     dueDate: string;
   };
@@ -11,32 +13,20 @@ interface Props {
 
 export default function ReturnModal({ item, onClose }: Props) {
   const [helperName, setHelperName] = useState('');
-  const [loading, setLoading] = useState(false);
+  const { returnRental, isLoading } = useReturnItem();
 
-  const isDisabled = helperName.trim() === '' || loading;
+  const isDisabled = helperName.trim() === '' || isLoading;
 
   const handleSubmit = async () => {
     try {
-      setLoading(true);
+      await returnRental({
+        rentalHistoryId: item.id,
+        assistName: helperName.trim(),
+      });
 
-      // await fetch('/api/return', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({
-      //     itemName: item.name,
-      //     helperName,
-      //   }),
-      // });
-
-      // 성공 시 모달 닫기
       onClose();
     } catch (error) {
-      console.error('반납 실패', error);
       alert('반납 처리 중 오류가 발생했습니다.');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -60,7 +50,7 @@ export default function ReturnModal({ item, onClose }: Props) {
           value={helperName}
           onChange={(e) => setHelperName(e.target.value)}
           placeholder="정확한 이름을 입력해주세요"
-          disabled={loading}
+          disabled={isLoading}
         />
 
         <button
@@ -68,7 +58,7 @@ export default function ReturnModal({ item, onClose }: Props) {
           disabled={isDisabled}
           onClick={handleSubmit}
         >
-          {loading ? '처리중...' : '반납하기'}
+          {isLoading ? '처리중...' : '반납하기'}
         </button>
       </div>
     </div>

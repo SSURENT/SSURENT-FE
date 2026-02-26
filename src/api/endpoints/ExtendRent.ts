@@ -10,7 +10,7 @@ export const extendRent = {
     data: ExtendRentRequestDto,
   ): Promise<ExtendRentResponseDto> => {
     const response = await apiClient<BaseResponseDto<ExtendRentResponseDto>>(
-      'v1/api/rentals/extend',
+      '/v1/api/rentals/extend',
       {
         method: 'POST',
         body: JSON.stringify(data),
