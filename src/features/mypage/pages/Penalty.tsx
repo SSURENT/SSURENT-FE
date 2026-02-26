@@ -8,6 +8,7 @@ interface PenaltyInfo {
   penaltyId: number;
   penaltyType: string;
   itemId: number;
+  itemName: string;
   rentalHistoryId: number;
   createdAt: string;
 }
@@ -44,7 +45,7 @@ export default function Penalty() {
           return {
             rowNum: index + 1,
             date: getDate(record.createdAt),
-            itemName: getItemName(record.itemId),
+            itemName: record.itemName,
             reason: getReason(record.penaltyType),
           };
         });
