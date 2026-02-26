@@ -7,8 +7,8 @@ export const requestLogin = async (
   password: string,
   setUserId: (studentNum: string) => void,
 ) => {
-  const res = await axios.post('http://168.107.50.60:8080/api/auth/login', {
-    // const res = await axios.post('/auth/login', {
+  const res = await axios.post('http://168.107.50.60:8080/v1/api/auth/login', {
+    // const res = await axios.post('/api/auth/login', {
     studentNum: studentNum,
     password: password,
   });
