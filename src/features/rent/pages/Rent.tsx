@@ -2,7 +2,7 @@ import { useState } from 'react';
 import SelectCategory from './SelectCategory';
 import SelectItem from './SelectItem';
 import SelectHelper from './SelectHelper';
-import { Item } from '../components/ItemCard';
+import { Item } from '../../../types/Item.ts';
 
 export default function RentalPage() {
   const [step, setStep] = useState<1 | 2 | 3>(1);

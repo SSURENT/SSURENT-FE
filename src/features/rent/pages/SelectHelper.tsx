@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Item } from '../components/ItemCard';
+import { Item } from '../../../types/Item';
+import { rentItems } from '../../../hooks/RentItem.ts';
 import { useNavigate } from 'react-router-dom';
 
 type Props = {
@@ -8,35 +9,42 @@ type Props = {
 };
 
 export default function SelectHelper({ item, onPrev }: Props) {
-  const [helperName, setHelperName] = useState('');
-  const [agreed, setAgreed] = useState(false);
+  const [assistName, setHelperName] = useState('');
+  const { rent, isLoading } = rentItems();
   const navigate = useNavigate();
 
-  const isValid = helperName.trim().length > 0 && agreed;
+  const handleSubmit = async () => {
+    if (!item) return;
 
-  if (!item) return null;
+    console.log('itemId', item.id);
+    console.log('assistName', assistName);
+    try {
+      await rent({
+        itemId: item.id,
+        assistName,
+      });
+      navigate('/');
+    } catch (error) {
+      alert('대여 실패');
+    }
+  };
 
   return (
     <>
-      <h5 className="fw-bold mb-4">대여사업 도우미를 입력해주세요</h5>
+      <h5 className="fw-bold mb-4">도우미 이름을 입력해주세요</h5>
 
       <div className="row g-4">
         {/* 왼쪽 입력 영역 */}
         <div className="col-md-5">
-          <label className="form-label small text-muted" htmlFor="helperName">
-            도우미 이름을 입력하세요.
-          </label>
-
           <input
-            id="helperName"
             type="text"
             className="form-control"
-            placeholder="정확한 이름을 입력해주세요"
-            value={helperName}
+            placeholder="도우미 이름"
+            value={assistName}
             onChange={(e) => setHelperName(e.target.value)}
           />
 
-          {helperName.trim().length === 0 && (
+          {assistName.trim().length === 0 && (
             <div className="text-danger small mt-1">
               잘못된 정보 입력 시 이용에 제한이 있을 수 있습니다.
             </div>
@@ -65,21 +73,6 @@ export default function SelectHelper({ item, onPrev }: Props) {
         </div>
       </div>
 
-      {/* 동의 체크 */}
-      <div className="form-check mt-4 d-flex justify-content-end">
-        <input
-          className="form-check-input"
-          type="checkbox"
-          checked={agreed}
-          onChange={(e) => setAgreed(e.target.checked)}
-          id="agreeCheck"
-        />
-        <label className="form-check-label" htmlFor="agreeCheck">
-          본인은 위 내용을 숙지하였으며 이에 동의합니다.
-        </label>
-      </div>
-
-      {/* 하단 버튼 */}
       <div className="d-flex justify-content-end gap-2 mt-4">
         <button className="btn btn-outline-secondary px-4" onClick={onPrev}>
           이전으로
@@ -87,30 +80,10 @@ export default function SelectHelper({ item, onPrev }: Props) {
 
         <button
           className="btn btn-primary px-4"
-          disabled={!isValid}
-          onClick={async () => {
-            try {
-              // 예시 API 통신
-              // await fetch('/api/rent', {
-              //   method: 'POST',
-              //   headers: {
-              //     'Content-Type': 'application/json',
-              //   },
-              //   body: JSON.stringify({
-              //     itemId: item.id,
-              //     helperName,
-              //   }),
-              // });
-
-              // ✅ 성공 시 메인 페이지 이동
-              navigate('/');
-            } catch (error) {
-              console.error('대여 요청 실패', error);
-              alert('대여 처리 중 오류가 발생했습니다.');
-            }
-          }}
+          disabled={!assistName || isLoading}
+          onClick={handleSubmit}
         >
-          제출하기
+          {isLoading ? '처리 중...' : '대여하기'}
         </button>
       </div>
     </>
