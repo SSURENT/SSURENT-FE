@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserInfo } from '../../../store/userStore';
+import { getPenaltyHistory } from '../../../api/endpoints/Penalty';
 import { PenaltyType } from '../../../types/types';
 import { PenaltyDisplayInfo } from '../../../types/Penalty';
 import { PenaltyRequestDto } from '../../../api/dto/Penalty.dto';
