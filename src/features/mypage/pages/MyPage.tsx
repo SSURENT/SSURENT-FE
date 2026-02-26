@@ -78,11 +78,16 @@ export default function MyPage() {
   }, []);
 
   const handleLogout = async () => {
-    const res = await postLogout();
-    if (res?.data.code === '200') {
-      alert('회원정보를 성공적으로 불러왔습니다.');
-    } else if (res?.data.code === '401') {
-      alert(res.data.message);
+    const isConfirmed = window.confirm('로그아웃하시겠습니까?');
+    if (isConfirmed) {
+      try {
+        const res = await postLogout();
+        if (res?.data.code === 'AUTH_200') {
+          alert('회원정보를 성공적으로 불러왔습니다.');
+        } else if (res?.data.code === 'AUTH_401') {
+          alert(res.data.message);
+        }
+      } catch (error) {}
     }
   };
 
