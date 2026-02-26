@@ -1,0 +1,91 @@
+.admin-dashboard,
+.admin-items-container {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  text-align: left !important;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.admin-items-container .row {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  flex-direction: row !important;
+  align-items: stretch !important;
+  margin-right: -12px !important;
+  margin-left: -12px !important;
+}
+
+.items-white-box {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 30px;
+  margin-top: 20px;
+  width: 100% !important;
+}
+
+.admin-items-container .card {
+  min-width: 200px !important;
+  border-radius: 15px !important;
+  border: 1px solid #f0f0f0 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+  transition: transform 0.2s ease-in-out;
+  background-color: #fff !important;
+  text-align: left !important;
+}
+
+.admin-items-container .card:hover {
+  transform: translateY(-5px);
+}
+
+.admin-items-container h2,
+.admin-items-container h5,
+.admin-items-container .card-title {
+  text-align: left !important;
+  white-space: nowrap !important;
+  font-weight: bold;
+}
+
+.btn-purple {
+  background-color: #7c4dff !important;
+  border: none !important;
+  color: white !important;
+}
+
+.btn-purple-outline {
+  color: #7c4dff !important;
+  border: 1px solid #7c4dff !important;
+  background: white !important;
+}
+
+.btn-purple-outline:hover {
+  background: #f3efff !important;
+  color: #7c4dff !important;
+}
+
+.status-dropdown .dropdown-toggle {
+  background-color: #fff !important;
+  border: 1px solid #dee2e6 !important;
+}
+
+.icon-box {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+
+@media (max-width: 768px) {
+  .admin-items-container .row {
+    margin-right: -6px !important;
+    margin-left: -6px !important;
+  }
+  .admin-items-container .card {
+    min-width: 100% !important;
+  }
+}

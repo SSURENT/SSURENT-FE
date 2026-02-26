@@ -1,4 +1,4 @@
-import { Item } from '../rent/components/ItemCard';
+import { Item } from '../../types/Item.ts';
 
 export const mockItems: Item[] = [
   {

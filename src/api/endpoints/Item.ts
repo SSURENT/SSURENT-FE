@@ -13,6 +13,7 @@ export const getItem = {
       id: item.itemId,
       name: item.itemName,
       description: item.itemDescription,
+      status: item.status === 'ACTIVE' ? 'AVAILABLE' : 'RENTED',
     }));
   },
 };
