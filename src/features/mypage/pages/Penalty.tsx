@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useUserInfo } from '../../../store/userStore';
 import { getPenaltyHistory } from '../../../api/services';
 import { dataTagSymbol } from '@tanstack/react-query';
@@ -35,6 +35,7 @@ export default function Penalty() {
     // TODO: 페널티 타입에 따라서 "사유"를 번역해서 return하는 로직 추가해야 함
     return '';
   };
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -111,7 +112,10 @@ export default function Penalty() {
           잘못된 징계내역이 기록된 경우 학생회로 문의주시기 바랍니다.
         </p>
         <div className="flex justify-end">
-          <button className="text-[#6610F2] font-bold border border-[#6610F2] rounded-lg py-3 px-16 ">
+          <button
+            className="text-[#6610F2] font-bold border border-[#6610F2] rounded-lg py-3 px-16"
+            onClick={() => navigate(-1)}
+          >
             뒤로가기
           </button>
         </div>
