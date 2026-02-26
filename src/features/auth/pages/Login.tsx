@@ -8,8 +8,14 @@ import { requestLogin } from '../../../api/services';
 export default function Login() {
   const [studentNum, setStudentNum] = useState('');
   const [password, setPassword] = useState('');
+  const setUserRole = useUserInfo((state) => state.setUserRole);
   const setUserId = useUserInfo((state) => state.setUserId);
   const navigate = useNavigate();
+  const loginFail = (errorCode: string) => {
+    if (errorCode === 'AUTH_401')
+      alert('로그인에 실패했습니다. 학번이나 비밀번호를 확인해주세요.');
+    else if (errorCode === 'AUTH_403') alert('이미 탈퇴한 사용자입니다.');
+  };
 
   const handleLogin = async () => {
     if (!studentNum || !password) {
@@ -18,22 +24,22 @@ export default function Login() {
     }
     try {
       const res = await requestLogin(studentNum, password, setUserId);
-      // NOTE: 얘는 테스트용 엔드포인트 코드
-
-      if (res.data.code === '200') {
-        alert('로그인 성공!');
-        setUserId(studentNum);
-        // NOTE: 홈으로 가는 위치를 모르겠어서 일단 '/'로 함
-        navigate('/');
-        const token = res.data.accessToken;
-        localStorage.setItem('token', token);
-      } else if (res.data.code === '401') {
-        alert('로그인에 실패했습니다.');
-      } else if (res.data.code === '403') {
-        alert('이미 탈퇴한 사용자입니다.');
+      if (!res) {
+        alert('로그인 응답을 불러오지 못했습니다');
       }
-    } catch (error) {
-      alert('로그인에 실패했습니다. 학번이나 비밀번호를 확인해주세요.');
+      // NOTE: 얘는 테스트용 엔드포인트 코드
+      if (res.data.code === 'AUTH_200') {
+        // HERE: 나머지 api 응답 처리 로직에서도 접두사 바꾸기
+        alert(res.data.message);
+        setUserId(studentNum);
+        setUserRole(res.data.data.role);
+        const token = res.data.data.accessToken;
+        sessionStorage.setItem('token', token);
+        navigate('/');
+      } else loginFail(res.data.code);
+    } catch (error: any) {
+      if (error.response && error.response.data)
+        loginFail(error.response.data.code);
     }
   };
 
