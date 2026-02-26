@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const AdminHelpers: React.FC = () => {
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [selectedIds] = useState<string[]>([]);
   const helpers = [
     { id: '1', name: '양도영', studentId: '2024XXXX', role: '최고관리자' },
     { id: '2', name: '이웅재', studentId: '2024XXXX', role: '일반학우' },

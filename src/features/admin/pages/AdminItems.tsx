@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Button, Dropdown, Card, Row, Col } from 'react-bootstrap';
-import { Trash3, Search } from 'react-bootstrap-icons';
+import { Trash3 } from 'react-bootstrap-icons';
 import './Admin.css';
 
 const AdminItems: React.FC = () => {
