@@ -23,17 +23,15 @@ interface PenaltyDisplayInfo {
 export default function Penalty() {
   const [penaltyRecord, setPenaltyRecord] = useState<PenaltyDisplayInfo[]>([]);
   const { studentNum: savedId } = useUserInfo();
-  const getItemName = (itemId: number): string => {
-    // TODO: itemId 보고 빌려간 물품명 알아오는 로직 짜야함
-    return 'itemName';
-  };
   const getDate = (createdAt: string): string => {
     const date = createdAt.split('T')[0];
     return `${date.split('-')[0]}.${date.split('-')[1]}.${date.split('-')[2]}`;
   };
   const getReason = (penaltyType: string): string => {
     // TODO: 페널티 타입에 따라서 "사유"를 번역해서 return하는 로직 추가해야 함
-    return '';
+    if (penaltyType === 'OVERDUE') return '반납기한 경과';
+    if (penaltyType === 'UNAUTHORIZED_USE') return '무단 사용';
+    else return '상세한 사유는 학생회에 문의해주세요.';
   };
   const navigate = useNavigate();
 
@@ -41,7 +39,7 @@ export default function Penalty() {
     const fetchHistory = async () => {
       try {
         const res = await getPenaltyHistory();
-        const data: PenaltyInfo[] = res.data.data || [];
+        const data: PenaltyInfo[] = res?.data.data || [];
         const refinedData: PenaltyDisplayInfo[] = data.map((record, index) => {
           return {
             rowNum: index + 1,
