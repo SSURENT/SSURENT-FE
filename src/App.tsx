@@ -10,12 +10,16 @@ import Return from './features/return/pages/Return';
 import MyPage from './features/mypage/pages/MyPage';
 import Login from './features/auth/pages/Login';
 import ChangePW from './features/auth/pages/ChangePW';
+
+import Penalty from './features/mypage/pages/Penalty';
+
 import AdminItems from './features/admin/pages/AdminItems';
 import AdminMembers from './features/admin/pages/AdminMembers';
 import AdminMemberDetail from './features/admin/pages/AdminMemberDetail';
 import AdminPenaltyEdit from './features/admin/pages/AdminPenaltyEdit';
 
 // import AdminRoute from './shared/components/AdminRoute';
+
 
 const App: React.FC = () => {
   return (
@@ -33,6 +37,11 @@ const App: React.FC = () => {
           </div>
         }
       />
+
+
+      
+      <Route path="/penalty" element={<Penalty />} />
+     
 
       <Route
         path="/rent"
@@ -94,6 +103,7 @@ const App: React.FC = () => {
           </>
         }
       />
+
 
       {/* 관리자  */}
       <Route path="/admin" element={<AdminLayout />}>
