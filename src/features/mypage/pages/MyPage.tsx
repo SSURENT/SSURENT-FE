@@ -1,11 +1,9 @@
 import { NavLink } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { UserRole, UserStatus } from '../../../types';
 import { useNavigate } from 'react-router-dom';
 import { useUserInfo } from '../../../store/userStore';
 import { postLogout, getUserInfo } from '../../../api/services';
-
-type UserRole = '일반학우' | '관리자' | '최고 관리자' | '';
-type UserStatus = '이용가능' | '정지회원' | '비활성화(회원삭제)' | '';
 
 export default function MyPage() {
   const setUserInfo = useUserInfo((state) => state.setUserInfo);
@@ -61,7 +59,14 @@ export default function MyPage() {
           alert('사용자 역할을 불러오는데에 실패했습니다.');
           return;
         }
-        setStatus(res.data.status);
+        const statusName = res.data.status;
+        if (statusName === 'ACTIVE') setStatus('이용가능');
+        else if (statusName === 'BANNED') setStatus('정지회원');
+        else {
+          alert('사용자 상태를 불러오는데에 실패했습니다.');
+          return;
+        }
+        setStatus(status);
         setPhoneNum(res.data.phoneNum);
 
         setUserInfo(studentNum, name, role, status, phoneNum);
