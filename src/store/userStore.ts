@@ -17,6 +17,7 @@ interface UserInfo {
   ) => void;
   setUserId: (id: string) => void;
   setPhoneNum: (phoneNum: string) => void;
+  setUserRole: (role: UserRole) => void;
   clearUserInfo: () => void;
 }
 
@@ -42,6 +43,7 @@ export const useUserInfo = create<UserInfo>((set) => ({
     }),
   setUserId: (studentNum: string) => set({ studentNum: studentNum }),
   setPhoneNum: (phoneNum: string) => set({ phoneNum: phoneNum }),
+  setUserRole: (role: UserRole) => set({ role: role }),
   clearUserInfo: () =>
     set({
       studentNum: null,
