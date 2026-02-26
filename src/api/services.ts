@@ -25,7 +25,7 @@ export const patchChanePwRequset = async () => {
   }
 };
 
-// #3 인증번호 입력 API
+// #3 사용자가 인증번호 전송 API
 export const postVerifyCode = async (verifyCode: string) => {
   try {
     const res = await axios.post('/auth/num', {
@@ -38,7 +38,7 @@ export const postVerifyCode = async (verifyCode: string) => {
   }
 };
 
-// #4 비밀번호 변경 API
+// #4 변경된 비밀번호 전송 API
 export const patchChangePW = async (changedPw: string) => {
   try {
     const res = await axios.patch('/auth/pw', {
