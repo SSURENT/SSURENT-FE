@@ -63,8 +63,12 @@ export const postLogout = async () => {
 // #6 사용자 정보 불러오기 API
 export const getUserInfo = async () => {
   try {
-    const res = await axios.get('/api/users', {});
-    return res.data.data;
+    // const res = await axios.get('/api/users', {});
+    const res = await axios.get('http://168.107.50.60:8080/v1/api/users', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return res;
   } catch (error) {
     alert('사용자의 정보를 불러오는데에 실패했습니다.');
@@ -74,11 +78,18 @@ export const getUserInfo = async () => {
 // #7 징계내역 불러오기 API
 export const getPenaltyHistory = async () => {
   try {
-    const res = await axios.get('/api/users/penalties', {});
-    return res.data.data;
+    // const res = await axios.get('/api/users/penalties', {});
+    const res = await axios.get(
+      'http://168.107.50.60:8080/v1/api/users/penalties',
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
     return res;
   } catch (error) {
-    alert('징계내역 불러오기에 실패했습니다');
+    alert('api_징계내역 불러오기에 실패했습니다');
   }
 };
 
