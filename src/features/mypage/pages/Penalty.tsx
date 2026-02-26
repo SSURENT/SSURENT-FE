@@ -1,24 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserInfo } from '../../../store/userStore';
-import { getPenaltyHistory } from '../../../api/services';
-import { dataTagSymbol } from '@tanstack/react-query';
-
-interface PenaltyInfo {
-  penaltyId: number;
-  penaltyType: string;
-  itemId: number;
-  itemName: string;
-  rentalHistoryId: number;
-  createdAt: string;
-}
-
-interface PenaltyDisplayInfo {
-  rowNum: number;
-  date: string;
-  itemName: string;
-  reason: string;
-}
+import { PenaltyType } from '../../../types/types';
+import { PenaltyDisplayInfo } from '../../../types/Penalty';
+import { PenaltyRequestDto } from '../../../api/dto/Penalty.dto';
 
 export default function Penalty() {
   const [penaltyRecord, setPenaltyRecord] = useState<PenaltyDisplayInfo[]>([]);
@@ -27,7 +12,7 @@ export default function Penalty() {
     const date = createdAt.split('T')[0];
     return `${date.split('-')[0]}.${date.split('-')[1]}.${date.split('-')[2]}`;
   };
-  const getReason = (penaltyType: string): string => {
+  const getReason = (penaltyType: PenaltyType): string => {
     // TODO: 페널티 타입에 따라서 "사유"를 번역해서 return하는 로직 추가해야 함
     if (penaltyType === 'OVERDUE') return '반납기한 경과';
     if (penaltyType === 'UNAUTHORIZED_USE') return '무단 사용';
@@ -39,7 +24,7 @@ export default function Penalty() {
     const fetchHistory = async () => {
       try {
         const res = await getPenaltyHistory();
-        const data: PenaltyInfo[] = res?.data.data || [];
+        const data: PenaltyRequestDto[] = res || [];
         const refinedData: PenaltyDisplayInfo[] = data.map((record, index) => {
           return {
             rowNum: index + 1,

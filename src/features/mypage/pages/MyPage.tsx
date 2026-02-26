@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { UserRole, UserStatus } from '../../../types';
+import { UserRoleType, UserStatusType } from '../../../types/types';
 import { useNavigate } from 'react-router-dom';
 import { useUserInfo } from '../../../store/userStore';
 import { postLogout, getUserInfo } from '../../../api/services';
@@ -13,8 +13,8 @@ export default function MyPage() {
 
   const [name, setName] = useState<string>('@@@');
   const [studentNum, setStudentNum] = useState<string>('20240000');
-  const [role, setRole] = useState<UserRole>('');
-  const [status, setStatus] = useState<UserStatus>('');
+  const [role, setRole] = useState<UserRoleType>('');
+  const [status, setStatus] = useState<UserStatusType>('');
   const [phoneNum, setPhoneNum] = useState<string>('010-xxxx-xxxx');
 
   const navigate = useNavigate();
