@@ -1,6 +1,6 @@
-import { PenaltyType } from '../../types/types';
+import { PenaltyType } from '../../types/Types';
 
-export interface PenaltyRequestDto {
+export interface PenaltyResponseDto {
   penaltyId: number;
   penaltyType: PenaltyType;
   itemId: number;

@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserInfo } from '../../../store/userStore';
 import { getPenaltyHistory } from '../../../api/endpoints/Penalty';
-import { PenaltyType } from '../../../types/types';
+import { PenaltyType } from '../../../types/Types';
 import { PenaltyDisplayInfo } from '../../../types/Penalty';
-import { PenaltyRequestDto } from '../../../api/dto/Penalty.dto';
+import { PenaltyResponseDto } from '../../../api/dto/Penalty.dto';
 
 export default function Penalty() {
   const [penaltyRecord, setPenaltyRecord] = useState<PenaltyDisplayInfo[]>([]);
@@ -25,7 +25,7 @@ export default function Penalty() {
     const fetchHistory = async () => {
       try {
         const res = await getPenaltyHistory();
-        const data: PenaltyRequestDto[] = res || [];
+        const data: PenaltyResponseDto[] = res || [];
         const refinedData: PenaltyDisplayInfo[] = data.map((record, index) => {
           return {
             rowNum: index + 1,
