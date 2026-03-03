@@ -1,6 +1,5 @@
-import { NavLink } from 'react-router-dom';
 import { useState } from 'react';
-import { postVerifyCode } from '../../../api/services';
+import { postVerifyCode } from '../../../api/endpoints/VerifyCode';
 
 export default function VerifyCode() {
   const [inputVerifyCode, setInputVerifyCode] = useState('');
@@ -12,9 +11,9 @@ export default function VerifyCode() {
     }
     try {
       setInputVerifyCode(inputVerifyCode);
-      const res = await postVerifyCode(inputVerifyCode);
+      const res = await postVerifyCode({ verifyCode: inputVerifyCode });
+      if (res.code === 'AUTH_200') alert(res.message);
       // TODO: 스웨거에 에러코드 뜨면 에러처리하기
-      if (res?.data.code) alert('');
     } catch (error) {
       alert('오류가 발생했습니다. 다시 시도해주세요.');
     }

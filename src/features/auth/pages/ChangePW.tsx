@@ -1,7 +1,6 @@
-import { use, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useState } from 'react';
 import { useUserInfo } from '../../../store/userStore';
-import { patchChanePwRequset } from '../../../api/services';
+import { patchChangePwRequest } from '../../../api/endpoints/PasswordChangeRequest';
 
 export default function ChangePW() {
   const { phoneNum: savedPhoneNum } = useUserInfo();
@@ -13,14 +12,14 @@ export default function ChangePW() {
       return;
     }
     try {
-      const res = await patchChanePwRequset();
-      // TODO: 스웨거에 에러코드 뜨면 에러처리하기
-      if (res?.data.code === '') alert('');
+      // TODO: 비밀번호 변경 요청 api아직 완성X, 완성되면 나중에 완성하기
+      const res = await patchChangePwRequest();
+      if (res.code === 'AUTH_200') alert(res.message);
       // 전역변수 phoneNum에 지역변수 inputPhoneNum의 값 저장하기
-      setPhoneNum(inputPhoneNum);
     } catch (error) {
       alert('비밀번호 변경에 실패했습니다.');
     }
+    setPhoneNum(inputPhoneNum);
   };
 
   return (

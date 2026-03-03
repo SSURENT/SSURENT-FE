@@ -1,6 +1,5 @@
-import { NavLink } from 'react-router-dom';
 import { useState } from 'react';
-import { patchChangePW } from '../../../api/services';
+import { patchChangePW } from '../../../api/endpoints/PasswordChange';
 
 export default function ResetPW() {
   const [inputPassword, setInputPassword] = useState('');
@@ -10,9 +9,13 @@ export default function ResetPW() {
   }
   const handleSubmit = async () => {
     // NOTE: 비밀번호 형식 지키는 로직 짤 듯?
-    const res = await patchChangePW(inputPassword);
-    // TODO: 스웨거에 에러코드 뜨면 에러처리하기
-    if (res?.data.code === '') alert('');
+    try {
+      const res = await patchChangePW(inputPassword);
+      if (res.code === 'AUTH_200') alert(res.message);
+      // TODO: 스웨거에 에러코드 뜨면 에러처리하기
+    } catch (error) {
+      alert('비밀번호 변경에 실패했습니다.');
+    }
   };
   return (
     // flex flex-col: 세로 정렬 (LinearLayout orientation="vertical")

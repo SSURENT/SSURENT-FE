@@ -1,11 +1,10 @@
-import { NavLink } from 'react-router-dom';
 import { patchPhoneNum } from '../../../api/endpoints/PhoneNumChange';
 import { useState, useEffect } from 'react';
 import { UserRoleType, UserStatusType } from '../../../types/Types';
 import { USER_STATUS_LABEL, USER_ROLE_LABEL } from '../../../types/Types';
 import { useNavigate } from 'react-router-dom';
 import { useUserInfo } from '../../../store/userStore';
-import { getUserInfo } from '../../../api/services';
+import { getUserInfo } from '../../../api/endpoints/UserInfo';
 import { postLogout } from '../../../api/endpoints/Logout';
 
 export default function MyPage() {
@@ -28,7 +27,7 @@ export default function MyPage() {
     setIsModalOpen(false);
     // HERE: patchPhoneNum으로 api 연동
     try {
-      console.log(`지금 토큰: ${sessionStorage.getItem('token')}`);
+      console.log(`지금 토큰: ${sessionStorage.getItem('accessToken')}`);
       const res = await patchPhoneNum({ phoneNum: newPhoneNum });
       console.log(`res: ${res}`);
     } catch (error) {
@@ -53,31 +52,40 @@ export default function MyPage() {
           alert('사용자 정보를 불러오는데에 실패했습니다.');
           return;
         }
-        if (!res.data.name) {
+        if (!res.name) {
+          // if (!res.data.name) {
           alert('이름을 불러오는데에 실패했습니다.');
           return;
         }
-        if (!res.data.studentNum) {
+        if (!res.studentNum) {
+          // if (!res.data.studentNum) {
           alert('학번을 불러오는데에 실패했습니다.');
           return;
         }
-        if (!res.data.role) {
+        if (!res.role) {
+          // if (!res.data.role) {
           alert('사용자 역할을 불러오는데에 실패했습니다.');
           return;
         }
-        if (!res.data.status) {
+        if (!res.status) {
+          // if (!res.data.status) {
           alert('이용 상태를 불러오는데에 실패했습니다.');
           return;
         }
-        if (!res.data.phoneNum) {
+        if (!res.phoneNum) {
+          // if (!res.data.phoneNum) {
           alert('전화번호를 불러오는데에 실패했습니다.');
           return;
         }
 
-        setName(res.data.name);
-        setStudentNum(res.data.studentNum);
-        setRole(res.data.role);
-        const roleName = res.data.role;
+        setName(res.name);
+        setStudentNum(res.studentNum);
+        setRole(res.role);
+        const roleName = res.role;
+        // setName(res.data.name);
+        // setStudentNum(res.data.studentNum);
+        // setRole(res.data.role);
+        // const roleName = res.data.role;
         if (roleName) {
           console.log(`지금 roleName: ${roleName}`);
           console.log(
@@ -85,14 +93,16 @@ export default function MyPage() {
           );
           setLabelRole(USER_ROLE_LABEL[roleName as Exclude<UserRoleType, ''>]);
         }
-        const statusName = res.data.status;
+        const statusName = res.status;
+        // const statusName = res.data.status;
         if (statusName) {
           setLabelStatus(
             USER_STATUS_LABEL[statusName as Exclude<UserStatusType, ''>],
           );
         }
         setStatus(status);
-        setPhoneNum(res.data.phoneNum);
+        setPhoneNum(res.phoneNum);
+        // setPhoneNum(res.data.phoneNum);
 
         setUserInfo(studentNum, name, role, status, phoneNum);
       } catch (error) {
@@ -109,7 +119,7 @@ export default function MyPage() {
         const res = await postLogout();
         if (res.code === 'AUTH_200') {
           alert('회원정보를 성공적으로 불러왔습니다.');
-          sessionStorage.removeItem('token');
+          sessionStorage.removeItem('accessToken');
           clearUserInfo();
           alert('로그아웃되었습니다.');
           navigate('/');

@@ -6,13 +6,12 @@ export const apiClient = async <T>(
   config: { withAuth?: boolean } = {},
 ): Promise<T> => {
   const { withAuth = true } = config;
-  const token = withAuth ? sessionStorage.getItem('token') : null;
+  const token = withAuth ? sessionStorage.getItem('accessToken') : null;
 
   const response = await fetch(`${BASE_URL}${url}`, {
     method: options.method ?? 'GET',
     headers: {
       'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(withAuth && token ? { Authorization: `Bearer ${token}` } : {}),
       ...options.headers,
     },

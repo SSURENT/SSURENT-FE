@@ -24,8 +24,10 @@ export default function Login() {
       }
       setUserId(studentNum);
       setUserRoleType(res.role);
-      const token = res.accessToken;
-      sessionStorage.setItem('token', token);
+      const accessToken = res.accessToken;
+      sessionStorage.setItem('accessToken', accessToken);
+      const refreshToken = res.refreshToken;
+      sessionStorage.setItem('refreshToken', refreshToken);
       navigate('/');
     } catch (error) {
       alert('로그인에 실패했습니다.');
