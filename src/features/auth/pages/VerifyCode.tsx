@@ -1,6 +1,5 @@
-import { NavLink } from 'react-router-dom';
 import { useState } from 'react';
-import { postVerifyCode } from '../../../api/services';
+import { postVerifyCode } from '../../../api/endpoints/VerifyCode';
 
 export default function VerifyCode() {
   const [inputVerifyCode, setInputVerifyCode] = useState('');

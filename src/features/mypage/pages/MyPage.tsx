@@ -1,4 +1,3 @@
-import { NavLink } from 'react-router-dom';
 import { patchPhoneNum } from '../../../api/endpoints/PhoneNumChange';
 import { useState, useEffect } from 'react';
 import { UserRoleType, UserStatusType } from '../../../types/Types';

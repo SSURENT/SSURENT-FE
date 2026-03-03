@@ -1,6 +1,5 @@
-import { NavLink } from 'react-router-dom';
 import { useState } from 'react';
-import { patchChangePW } from '../../../api/services';
+import { patchChangePW } from '../../../api/endpoints/PasswordChange';
 
 export default function ResetPW() {
   const [inputPassword, setInputPassword] = useState('');
