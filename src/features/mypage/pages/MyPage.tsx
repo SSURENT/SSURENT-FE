@@ -4,7 +4,7 @@ import { UserRoleType, UserStatusType } from '../../../types/Types';
 import { USER_STATUS_LABEL, USER_ROLE_LABEL } from '../../../types/Types';
 import { useNavigate } from 'react-router-dom';
 import { useUserInfo } from '../../../store/userStore';
-import { postLogout, getUserInfo } from '../../../api/services';
+import { postLogout } from '../../../api/endpoints/Logout';
 
 export default function MyPage() {
   const setUserInfo = useUserInfo((state) => state.setUserInfo);
@@ -88,12 +88,18 @@ export default function MyPage() {
     if (isConfirmed) {
       try {
         const res = await postLogout();
-        if (res?.data.code === 'AUTH_200') {
+        if (res.code === 'AUTH_200') {
           alert('회원정보를 성공적으로 불러왔습니다.');
-        } else if (res?.data.code === 'AUTH_401') {
-          alert(res.data.message);
+          sessionStorage.removeItem('token');
+          clearUserInfo();
+          alert('로그아웃되었습니다.');
+          navigate('/');
+        } else if (res.code === 'AUTH_401') {
+          alert('로그아웃에 실패했습니다.');
         }
-      } catch (error) {}
+      } catch (error) {
+        alert('로그아웃 처리 중 오류가 발생했습니다.');
+      }
     }
   };
 
