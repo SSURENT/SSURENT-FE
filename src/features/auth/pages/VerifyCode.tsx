@@ -13,7 +13,6 @@ export default function VerifyCode() {
       setInputVerifyCode(inputVerifyCode);
       const res = await postVerifyCode(inputVerifyCode);
       // TODO: 스웨거에 에러코드 뜨면 에러처리하기
-      if (res?.data.code) alert('');
     } catch (error) {
       alert('오류가 발생했습니다. 다시 시도해주세요.');
     }
