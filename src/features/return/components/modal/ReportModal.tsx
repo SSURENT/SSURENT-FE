@@ -40,7 +40,7 @@ export default function ReportModal({ item, onClose }: Props) {
   };
 
   return (
-    <div className="modal-backdrop">
+    <div className="custom-modal-backdrop">
       <div className="modal-box">
         <button className="close-btn" onClick={onClose}>
           ✕

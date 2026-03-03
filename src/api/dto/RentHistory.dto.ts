@@ -3,5 +3,6 @@ export interface RentHistoryResponseDto {
   itemId: number;
   itemName: string;
   dueDate: string;
+  isPostponed: boolean;
   overdue: boolean;
 }

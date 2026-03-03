@@ -43,7 +43,7 @@ export default function Return() {
         name: item.itemName,
         dueDate: item.dueDate,
         isOverdue: item.overdue,
-        isExtended: false,
+        isExtended: item.isPostponed,
       }));
 
       setItems(mapped);

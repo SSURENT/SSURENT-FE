@@ -3,5 +3,6 @@ export interface RentHistory {
   itemId: number;
   itemName: string;
   dueDate: string;
+  isPostponed: boolean;
   overdue: boolean;
 }

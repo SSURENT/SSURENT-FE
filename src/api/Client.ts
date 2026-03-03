@@ -9,7 +9,7 @@ export const apiClient = async <T>(
   options: RequestInit = {},
 ): Promise<T> => {
   const token =
-    'eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyMDE5MjQ0NCIsInR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3NzI0OTYwODMsImV4cCI6MTc3MjQ5OTY4M30.WUHEsbykHeARB3eVf19Qcjy5XkMVXB53Ggc3wPNZFJpvJwf5qxWkJ9gyqRphCt-O'; //useGetAccessToken();
+    'eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyMDE5MjQ0NCIsInR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3NzI1MDczNzcsImV4cCI6MTc3MjUxMDk3N30.RuYbVwLIuJyA6scKBzAQBOnkLj-E3Lrj7ObRgDo39IaFgbPxGVQuXNQpaGO9NdL_'; //useGetAccessToken();
 
   const response = await fetch(`${BASE_URL}${url}`, {
     method: options.method ?? 'GET',
