@@ -5,6 +5,7 @@ import { UserRoleType, UserStatusType } from '../../../types/Types';
 import { USER_STATUS_LABEL, USER_ROLE_LABEL } from '../../../types/Types';
 import { useNavigate } from 'react-router-dom';
 import { useUserInfo } from '../../../store/userStore';
+import { getUserInfo } from '../../../api/services';
 import { postLogout } from '../../../api/endpoints/Logout';
 
 export default function MyPage() {
