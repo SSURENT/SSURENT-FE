@@ -1,37 +1,36 @@
-import { Phone } from 'react-bootstrap-icons';
 import { create } from 'zustand';
-import { UserRole, UserStatus } from '../types';
+import { UserRoleType, UserStatusType } from '../types/Types';
 
 interface UserInfo {
   studentNum: string | null;
   name: string;
-  role: UserRole;
-  status: UserStatus;
+  role: UserRoleType;
+  status: UserStatusType;
   phoneNum: string;
   setUserInfo: (
     id: string,
     name: string,
-    role: UserRole,
-    status: UserStatus,
+    role: UserRoleType,
+    status: UserStatusType,
     phoneNum: string,
   ) => void;
   setUserId: (id: string) => void;
   setPhoneNum: (phoneNum: string) => void;
-  setUserRole: (role: UserRole) => void;
+  setUserRoleType: (role: UserRoleType) => void;
   clearUserInfo: () => void;
 }
 
 export const useUserInfo = create<UserInfo>((set) => ({
   studentNum: null,
   name: '',
-  role: '일반학우',
-  status: '이용가능',
+  role: 'NORMAL',
+  status: 'ACTIVE',
   phoneNum: '',
   setUserInfo: (
     studentNum: string,
     name: string,
-    role: UserRole,
-    status: UserStatus,
+    role: UserRoleType,
+    status: UserStatusType,
     phoneNum: string,
   ) =>
     set({
@@ -43,7 +42,7 @@ export const useUserInfo = create<UserInfo>((set) => ({
     }),
   setUserId: (studentNum: string) => set({ studentNum: studentNum }),
   setPhoneNum: (phoneNum: string) => set({ phoneNum: phoneNum }),
-  setUserRole: (role: UserRole) => set({ role: role }),
+  setUserRoleType: (role: UserRoleType) => set({ role: role }),
   clearUserInfo: () =>
     set({
       studentNum: null,

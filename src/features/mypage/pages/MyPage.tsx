@@ -1,20 +1,46 @@
 import { NavLink } from 'react-router-dom';
+import { patchPhoneNum } from '../../../api/endpoints/PhoneNumChange';
 import { useState, useEffect } from 'react';
-import { UserRole, UserStatus } from '../../../types';
+import { UserRoleType, UserStatusType } from '../../../types/Types';
+import { USER_STATUS_LABEL, USER_ROLE_LABEL } from '../../../types/Types';
 import { useNavigate } from 'react-router-dom';
 import { useUserInfo } from '../../../store/userStore';
-import { postLogout, getUserInfo } from '../../../api/services';
+import { getUserInfo } from '../../../api/services';
+import { postLogout } from '../../../api/endpoints/Logout';
 
 export default function MyPage() {
   const setUserInfo = useUserInfo((state) => state.setUserInfo);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [phoneError, setphoneError] = useState<boolean>(true);
-  const [newphoneNum, setNewphoneNum] = useState<string>('');
+  const [newPhoneNum, setNewPhoneNum] = useState<string>('');
 
   const [name, setName] = useState<string>('@@@');
   const [studentNum, setStudentNum] = useState<string>('20240000');
-  const [role, setRole] = useState<UserRole>('');
-  const [status, setStatus] = useState<UserStatus>('');
+  const [role, setRole] = useState<UserRoleType>('');
+  const [labelRole, setLabelRole] = useState<
+    (typeof USER_ROLE_LABEL)[keyof typeof USER_ROLE_LABEL] | ''
+  >('');
+  const [status, setStatus] = useState<UserStatusType>('');
+
+  const clearUserInfo = useUserInfo((state) => state.clearUserInfo);
+
+  const handlePhoneNumChange = async () => {
+    setIsModalOpen(false);
+    // HERE: patchPhoneNum으로 api 연동
+    try {
+      console.log(`지금 토큰: ${sessionStorage.getItem('token')}`);
+      const res = await patchPhoneNum({ phoneNum: newPhoneNum });
+      console.log(`res: ${res}`);
+    } catch (error) {
+      alert(`새로운 전화번호 등록에 실패했습니다.`);
+    }
+
+    // TODO: alert로 결과보고 =>
+    // TODO: 연동값 잘 반영됐나 마이페이지에서 확인하기
+  };
+  const [labelStatus, setLabelStatus] = useState<
+    (typeof USER_STATUS_LABEL)[keyof typeof USER_STATUS_LABEL] | ''
+  >('');
   const [phoneNum, setPhoneNum] = useState<string>('010-xxxx-xxxx');
 
   const navigate = useNavigate();
@@ -52,19 +78,18 @@ export default function MyPage() {
         setStudentNum(res.data.studentNum);
         setRole(res.data.role);
         const roleName = res.data.role;
-        if (roleName === 'SUPERADMIN') setRole('최고 관리자');
-        else if (roleName === 'ADMIN') setRole('관리자');
-        else if (roleName === 'NORMAL') setRole('일반학우');
-        else {
-          alert('사용자 역할을 불러오는데에 실패했습니다.');
-          return;
+        if (roleName) {
+          console.log(`지금 roleName: ${roleName}`);
+          console.log(
+            `정해진 labelRoleName: ${USER_ROLE_LABEL[roleName as Exclude<UserRoleType, ''>]}`,
+          );
+          setLabelRole(USER_ROLE_LABEL[roleName as Exclude<UserRoleType, ''>]);
         }
         const statusName = res.data.status;
-        if (statusName === 'ACTIVE') setStatus('이용가능');
-        else if (statusName === 'BANNED') setStatus('정지회원');
-        else {
-          alert('사용자 상태를 불러오는데에 실패했습니다.');
-          return;
+        if (statusName) {
+          setLabelStatus(
+            USER_STATUS_LABEL[statusName as Exclude<UserStatusType, ''>],
+          );
         }
         setStatus(status);
         setPhoneNum(res.data.phoneNum);
@@ -78,18 +103,29 @@ export default function MyPage() {
   }, []);
 
   const handleLogout = async () => {
-    const res = await postLogout();
-    if (res?.data.code === '200') {
-      alert('회원정보를 성공적으로 불러왔습니다.');
-    } else if (res?.data.code === '401') {
-      alert(res.data.message);
+    const isConfirmed = window.confirm('로그아웃하시겠습니까?');
+    if (isConfirmed) {
+      try {
+        const res = await postLogout();
+        if (res.code === 'AUTH_200') {
+          alert('회원정보를 성공적으로 불러왔습니다.');
+          sessionStorage.removeItem('token');
+          clearUserInfo();
+          alert('로그아웃되었습니다.');
+          navigate('/');
+        } else if (res.code === 'AUTH_401') {
+          alert('로그아웃에 실패했습니다.');
+        }
+      } catch (error) {
+        alert('로그아웃 처리 중 오류가 발생했습니다.');
+      }
     }
   };
 
   //   휴대전화 내용물
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setNewphoneNum(value);
+    setNewPhoneNum(value);
 
     const phoneRegex = /^010-\d{4}-\d{4}$/;
 
@@ -116,8 +152,8 @@ export default function MyPage() {
           <div className="border border-[#B3B3B3] border-3 p-8 w-[400px] shadow-sm w-[700px]">
             <h1 className="font-bold">이름: {name}</h1>
             <h1 className="font-bold">학번: {studentNum}</h1>
-            <h1>{role}</h1>
-            <h1>{status}</h1>
+            <h1>{labelRole}</h1>
+            <h1>{labelStatus}</h1>
             <div className="flex flex-row gap-3">
               <h1>전화번호: {phoneNum}</h1>
               <button
@@ -165,7 +201,7 @@ export default function MyPage() {
                 <p className="ml-4 font-bold">번호 변경:</p>
                 <input
                   type="text"
-                  value={newphoneNum}
+                  value={newPhoneNum}
                   onChange={handlePhoneChange}
                   className="border border-gray-100 w-64 border rounded-sm px-2"
                   placeholder="전화번호 입력(010-xxxx-xxxx)"
@@ -181,7 +217,7 @@ export default function MyPage() {
               {/* 징계내역보기 & 로그아웃 */}
               <div className="flex justify-between w-[400px]">
                 <button
-                  onClick={() => setIsModalOpen(false)}
+                  onClick={handlePhoneNumChange}
                   className="text text-left text-white font-bold border border-[#6610F2] bg-[#6610F2] rounded-lg text-[#6610F2] px-8 py-3 ml-24"
                 >
                   확인
