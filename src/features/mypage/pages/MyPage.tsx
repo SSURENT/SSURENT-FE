@@ -27,7 +27,7 @@ export default function MyPage() {
     setIsModalOpen(false);
     // HERE: patchPhoneNum으로 api 연동
     try {
-      console.log(`지금 토큰: ${sessionStorage.getItem('token')}`);
+      console.log(`지금 토큰: ${sessionStorage.getItem('accessToken')}`);
       const res = await patchPhoneNum({ phoneNum: newPhoneNum });
       console.log(`res: ${res}`);
     } catch (error) {
@@ -119,7 +119,7 @@ export default function MyPage() {
         const res = await postLogout();
         if (res.code === 'AUTH_200') {
           alert('회원정보를 성공적으로 불러왔습니다.');
-          sessionStorage.removeItem('token');
+          sessionStorage.removeItem('accessToken');
           clearUserInfo();
           alert('로그아웃되었습니다.');
           navigate('/');
