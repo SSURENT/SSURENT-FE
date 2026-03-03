@@ -1,60 +1,55 @@
 import { useEffect, useState } from 'react';
-import { getUserInfo } from '../api/endpoints/UserInfo';
-import { USER_ROLE_LABEL, USER_STATUS_LABEL } from '../types/Types';
-import { UserRoleType, UserStatusType } from '../types/Types';
+import {
+  USER_ROLE_LABEL,
+  USER_STATUS_LABEL,
+  UserRoleType,
+  UserStatusType,
+} from '../types/Types';
 import { useUserInfo } from '../store/userStore';
+import { StoredUser } from './UseGetUserInfoApi';
 
 export const useGetUserInfo = () => {
-  const setUserInfo = useUserInfo((state) => state.setUserInfo);
+  const setUserInfoStore = useUserInfo((state) => state.setUserInfo);
 
+  // 화면용 상태
   const [name, setName] = useState<string>('@@@');
   const [studentNum, setStudentNum] = useState<string>('20240000');
-  const [role, setRole] = useState<UserRoleType>('');
-  const [labelRole, setLabelRole] = useState<
-    (typeof USER_ROLE_LABEL)[keyof typeof USER_ROLE_LABEL] | ''
-  >('');
-  const [status, setStatus] = useState<UserStatusType>('');
-  const [labelStatus, setLabelStatus] = useState<
-    (typeof USER_STATUS_LABEL)[keyof typeof USER_STATUS_LABEL] | ''
-  >('');
+  const [role, setRole] = useState<UserRoleType>('' as UserRoleType);
+  const [status, setStatus] = useState<UserStatusType>('' as UserStatusType);
+  const [labelRole, setLabelRole] = useState<string>('');
+  const [labelStatus, setLabelStatus] = useState<string>('');
   const [phoneNum, setPhoneNum] = useState<string>('010-xxxx-xxxx');
 
   useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        const res = await getUserInfo();
+    const stored = sessionStorage.getItem('user');
 
-        if (!res) {
-          alert('사용자 정보를 불러오는데에 실패했습니다.');
-          return;
-        }
+    if (stored) {
+      const parsed: StoredUser = JSON.parse(stored);
 
-        const { name, studentNum, role, status, phoneNum } = res;
+      // 화면 상태 업데이트
+      setName(parsed.name);
+      setStudentNum(parsed.studentNum);
+      setRole(parsed.role as UserRoleType);
+      setStatus(parsed.status as UserStatusType);
+      setPhoneNum(parsed.phoneNum);
 
-        if (!name || !studentNum || !role || !status || !phoneNum) {
-          alert('사용자 정보 일부를 불러오지 못했습니다.');
-          return;
-        }
-
-        setName(name);
-        setStudentNum(studentNum);
-        setRole(role);
-        setStatus(status);
-        setPhoneNum(phoneNum);
-
-        setLabelRole(USER_ROLE_LABEL[role as Exclude<UserRoleType, ''>]);
+      // Label 업데이트 (빈 문자열 체크)
+      if (parsed.role)
+        setLabelRole(USER_ROLE_LABEL[parsed.role as Exclude<UserRoleType, ''>]);
+      if (parsed.status)
         setLabelStatus(
-          USER_STATUS_LABEL[status as Exclude<UserStatusType, ''>],
+          USER_STATUS_LABEL[parsed.status as Exclude<UserStatusType, ''>],
         );
 
-        // store에도 반영
-        setUserInfo(studentNum, name, role, status, phoneNum);
-      } catch (error) {
-        alert('사용자 정보를 불러오는데에 실패했습니다.');
-      }
-    };
-
-    fetchUserInfo();
+      // Zustand store 업데이트
+      setUserInfoStore(
+        parsed.studentNum,
+        parsed.name,
+        parsed.role as UserRoleType,
+        parsed.status as UserStatusType,
+        parsed.phoneNum,
+      );
+    }
   }, []);
 
   return {

@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useUserInfo } from '../store/userStore';
 import { requestLogin } from '../api/endpoints/Login';
+import { fetchUserInfoApi } from './UseGetUserInfoApi.ts';
 
 export const useLogin = () => {
   const setUserRoleType = useUserInfo((state) => state.setUserRoleType);
@@ -26,7 +27,12 @@ export const useLogin = () => {
 
       sessionStorage.setItem('accessToken', res.accessToken);
       sessionStorage.setItem('refreshToken', res.refreshToken);
-
+      try {
+        await fetchUserInfoApi();
+      } catch (err) {
+        console.error(err);
+        alert('사용자 정보 불러오기 실패');
+      }
       navigate('/');
     } catch (error) {
       alert('로그인에 실패했습니다.');

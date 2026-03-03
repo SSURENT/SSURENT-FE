@@ -24,7 +24,19 @@ export const useChangePhoneNum = (setPhoneNum: (num: string) => void) => {
     try {
       await patchPhoneNum({ phoneNum: newPhoneNum });
 
-      setPhoneNum(newPhoneNum); // 화면 즉시 반영
+      setPhoneNum(newPhoneNum);
+      const storedUser = sessionStorage.getItem('user');
+
+      if (storedUser) {
+        const parsedUser = JSON.parse(storedUser);
+
+        const updatedUser = {
+          ...parsedUser,
+          phoneNum: newPhoneNum,
+        };
+
+        sessionStorage.setItem('user', JSON.stringify(updatedUser));
+      }
       alert('전화번호가 성공적으로 변경되었습니다.');
 
       setIsModalOpen(false);
