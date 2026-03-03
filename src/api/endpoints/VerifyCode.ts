@@ -16,7 +16,7 @@ import { BaseResponseDto } from '../dto/BaseResponse.dto';
 //   }
 // };
 
-export const postVeifyCode = async (
+export const postVerifyCode = async (
   verifyCode: string,
 ): Promise<BaseResponseDto<void>> => {
   const res = await apiClient<BaseResponseDto<void>>(
