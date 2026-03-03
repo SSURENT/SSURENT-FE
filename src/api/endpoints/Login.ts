@@ -11,6 +11,7 @@ export const requestLogin = async (
       method: 'POST',
       body: JSON.stringify(userInfo),
     },
+    { withAuth: false },
   );
   return res.data;
 };
