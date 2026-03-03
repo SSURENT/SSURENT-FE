@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { UserRoleType, UserStatusType } from '../../../types/Types';
+import { USER_STATUS_LABEL, USER_ROLE_LABEL } from '../../../types/Types';
 import { useNavigate } from 'react-router-dom';
 import { useUserInfo } from '../../../store/userStore';
 import { postLogout, getUserInfo } from '../../../api/services';
@@ -14,7 +15,13 @@ export default function MyPage() {
   const [name, setName] = useState<string>('@@@');
   const [studentNum, setStudentNum] = useState<string>('20240000');
   const [role, setRole] = useState<UserRoleType>('');
+  const [labelRole, setLabelRole] = useState<
+    (typeof USER_ROLE_LABEL)[keyof typeof USER_ROLE_LABEL] | ''
+  >('');
   const [status, setStatus] = useState<UserStatusType>('');
+  const [labelStatus, setLabelStatus] = useState<
+    (typeof USER_STATUS_LABEL)[keyof typeof USER_STATUS_LABEL] | ''
+  >('');
   const [phoneNum, setPhoneNum] = useState<string>('010-xxxx-xxxx');
 
   const navigate = useNavigate();
@@ -52,19 +59,18 @@ export default function MyPage() {
         setStudentNum(res.data.studentNum);
         setRole(res.data.role);
         const roleName = res.data.role;
-        if (roleName === 'SUPERADMIN') setRole('최고 관리자');
-        else if (roleName === 'ADMIN') setRole('관리자');
-        else if (roleName === 'NORMAL') setRole('일반학우');
-        else {
-          alert('사용자 역할을 불러오는데에 실패했습니다.');
-          return;
+        if (roleName) {
+          console.log(`지금 roleName: ${roleName}`);
+          console.log(
+            `정해진 labelRoleName: ${USER_ROLE_LABEL[roleName as Exclude<UserRoleType, ''>]}`,
+          );
+          setLabelRole(USER_ROLE_LABEL[roleName as Exclude<UserRoleType, ''>]);
         }
         const statusName = res.data.status;
-        if (statusName === 'ACTIVE') setStatus('이용가능');
-        else if (statusName === 'BANNED') setStatus('정지회원');
-        else {
-          alert('사용자 상태를 불러오는데에 실패했습니다.');
-          return;
+        if (statusName) {
+          setLabelStatus(
+            USER_STATUS_LABEL[statusName as Exclude<UserStatusType, ''>],
+          );
         }
         setStatus(status);
         setPhoneNum(res.data.phoneNum);
@@ -121,8 +127,8 @@ export default function MyPage() {
           <div className="border border-[#B3B3B3] border-3 p-8 w-[400px] shadow-sm w-[700px]">
             <h1 className="font-bold">이름: {name}</h1>
             <h1 className="font-bold">학번: {studentNum}</h1>
-            <h1>{role}</h1>
-            <h1>{status}</h1>
+            <h1>{labelRole}</h1>
+            <h1>{labelStatus}</h1>
             <div className="flex flex-row gap-3">
               <h1>전화번호: {phoneNum}</h1>
               <button
