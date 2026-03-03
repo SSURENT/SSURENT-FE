@@ -1,38 +1,12 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { useUserInfo } from '../../../store/userStore';
-import { useNavigate } from 'react-router-dom';
-import { requestLogin } from '../../../api/endpoints/Login';
+import { useLogin } from '../../../hooks/UseLogin';
 
 export default function Login() {
   const [studentNum, setStudentNum] = useState('');
   const [password, setPassword] = useState('');
-  const setUserRoleType = useUserInfo((state) => state.setUserRoleType);
-  const setUserId = useUserInfo((state) => state.setUserId);
-  const navigate = useNavigate();
 
-  const handleLogin = async () => {
-    if (!studentNum || !password) {
-      alert('학번과 비밀번호를 모두 입력해주세요.');
-      return;
-    }
-    try {
-      const res = await requestLogin({ studentNum, password });
-      if (!res) {
-        alert('로그인 응답을 불러오지 못했습니다');
-        return;
-      }
-      setUserId(studentNum);
-      setUserRoleType(res.role);
-      const accessToken = res.accessToken;
-      sessionStorage.setItem('accessToken', accessToken);
-      const refreshToken = res.refreshToken;
-      sessionStorage.setItem('refreshToken', refreshToken);
-      navigate('/');
-    } catch (error) {
-      alert('로그인에 실패했습니다.');
-    }
-  };
+  const { login } = useLogin();
 
   return (
     <div className="flex flex-col items-center mt-[50px]">
@@ -72,7 +46,7 @@ export default function Login() {
 
         <div className="flex justify-center">
           <button
-            onClick={handleLogin}
+            onClick={() => login(studentNum, password)}
             className="w-1/2 py-3 px-5 text-[#6610F2] border border-[#6610F2] rounded-lg hover:bg-blue-50 transition-colors font-semibold"
           >
             로그인
