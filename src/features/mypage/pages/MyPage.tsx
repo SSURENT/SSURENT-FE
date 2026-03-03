@@ -11,7 +11,7 @@ export default function MyPage() {
   const setUserInfo = useUserInfo((state) => state.setUserInfo);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [phoneError, setphoneError] = useState<boolean>(true);
-  const [newphoneNum, setNewphoneNum] = useState<string>('');
+  const [newPhoneNum, setNewPhoneNum] = useState<string>('');
 
   const [name, setName] = useState<string>('@@@');
   const [studentNum, setStudentNum] = useState<string>('20240000');
@@ -121,7 +121,7 @@ export default function MyPage() {
   //   휴대전화 내용물
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setNewphoneNum(value);
+    setNewPhoneNum(value);
 
     const phoneRegex = /^010-\d{4}-\d{4}$/;
 
@@ -197,7 +197,7 @@ export default function MyPage() {
                 <p className="ml-4 font-bold">번호 변경:</p>
                 <input
                   type="text"
-                  value={newphoneNum}
+                  value={newPhoneNum}
                   onChange={handlePhoneChange}
                   className="border border-gray-100 w-64 border rounded-sm px-2"
                   placeholder="전화번호 입력(010-xxxx-xxxx)"
