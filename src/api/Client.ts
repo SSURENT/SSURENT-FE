@@ -12,7 +12,6 @@ export const apiClient = async <T>(
     method: options.method ?? 'GET',
     headers: {
       'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(withAuth && token ? { Authorization: `Bearer ${token}` } : {}),
       ...options.headers,
     },
