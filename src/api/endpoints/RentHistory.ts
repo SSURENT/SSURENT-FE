@@ -14,6 +14,7 @@ export const getRentHistory = {
       itemId: item.itemId,
       itemName: item.itemName,
       dueDate: item.dueDate.substring(0, 10),
+      isPostponed: item.isPostponed,
       overdue: item.overdue,
     }));
   },
