@@ -1,19 +1,14 @@
-// hooks/UseReturnItem.ts
 import { useState } from 'react';
 import { returnItem } from '../api/endpoints/Return';
-// 🔥 실제 엔드포인트 경로에 맞게 수정하세요
-
-type ReturnRequestDto = {
-  rentalHistoryId: number;
-  assistName: string;
-};
+import { ReturnRequestDto } from '../api/dto/Return.dto.ts';
 
 export const useReturnItem = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
   const returnRental = async ({
-    rentalHistoryId,
+    itemId,
+    rentalId,
     assistName,
   }: ReturnRequestDto) => {
     setIsLoading(true);
@@ -21,7 +16,8 @@ export const useReturnItem = () => {
 
     try {
       await returnItem.returnItem({
-        rentalHistoryId,
+        itemId,
+        rentalId,
         assistName,
       });
     } catch (error) {

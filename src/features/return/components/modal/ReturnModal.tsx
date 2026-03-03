@@ -5,13 +5,15 @@ import { useReturnItem } from '../../../../hooks/UseReturnItem.ts';
 interface Props {
   item: {
     id: number;
+    rentalId: number;
     name: string;
     dueDate: string;
   };
   onClose: () => void;
+  onSuccess: () => void;
 }
 
-export default function ReturnModal({ item, onClose }: Props) {
+export default function ReturnModal({ item, onClose, onSuccess }: Props) {
   const [helperName, setHelperName] = useState('');
   const { returnRental, isLoading } = useReturnItem();
 
@@ -20,10 +22,11 @@ export default function ReturnModal({ item, onClose }: Props) {
   const handleSubmit = async () => {
     try {
       await returnRental({
-        rentalHistoryId: item.id,
+        itemId: item.id,
+        rentalId: item.rentalId,
         assistName: helperName.trim(),
       });
-
+      onSuccess();
       onClose();
     } catch (error) {
       alert('반납 처리 중 오류가 발생했습니다.');
@@ -31,7 +34,7 @@ export default function ReturnModal({ item, onClose }: Props) {
   };
 
   return (
-    <div className="modal-backdrop">
+    <div className="custom-modal-backdrop">
       <div className="modal-box">
         <button className="close-btn" onClick={onClose}>
           ✕

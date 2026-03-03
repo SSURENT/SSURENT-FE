@@ -39,6 +39,7 @@ export default function Return() {
     if (data) {
       const mapped = data.map((item) => ({
         id: item.itemId,
+        rentalId: item.rentalId,
         name: item.itemName,
         dueDate: item.dueDate,
         isOverdue: item.overdue,
@@ -91,7 +92,11 @@ export default function Return() {
       </div>
 
       {modalType === 'return' && selectedItem && (
-        <ReturnModal item={selectedItem} onClose={closeModal} />
+        <ReturnModal
+          item={selectedItem}
+          onClose={closeModal}
+          onSuccess={fetchRentHistory}
+        />
       )}
 
       {modalType === 'report' && selectedItem && (

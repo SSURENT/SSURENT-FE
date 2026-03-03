@@ -1,5 +1,6 @@
 export interface ReturnRequestDto {
-  rentalHistoryId: number;
+  itemId: number;
+  rentalId: number;
   assistName: string;
 }
 

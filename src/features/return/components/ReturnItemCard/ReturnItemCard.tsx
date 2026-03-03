@@ -2,6 +2,7 @@ import './ReturnItemCard.css';
 
 export type ReturnItems = {
   id: number;
+  rentalId: number;
   name: string;
   dueDate: string;
   isOverdue: boolean;
