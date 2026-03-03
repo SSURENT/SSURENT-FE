@@ -20,6 +20,9 @@ export default function MyPage() {
     (typeof USER_ROLE_LABEL)[keyof typeof USER_ROLE_LABEL] | ''
   >('');
   const [status, setStatus] = useState<UserStatusType>('');
+
+  const clearUserInfo = useUserInfo((state) => state.clearUserInfo);
+
   const handlePhoneNumChange = async () => {
     setIsModalOpen(false);
     // HERE: patchPhoneNum으로 api 연동
