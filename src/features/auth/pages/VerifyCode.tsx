@@ -11,7 +11,8 @@ export default function VerifyCode() {
     }
     try {
       setInputVerifyCode(inputVerifyCode);
-      const res = await postVerifyCode(inputVerifyCode);
+      const res = await postVerifyCode({ verifyCode: inputVerifyCode });
+      if (res.code === 'AUTH_200') alert(res.message);
       // TODO: 스웨거에 에러코드 뜨면 에러처리하기
     } catch (error) {
       alert('오류가 발생했습니다. 다시 시도해주세요.');
