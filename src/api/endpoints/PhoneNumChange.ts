@@ -9,7 +9,7 @@ export const patchPhoneNum = async (
   const res = await apiClient<BaseResponseDto<void>>(
     '/v1/api/users/phone-number',
     {
-      method: 'PUT',
+      method: 'PATCH',
       body: JSON.stringify(data),
     },
   );
