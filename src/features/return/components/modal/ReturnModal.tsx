@@ -1,47 +1,40 @@
 import { useState } from 'react';
 import './modal.css';
+import { useReturnItem } from '../../../../hooks/UseReturnItem.ts';
 
 interface Props {
   item: {
+    id: number;
+    rentalId: number;
     name: string;
     dueDate: string;
   };
   onClose: () => void;
+  onSuccess: () => void;
 }
 
-export default function ReturnModal({ item, onClose }: Props) {
+export default function ReturnModal({ item, onClose, onSuccess }: Props) {
   const [helperName, setHelperName] = useState('');
-  const [loading, setLoading] = useState(false);
+  const { returnRental, isLoading } = useReturnItem();
 
-  const isDisabled = helperName.trim() === '' || loading;
+  const isDisabled = helperName.trim() === '' || isLoading;
 
   const handleSubmit = async () => {
     try {
-      setLoading(true);
-
-      // await fetch('/api/return', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({
-      //     itemName: item.name,
-      //     helperName,
-      //   }),
-      // });
-
-      // 성공 시 모달 닫기
+      await returnRental({
+        itemId: item.id,
+        rentalId: item.rentalId,
+        assistName: helperName.trim(),
+      });
+      onSuccess();
       onClose();
     } catch (error) {
-      console.error('반납 실패', error);
       alert('반납 처리 중 오류가 발생했습니다.');
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
-    <div className="modal-backdrop">
+    <div className="custom-modal-backdrop">
       <div className="modal-box">
         <button className="close-btn" onClick={onClose}>
           ✕
@@ -60,7 +53,7 @@ export default function ReturnModal({ item, onClose }: Props) {
           value={helperName}
           onChange={(e) => setHelperName(e.target.value)}
           placeholder="정확한 이름을 입력해주세요"
-          disabled={loading}
+          disabled={isLoading}
         />
 
         <button
@@ -68,7 +61,7 @@ export default function ReturnModal({ item, onClose }: Props) {
           disabled={isDisabled}
           onClick={handleSubmit}
         >
-          {loading ? '처리중...' : '반납하기'}
+          {isLoading ? '처리중...' : '반납하기'}
         </button>
       </div>
     </div>

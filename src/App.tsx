@@ -20,7 +20,6 @@ import AdminPenaltyEdit from './features/admin/pages/AdminPenaltyEdit';
 
 // import AdminRoute from './shared/components/AdminRoute';
 
-
 const App: React.FC = () => {
   return (
     <Routes>
@@ -38,10 +37,7 @@ const App: React.FC = () => {
         }
       />
 
-
-      
       <Route path="/penalty" element={<Penalty />} />
-     
 
       <Route
         path="/rent"
@@ -103,7 +99,6 @@ const App: React.FC = () => {
           </>
         }
       />
-
 
       {/* 관리자  */}
       <Route path="/admin" element={<AdminLayout />}>
