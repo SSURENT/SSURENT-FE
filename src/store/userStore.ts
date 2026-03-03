@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { UserRoleType, UserStatusType } from '../types/types';
+import { UserRoleType, UserStatusType } from '../types/Types';
 
 interface UserInfo {
   studentNum: string | null;

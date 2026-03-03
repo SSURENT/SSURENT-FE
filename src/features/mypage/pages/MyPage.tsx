@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { UserRoleType, UserStatusType } from '../../../types/types';
+import { UserRoleType, UserStatusType } from '../../../types/Types';
 import { useNavigate } from 'react-router-dom';
 import { useUserInfo } from '../../../store/userStore';
 import { postLogout, getUserInfo } from '../../../api/services';

@@ -1,4 +1,4 @@
-import { UserRoleType } from '../../types/types';
+import { UserRoleType } from '../../types/Types';
 export interface LoginResponseDto {
   accessToken: string;
   refreshToken: string;

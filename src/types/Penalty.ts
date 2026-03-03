@@ -1,4 +1,4 @@
-import { PenaltyType } from '../types/types';
+import { PenaltyType } from '../types/Types';
 export interface PenaltyInfo {
   penaltyId: number;
   penaltyType: PenaltyType;
