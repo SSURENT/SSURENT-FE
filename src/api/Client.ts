@@ -1,3 +1,5 @@
+import { useGetAccessToken } from '../hooks/UseGetAccessToken.ts';
+
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const getAccessToken = (): string | null => {
@@ -8,8 +10,7 @@ export const apiClient = async <T>(
   url: string,
   options: RequestInit = {},
 ): Promise<T> => {
-  const token =
-    'eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyMDE5MjQ0NCIsInR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3NzI1MDczNzcsImV4cCI6MTc3MjUxMDk3N30.RuYbVwLIuJyA6scKBzAQBOnkLj-E3Lrj7ObRgDo39IaFgbPxGVQuXNQpaGO9NdL_'; //useGetAccessToken();
+  const token = useGetAccessToken();
 
   const response = await fetch(`${BASE_URL}${url}`, {
     method: options.method ?? 'GET',

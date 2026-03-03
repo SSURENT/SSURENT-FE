@@ -11,10 +11,6 @@ import Login from './features/auth/pages/Login';
 import ChangePW from './features/auth/pages/ChangePW';
 
 const App: React.FC = () => {
-  sessionStorage.setItem(
-    'accessToken',
-    'eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyMDE5MjQ0NCIsInR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3NzI1MTY3MDIsImV4cCI6MTc3MjUyMDMwMn0.rLubBWEHaO5HEvIcMmUvASicqSJ2_djJuHoyf493asX3TTg0-_uKXrgrs155VIAu',
-  );
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
