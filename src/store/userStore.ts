@@ -23,8 +23,8 @@ interface UserInfo {
 export const useUserInfo = create<UserInfo>((set) => ({
   studentNum: null,
   name: '',
-  role: '일반학우',
-  status: '이용가능',
+  role: 'NORMAL',
+  status: 'ACTIVE',
   phoneNum: '',
   setUserInfo: (
     studentNum: string,
