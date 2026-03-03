@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom';
+import { patchPhoneNum } from '../../../api/endpoints/PhoneNumChange';
 import { useState, useEffect } from 'react';
 import { UserRoleType, UserStatusType } from '../../../types/Types';
 import { USER_STATUS_LABEL, USER_ROLE_LABEL } from '../../../types/Types';
@@ -19,6 +20,20 @@ export default function MyPage() {
     (typeof USER_ROLE_LABEL)[keyof typeof USER_ROLE_LABEL] | ''
   >('');
   const [status, setStatus] = useState<UserStatusType>('');
+  const handlePhoneNumChange = async () => {
+    setIsModalOpen(false);
+    // HERE: patchPhoneNum으로 api 연동
+    try {
+      console.log(`지금 토큰: ${sessionStorage.getItem('token')}`);
+      const res = await patchPhoneNum({ phoneNum: newPhoneNum });
+      console.log(`res: ${res}`);
+    } catch (error) {
+      alert(`새로운 전화번호 등록에 실패했습니다.`);
+    }
+
+    // TODO: alert로 결과보고 =>
+    // TODO: 연동값 잘 반영됐나 마이페이지에서 확인하기
+  };
   const [labelStatus, setLabelStatus] = useState<
     (typeof USER_STATUS_LABEL)[keyof typeof USER_STATUS_LABEL] | ''
   >('');
@@ -198,7 +213,7 @@ export default function MyPage() {
               {/* 징계내역보기 & 로그아웃 */}
               <div className="flex justify-between w-[400px]">
                 <button
-                  onClick={() => setIsModalOpen(false)}
+                  onClick={handlePhoneNumChange}
                   className="text text-left text-white font-bold border border-[#6610F2] bg-[#6610F2] rounded-lg text-[#6610F2] px-8 py-3 ml-24"
                 >
                   확인
