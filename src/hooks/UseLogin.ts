@@ -6,6 +6,8 @@ import { fetchUserInfoApi } from './UseGetUserInfoApi.ts';
 export const useLogin = () => {
   const setUserRoleType = useUserInfo((state) => state.setUserRoleType);
   const setUserId = useUserInfo((state) => state.setUserId);
+  const setTokens = useUserInfo((state) => state.setTokens);
+
   const navigate = useNavigate();
 
   const login = async (studentNum: string, password: string) => {
@@ -24,6 +26,7 @@ export const useLogin = () => {
 
       setUserId(studentNum);
       setUserRoleType(res.role);
+      setTokens(res.accessToken, res.refreshToken);
 
       sessionStorage.setItem('accessToken', res.accessToken);
       sessionStorage.setItem('refreshToken', res.refreshToken);

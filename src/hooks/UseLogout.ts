@@ -16,6 +16,7 @@ export const useLogout = () => {
       if (res.code === 'AUTH_200') {
         sessionStorage.removeItem('accessToken');
         sessionStorage.removeItem('refreshToken');
+        sessionStorage.removeItem('user');
         clearUserInfo();
 
         alert('로그아웃되었습니다.');
