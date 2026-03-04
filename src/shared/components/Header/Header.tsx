@@ -4,7 +4,7 @@ import logo from '../../assets/images/ssulogo.jpg';
 import '../../styles/App.css';
 import './Header.css';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function Header() {
   const location = useLocation();
@@ -13,6 +13,13 @@ export default function Header() {
   const isLoggedIn = !!sessionStorage.getItem('accessToken');
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  const [user, setUser] = useState<{
+    studentNum: string;
+    name: string;
+    phoneNum: string;
+  } | null>(null);
+
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     'nav-link px-3 link-dark fw-bold' + (isActive ? ' active' : '');
 
@@ -20,6 +27,13 @@ export default function Header() {
 
   const toggleNavbar = () => setIsOpen(!isOpen);
   const closeNavbar = () => setIsOpen(false);
+
+  useEffect(() => {
+    const storedUser = sessionStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   return (
     <div className="container">
@@ -121,9 +135,11 @@ export default function Header() {
                         >
                           <div className="custom-profile-box">
                             <div className="custom-profile-user">
-                              <div className="custom-profile-id">20240000</div>
+                              <div className="custom-profile-id">
+                                {user?.studentNum}
+                              </div>
                               <div className="custom-profile-name">
-                                Yooze 님
+                                {user?.name}님
                               </div>
                               <div className="custom-profile-penalty">
                                 현재 연체 횟수 : 0번

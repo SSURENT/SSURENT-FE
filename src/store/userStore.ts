@@ -7,6 +7,9 @@ interface UserInfo {
   role: UserRoleType;
   status: UserStatusType;
   phoneNum: string;
+  accessToken: string | null;
+  refreshToken: string | null;
+
   setUserInfo: (
     id: string,
     name: string,
@@ -14,6 +17,8 @@ interface UserInfo {
     status: UserStatusType,
     phoneNum: string,
   ) => void;
+  setTokens: (accessToken: string, refreshToken: string) => void;
+  clearTokens: () => void;
   setUserId: (id: string) => void;
   setPhoneNum: (phoneNum: string) => void;
   setUserRoleType: (role: UserRoleType) => void;
@@ -26,6 +31,9 @@ export const useUserInfo = create<UserInfo>((set) => ({
   role: 'NORMAL',
   status: 'ACTIVE',
   phoneNum: '',
+  accessToken: null,
+  refreshToken: null,
+
   setUserInfo: (
     studentNum: string,
     name: string,
@@ -40,6 +48,16 @@ export const useUserInfo = create<UserInfo>((set) => ({
       status: status,
       phoneNum: phoneNum,
     }),
+  setTokens: (accessToken, refreshToken) => {
+    sessionStorage.setItem('accessToken', accessToken);
+    sessionStorage.setItem('refreshToken', refreshToken);
+    set({ accessToken, refreshToken });
+  },
+  clearTokens: () => {
+    sessionStorage.removeItem('accessToken');
+    sessionStorage.removeItem('refreshToken');
+    set({ accessToken: null, refreshToken: null });
+  },
   setUserId: (studentNum: string) => set({ studentNum: studentNum }),
   setPhoneNum: (phoneNum: string) => set({ phoneNum: phoneNum }),
   setUserRoleType: (role: UserRoleType) => set({ role: role }),
@@ -50,6 +68,8 @@ export const useUserInfo = create<UserInfo>((set) => ({
       role: '',
       status: '',
       phoneNum: '',
+      accessToken: null,
+      refreshToken: null,
     }),
 }));
 
