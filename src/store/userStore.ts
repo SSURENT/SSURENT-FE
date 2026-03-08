@@ -1,24 +1,6 @@
 import { create } from 'zustand';
 import { UserRoleType, UserStatusType } from '../types/Types';
-
-interface UserInfo {
-  studentNum: string | null;
-  name: string;
-  role: UserRoleType;
-  status: UserStatusType;
-  phoneNum: string;
-  setUserInfo: (
-    id: string,
-    name: string,
-    role: UserRoleType,
-    status: UserStatusType,
-    phoneNum: string,
-  ) => void;
-  setUserId: (id: string) => void;
-  setPhoneNum: (phoneNum: string) => void;
-  setUserRoleType: (role: UserRoleType) => void;
-  clearUserInfo: () => void;
-}
+import { UserInfo } from '../types/UserInfo';
 
 export const useUserInfo = create<UserInfo>((set) => ({
   studentNum: null,
