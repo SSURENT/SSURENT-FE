@@ -17,12 +17,12 @@ export default function MyPage() {
     isSubmitPhoneNumLoading,
     isSubmitPhoneNumError,
   } = useSubmitPhoneNum();
-  const { handleChangePhoneNum, newPhoneNum, isPhoneNumFormatError } =
-    useChangePhoneNum();
+  // 페이지 이동함수
+  const navigate = useNavigate();
+  const goToPenalty = () => navigate('/penalty');
+  useChangePhoneNum();
   // 전역변수에 저장된 유저 정보값 저장 변수
   const { name, studentNum, role, status, phoneNum } = useUserInfo();
-
-  const navigate = useNavigate();
 
   if (isUserInfoLoading || isLogoutLoading || isSubmitPhoneNumLoading) {
     return (
