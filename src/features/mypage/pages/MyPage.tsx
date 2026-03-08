@@ -1,154 +1,45 @@
-import { patchPhoneNum } from '../../../api/endpoints/PhoneNumChange';
-import { useState, useEffect } from 'react';
-import { UserRoleType, UserStatusType } from '../../../types/Types';
-import { USER_STATUS_LABEL, USER_ROLE_LABEL } from '../../../types/Types';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserInfo } from '../../../store/userStore';
-import { getUserInfo } from '../../../api/endpoints/UserInfo';
-import { postLogout } from '../../../api/endpoints/Logout';
+import { useChangePhoneNum } from '../../../hooks/UseChangePhoneNum';
+import { useGetUserInfo } from '../../../hooks/UseGetUserInfo';
+import { useLogout } from '../../../hooks/UseLogout';
+import { useSubmitPhoneNum } from '../../../hooks/UseSubmitPhoneNum';
 
 export default function MyPage() {
-  const setUserInfo = useUserInfo((state) => state.setUserInfo);
+  // 전화번호 변경 모달 열림 상태 관리 변수
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [phoneError, setphoneError] = useState<boolean>(true);
-  const [newPhoneNum, setNewPhoneNum] = useState<string>('');
-
-  const [name, setName] = useState<string>('@@@');
-  const [studentNum, setStudentNum] = useState<string>('20240000');
-  const [role, setRole] = useState<UserRoleType>('');
-  const [labelRole, setLabelRole] = useState<
-    (typeof USER_ROLE_LABEL)[keyof typeof USER_ROLE_LABEL] | ''
-  >('');
-  const [status, setStatus] = useState<UserStatusType>('');
-
-  const clearUserInfo = useUserInfo((state) => state.clearUserInfo);
-
-  const handlePhoneNumChange = async () => {
-    setIsModalOpen(false);
-    // HERE: patchPhoneNum으로 api 연동
-    try {
-      console.log(`지금 토큰: ${sessionStorage.getItem('accessToken')}`);
-      const res = await patchPhoneNum({ phoneNum: newPhoneNum });
-      console.log(`res: ${res}`);
-    } catch (error) {
-      alert(`새로운 전화번호 등록에 실패했습니다.`);
-    }
-
-    // TODO: alert로 결과보고 =>
-    // TODO: 연동값 잘 반영됐나 마이페이지에서 확인하기
-  };
-  const [labelStatus, setLabelStatus] = useState<
-    (typeof USER_STATUS_LABEL)[keyof typeof USER_STATUS_LABEL] | ''
-  >('');
-  const [phoneNum, setPhoneNum] = useState<string>('010-xxxx-xxxx');
+  // Hook 관련 로딩, 에러 상태 관리 변수
+  const { isUserInfoLoading, isUserInfoError } = useGetUserInfo();
+  const { handleLogout, isLogoutLoading, isLogoutError } = useLogout();
+  const {
+    handleSubmitPhoneNum,
+    isSubmitPhoneNumLoading,
+    isSubmitPhoneNumError,
+  } = useSubmitPhoneNum();
+  const { handleChangePhoneNum, newPhoneNum, isPhoneNumFormatError } =
+    useChangePhoneNum();
+  // 전역변수에 저장된 유저 정보값 저장 변수
+  const { name, studentNum, role, status, phoneNum } = useUserInfo();
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        const res = await getUserInfo();
-        if (!res) {
-          alert('사용자 정보를 불러오는데에 실패했습니다.');
-          return;
-        }
-        if (!res.name) {
-          // if (!res.data.name) {
-          alert('이름을 불러오는데에 실패했습니다.');
-          return;
-        }
-        if (!res.studentNum) {
-          // if (!res.data.studentNum) {
-          alert('학번을 불러오는데에 실패했습니다.');
-          return;
-        }
-        if (!res.role) {
-          // if (!res.data.role) {
-          alert('사용자 역할을 불러오는데에 실패했습니다.');
-          return;
-        }
-        if (!res.status) {
-          // if (!res.data.status) {
-          alert('이용 상태를 불러오는데에 실패했습니다.');
-          return;
-        }
-        if (!res.phoneNum) {
-          // if (!res.data.phoneNum) {
-          alert('전화번호를 불러오는데에 실패했습니다.');
-          return;
-        }
+  if (isUserInfoLoading || isLogoutLoading || isSubmitPhoneNumLoading) {
+    return (
+      <div className="text-center py-5">
+        <div className="spinner-border text-primary mb-3" />
+        <div>요청 처리 중...</div>
+      </div>
+    );
+  }
 
-        setName(res.name);
-        setStudentNum(res.studentNum);
-        setRole(res.role);
-        const roleName = res.role;
-        // setName(res.data.name);
-        // setStudentNum(res.data.studentNum);
-        // setRole(res.data.role);
-        // const roleName = res.data.role;
-        if (roleName) {
-          console.log(`지금 roleName: ${roleName}`);
-          console.log(
-            `정해진 labelRoleName: ${USER_ROLE_LABEL[roleName as Exclude<UserRoleType, ''>]}`,
-          );
-          setLabelRole(USER_ROLE_LABEL[roleName as Exclude<UserRoleType, ''>]);
-        }
-        const statusName = res.status;
-        // const statusName = res.data.status;
-        if (statusName) {
-          setLabelStatus(
-            USER_STATUS_LABEL[statusName as Exclude<UserStatusType, ''>],
-          );
-        }
-        setStatus(status);
-        setPhoneNum(res.phoneNum);
-        // setPhoneNum(res.data.phoneNum);
-
-        setUserInfo(studentNum, name, role, status, phoneNum);
-      } catch (error) {
-        alert('사용자 정보를 불러오는데에 실패했습니다.');
-      }
-    };
-    fetchUserInfo();
-  }, []);
-
-  const handleLogout = async () => {
-    const isConfirmed = window.confirm('로그아웃하시겠습니까?');
-    if (isConfirmed) {
-      try {
-        const res = await postLogout();
-        if (res.code === 'AUTH_200') {
-          alert('회원정보를 성공적으로 불러왔습니다.');
-          sessionStorage.removeItem('accessToken');
-          clearUserInfo();
-          alert('로그아웃되었습니다.');
-          navigate('/');
-        } else if (res.code === 'AUTH_401') {
-          alert('로그아웃에 실패했습니다.');
-        }
-      } catch (error) {
-        alert('로그아웃 처리 중 오류가 발생했습니다.');
-      }
-    }
-  };
-
-  //   휴대전화 내용물
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setNewPhoneNum(value);
-
-    const phoneRegex = /^010-\d{4}-\d{4}$/;
-
-    if (value === '') {
-      setphoneError(true);
-    } else {
-      setphoneError(!phoneRegex.test(value));
-    }
-  };
-  // 징계내역 페이지로 이동하는 함수
-  const goToPenalty = () => {
-    navigate('/penalty');
-  };
+  if (isUserInfoError || isLogoutError || isSubmitPhoneNumError) {
+    return (
+      <div className="alert alert-danger text-center">
+        요청 처리 중 문제가 발생했습니다.
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -162,8 +53,8 @@ export default function MyPage() {
           <div className="border border-[#B3B3B3] border-3 p-8 w-[400px] shadow-sm w-[700px]">
             <h1 className="font-bold">이름: {name}</h1>
             <h1 className="font-bold">학번: {studentNum}</h1>
-            <h1>{labelRole}</h1>
-            <h1>{labelStatus}</h1>
+            <h1>{role}</h1>
+            <h1>{status}</h1>
             <div className="flex flex-row gap-3">
               <h1>전화번호: {phoneNum}</h1>
               <button
@@ -188,8 +79,9 @@ export default function MyPage() {
             <button
               className="text text-right font-bold border border-[#6610F2] rounded-lg text-[#6610F2] px-8 py-3"
               onClick={handleLogout}
+              disabled={isLogoutLoading}
             >
-              로그아웃
+              {isLogoutLoading ? '처리 중 ...' : '로그아웃'}
             </button>
           </div>
         </div>
@@ -212,12 +104,12 @@ export default function MyPage() {
                 <input
                   type="text"
                   value={newPhoneNum}
-                  onChange={handlePhoneChange}
+                  onChange={handleChangePhoneNum}
                   className="border border-gray-100 w-64 border rounded-sm px-2"
                   placeholder="전화번호 입력(010-xxxx-xxxx)"
                 />
               </div>
-              {phoneError && (
+              {isPhoneNumFormatError && (
                 <p className="text-[#AA0000] text-[11px] font-bold ml-26">
                   유효하지 않은 입력입니다
                 </p>
@@ -227,7 +119,8 @@ export default function MyPage() {
               {/* 징계내역보기 & 로그아웃 */}
               <div className="flex justify-between w-[400px]">
                 <button
-                  onClick={handlePhoneNumChange}
+                  onClick={() => handleSubmitPhoneNum(newPhoneNum)}
+                  disabled={isPhoneNumFormatError}
                   className="text text-left text-white font-bold border border-[#6610F2] bg-[#6610F2] rounded-lg text-[#6610F2] px-8 py-3 ml-24"
                 >
                   확인
