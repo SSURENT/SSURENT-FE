@@ -3,10 +3,18 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export const apiClient = async <T>(
   url: string,
   options: RequestInit = {},
-  config: { withAuth?: boolean } = {},
+  config: { withAuth?: boolean; tokenType?: 'access' | 'refresh' } = {},
 ): Promise<T> => {
-  const { withAuth = true } = config;
-  const token = withAuth ? sessionStorage.getItem('accessToken') : null;
+  const { withAuth = true, tokenType = 'access' } = config;
+
+  let token: string | null = null;
+  if (withAuth) {
+    if (tokenType === 'access') {
+      token = sessionStorage.getItem('accessToken');
+    } else if (tokenType === 'refresh') {
+      token = sessionStorage.getItem('refreshToken');
+    }
+  }
 
   const response = await fetch(`${BASE_URL}${url}`, {
     method: options.method ?? 'GET',

@@ -17,11 +17,12 @@ import AdminItems from './features/admin/pages/AdminItems';
 import AdminMembers from './features/admin/pages/AdminMembers';
 import AdminMemberDetail from './features/admin/pages/AdminMemberDetail';
 import AdminPenaltyEdit from './features/admin/pages/AdminPenaltyEdit';
+import { useAutoRefreshToken } from './hooks/UseAutoRefreshToken.ts';
 
 // import AdminRoute from './shared/components/AdminRoute';
 
-
 const App: React.FC = () => {
+  useAutoRefreshToken();
   return (
     <Routes>
       {/* 유저  */}
@@ -38,10 +39,7 @@ const App: React.FC = () => {
         }
       />
 
-
-      
       <Route path="/penalty" element={<Penalty />} />
-     
 
       <Route
         path="/rent"
@@ -103,7 +101,6 @@ const App: React.FC = () => {
           </>
         }
       />
-
 
       {/* 관리자  */}
       <Route path="/admin" element={<AdminLayout />}>

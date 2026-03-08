@@ -1,0 +1,80 @@
+.custom-profile-overlay {
+  position: fixed;
+  z-index: 9999;
+  width: 320px;
+}
+
+/* 전체 박스 */
+.custom-profile-box {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  animation: customFadeIn 0.15s ease-out;
+}
+
+.custom-profile-user {
+  padding: 24px 22px; /* 기존 20px → 여유 */
+  border-bottom: 1px solid #f1f3f5;
+}
+
+.custom-profile-id {
+  font-size: 20px;
+  font-weight: 600;
+  padding-bottom: 10px; /* 👈 밑줄과 간격 */
+  margin-bottom: 10px; /* 👈 아래 요소와 간격 */
+  border-bottom: 1px solid #e9ecef; /* 👈 핵심: 밑줄 */
+}
+
+.custom-profile-name {
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 10px; /* 기존 4px → 여유 */
+}
+
+.custom-profile-penalty {
+  font-size: 14px;
+  color: #6c757d;
+  margin-top: 8px;
+}
+
+/* 메뉴 영역 */
+.custom-profile-menu {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 메뉴 아이템 */
+.custom-profile-menu-item {
+  padding: 14px 20px;
+  font-size: 16px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #212529;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.custom-profile-menu-item:hover {
+  background: #f8f9fa;
+}
+
+/* 로그아웃 강조 */
+.custom-profile-menu-item.custom-logout {
+  color: #dc3545;
+}
+
+/* 등장 애니메이션 */
+@keyframes customFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
