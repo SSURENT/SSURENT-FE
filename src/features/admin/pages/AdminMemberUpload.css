@@ -1,0 +1,113 @@
+.admin-upload-container {
+  padding: 40px;
+}
+
+.upload-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 50px !important;
+}
+
+/* 상단 경고 문구 */
+.upload-warning {
+  color: #ff4d4f;
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+/* 업로드 영역 */
+.upload-controls {
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 20px;
+}
+
+.file-name {
+  display: block;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.upload-buttons {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.btn-upload {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  padding: 8px 15px;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.file-limit {
+  font-size: 12px;
+  color: #999;
+}
+
+/* 미리보기 테이블 */
+.preview-table-container {
+  width: 100%;
+  max-width: 700px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 30px;
+}
+
+.preview-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.preview-table th {
+  position: sticky;
+  top: 0;
+  background: white;
+  padding: 12px;
+  font-size: 14px;
+  color: #333;
+  border-bottom: 1px solid #eee;
+}
+
+.preview-table td {
+  padding: 10px;
+  text-align: center;
+  font-size: 13px;
+  color: #666;
+  border-bottom: 1px solid #f9f9f9;
+}
+
+/* 하단 버튼 */
+.upload-footer {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-submit-red {
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-submit-red:hover {
+  opacity: 0.9;
+}

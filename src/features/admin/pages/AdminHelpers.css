@@ -1,0 +1,87 @@
+.admin-helpers-container {
+  padding: 40px;
+}
+
+.page-header-section {
+  margin-bottom: 30px;
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.tab-menu {
+  display: flex;
+  gap: 20px;
+}
+
+.tab-menu span {
+  font-size: 14px;
+  color: #888;
+  cursor: pointer;
+  padding-bottom: 5px;
+}
+
+.tab-menu span.active {
+  color: #6c5ce7;
+  font-weight: bold;
+  border-bottom: 2px solid #6c5ce7;
+}
+
+.content-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 15px;
+  padding: 30px;
+}
+
+.helper-table-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+}
+
+.btn-delete-red {
+  background: white;
+  border: 1px solid #ff4d4f;
+  color: #ff4d4f;
+  padding: 4px 15px;
+  border-radius: 5px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-delete-red:hover {
+  background: #fff1f0;
+}
+
+/* 테이블 스타일 */
+.helper-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.helper-table th {
+  background-color: #fcfcfc;
+  border-bottom: 1px solid #eee;
+  padding: 12px;
+  text-align: left;
+  font-size: 14px;
+  color: #666;
+}
+
+.helper-table td {
+  padding: 15px 12px;
+  border-bottom: 1px solid #f5f5f5;
+  font-size: 14px;
+}
+
+/* 체크박스 커스텀 (브라우저 기본 사용 시 생략 가능) */
+.helper-table input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
