@@ -1,5 +1,5 @@
-body{
-    overflow-X: hidden;
+body {
+  overflow-x: hidden;
 }
 .App {
   text-align: center;
@@ -42,33 +42,33 @@ body{
 
 /* 모바일에서 메뉴 아이템 스타일링 */
 @media (max-width: 991.98px) {
-    .navbar-collapse {
-        text-align: center;
-        padding-top: 1rem;
-    }
+  .navbar-collapse {
+    text-align: center;
+    padding-top: 1rem;
+  }
 
-    .navbar-nav {
-        width: 100%;
-    }
+  .navbar-nav {
+    width: 100%;
+  }
 
-    .navbar-nav .nav-item {
-        padding: 0.5rem 0;
-        border-bottom: 1px solid #e9ecef;
-    }
+  .navbar-nav .nav-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e9ecef;
+  }
 
-    .navbar-nav .nav-item:last-child {
-        border-bottom: none;
-    }
+  .navbar-nav .nav-item:last-child {
+    border-bottom: none;
+  }
 
-    .navbar-nav .nav-link {
-        font-size: 1.1rem;
-        padding: 0.5rem 1rem !important;
-    }
+  .navbar-nav .nav-link {
+    font-size: 1.1rem;
+    padding: 0.5rem 1rem !important;
+  }
 }
 
 /* BottomBar 모바일에서 숨기기 */
 @media (max-width: 576px) {
-    .bottom-bar-hide-mobile {
-        display: none !important;
-    }
+  .bottom-bar-hide-mobile {
+    display: none !important;
+  }
 }
