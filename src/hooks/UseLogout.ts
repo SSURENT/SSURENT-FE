@@ -1,33 +1,34 @@
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { postLogout } from '../api/endpoints/Logout';
 import { useUserInfo } from '../store/userStore';
+import { useNavigate } from 'react-router-dom';
 
 export const useLogout = () => {
-  const navigate = useNavigate();
+  const [isLogoutLoading, setIsLogoutLoading] = useState(false);
+  const [isLogoutError, setIsLogoutError] = useState(false);
   const clearUserInfo = useUserInfo((state) => state.clearUserInfo);
-
-  const logout = async () => {
+  const navigate = useNavigate();
+  const handleLogout = async () => {
     const isConfirmed = window.confirm('로그아웃하시겠습니까?');
-    if (!isConfirmed) return;
-
-    try {
-      const res = await postLogout();
-
-      if (res.code === 'AUTH_200') {
+    if (isConfirmed) {
+      try {
+        const res = await postLogout();
+        alert('회원정보를 성공적으로 불러왔습니다.');
         sessionStorage.removeItem('accessToken');
-        sessionStorage.removeItem('refreshToken');
-        sessionStorage.removeItem('user');
         clearUserInfo();
-
         alert('로그아웃되었습니다.');
         navigate('/');
-      } else {
-        alert('로그아웃에 실패했습니다.');
+      } catch (error) {
+        setIsLogoutError(true);
+      } finally {
+        setIsLogoutLoading(false);
       }
-    } catch (error) {
-      alert('로그아웃 처리 중 오류가 발생했습니다.');
     }
   };
 
-  return { logout };
+  return {
+    handleLogout,
+    isLogoutLoading,
+    isLogoutError,
+  };
 };

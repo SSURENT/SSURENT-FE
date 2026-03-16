@@ -1,26 +1,33 @@
 import { useState } from 'react';
 import { useUserInfo } from '../../../store/userStore';
-import { patchChangePwRequest } from '../../../api/endpoints/PasswordChangeRequest';
+import { useRequestResetPW } from '../../../hooks/UseRequestResetPW';
 
-export default function ChangePW() {
+export default function RequestResetPW() {
   const { phoneNum: savedPhoneNum } = useUserInfo();
   const [inputPhoneNum, setInputPhoneNum] = useState(savedPhoneNum || '');
-  const setPhoneNum = useUserInfo((state) => state.setPhoneNum);
-  const handleSubmit = async () => {
-    if (!inputPhoneNum) {
-      alert('전화번호를 입력해주세요.');
-      return;
-    }
-    try {
-      // TODO: 비밀번호 변경 요청 api아직 완성X, 완성되면 나중에 완성하기
-      const res = await patchChangePwRequest();
-      if (res.code === 'AUTH_200') alert(res.message);
-      // 전역변수 phoneNum에 지역변수 inputPhoneNum의 값 저장하기
-    } catch (error) {
-      alert('비밀번호 변경에 실패했습니다.');
-    }
-    setPhoneNum(inputPhoneNum);
-  };
+  // TODO: 아직 비밀번호 변경 요청 api 확정X
+  const {
+    handleRequestRestPW,
+    isRequestResetPWLoading,
+    isRequestResetPWError,
+  } = useRequestResetPW();
+
+  if (isRequestResetPWLoading) {
+    return (
+      <div className="text-center py-5">
+        <div className="spinner-border text-primary mb-3" />
+        <div>요청 처리 중...</div>
+      </div>
+    );
+  }
+
+  if (isRequestResetPWError) {
+    return (
+      <div className="alert alert-danger text-center">
+        요청 처리 중 문제가 발생했습니다.
+      </div>
+    );
+  }
 
   return (
     // flex flex-col: 세로 정렬 (LinearLayout orientation="vertical")
@@ -54,10 +61,10 @@ export default function ChangePW() {
             onChange={(e) => {
               setInputPhoneNum(e.target.value);
             }}
-            placeholder="전화번호 (ex. 010XXXXXXXX)"
+            placeholder="전화번호 (ex. 010-XXXX-XXXX)"
             className="w-full p-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-[#6610F2] focus:border-[#6610F2] outline-none"
           />
-          {/* 경고 문구: 요청하신 진한 빨간색(#D70000) 적용 */}
+          {/* 경고 문구: 진한 빨간색(#D70000) 적용 */}
           <p className="mt-2 text-[11px] text-[#D70000] leading-tight">
             다른사람의 비밀번호를 무단으로 변경하려고 할 경우 처벌받을 수
             있습니다
@@ -68,7 +75,7 @@ export default function ChangePW() {
         <div className="flex justify-center">
           <button
             className="w-1/2 py-3 px-5 text-[#6610F2] border border-[#6610F2] rounded-lg hover:bg-[#6610f205] transition-colors font-semibold text-sm"
-            onClick={handleSubmit}
+            onClick={() => handleRequestRestPW(inputPhoneNum)}
           >
             변경 SMS 전송
           </button>
