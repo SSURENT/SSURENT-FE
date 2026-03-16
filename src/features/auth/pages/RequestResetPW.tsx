@@ -6,7 +6,28 @@ export default function RequestResetPW() {
   const { phoneNum: savedPhoneNum } = useUserInfo();
   const [inputPhoneNum, setInputPhoneNum] = useState(savedPhoneNum || '');
   // TODO: 아직 비밀번호 변경 요청 api 확정X
-  const { handleRequestRestPW } = useRequestResetPW();
+  const {
+    handleRequestRestPW,
+    isRequestResetPWLoading,
+    isRequestResetPWError,
+  } = useRequestResetPW();
+
+  if (isRequestResetPWLoading) {
+    return (
+      <div className="text-center py-5">
+        <div className="spinner-border text-primary mb-3" />
+        <div>요청 처리 중...</div>
+      </div>
+    );
+  }
+
+  if (isRequestResetPWError) {
+    return (
+      <div className="alert alert-danger text-center">
+        요청 처리 중 문제가 발생했습니다.
+      </div>
+    );
+  }
 
   return (
     // flex flex-col: 세로 정렬 (LinearLayout orientation="vertical")
