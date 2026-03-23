@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useUserInfo } from '../../../store/userStore';
-import { useRequestResetPW } from '../../../hooks/UseRequestResetPW';
+// import { useRequestResetPW } from '../../../hooks/UseRequestResetPW';
 
 export default function RequestResetPW() {
   const { phoneNum: savedPhoneNum } = useUserInfo();
   const [inputPhoneNum, setInputPhoneNum] = useState(savedPhoneNum || '');
   // TODO: 아직 비밀번호 변경 요청 api 확정X
-  const { handleRequestRestPW } = useRequestResetPW();
+  // const { handleRequestRestPW } = useRequestResetPW();
 
   return (
     // flex flex-col: 세로 정렬 (LinearLayout orientation="vertical")
@@ -54,7 +54,7 @@ export default function RequestResetPW() {
         <div className="flex justify-center">
           <button
             className="w-1/2 py-3 px-5 text-[#6610F2] border border-[#6610F2] rounded-lg hover:bg-[#6610f205] transition-colors font-semibold text-sm"
-            onClick={() => handleRequestRestPW(inputPhoneNum)}
+            // onClick={() => handleRequestRestPW(inputPhoneNum)}
           >
             변경 SMS 전송
           </button>

@@ -12,7 +12,7 @@ import {
 } from 'recharts';
 import './AdminStatistics.css';
 
-import { CategoryInfo, MonthRentalInfo } from '../../../types/Statistics';
+import { CategoryInfo } from '../../../types/Statistics';
 import { useGetStatics } from '../../../hooks/UseGetStatistics';
 
 export const AdminStatistics: React.FC = () => {
