@@ -9,7 +9,7 @@ import Rent from './features/rent/pages/Rent';
 import Return from './features/return/pages/Return';
 import MyPage from './features/mypage/pages/MyPage';
 import Login from './features/auth/pages/Login';
-import ChangePW from './features/auth/pages/ChangePW';
+// import ChangePW from './features/auth/pages/ChangePW';
 
 import Penalty from './features/mypage/pages/Penalty';
 
