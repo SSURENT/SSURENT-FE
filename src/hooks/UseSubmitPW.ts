@@ -13,7 +13,7 @@ export const useSubmitPW = () => {
 
     try {
       setIsSubmitPWLoading(true);
-      const res = await patchChangePW(inputPassword);
+      await patchChangePW(inputPassword);
     } catch (error) {
       setIsSubmitPWError(true);
       alert('비밀번호 변경에 실패했습니다.');
