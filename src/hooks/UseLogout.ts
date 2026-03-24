@@ -12,7 +12,7 @@ export const useLogout = () => {
     const isConfirmed = window.confirm('로그아웃하시겠습니까?');
     if (isConfirmed) {
       try {
-        const res = await postLogout();
+        await postLogout();
         alert('회원정보를 성공적으로 불러왔습니다.');
         sessionStorage.removeItem('accessToken');
         clearUserInfo();

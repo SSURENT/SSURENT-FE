@@ -8,7 +8,7 @@ export const useSubmitPhoneNum = () => {
 
   const handleSubmitPhoneNum = async (phoneNum: string) => {
     try {
-      const res = await patchPhoneNum({ phoneNum: phoneNum });
+      await patchPhoneNum({ phoneNum: phoneNum });
       const setPhoneNum = useUserInfo((state) => state.setPhoneNum);
       setPhoneNum(phoneNum);
     } catch (error) {

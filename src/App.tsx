@@ -9,7 +9,7 @@ import Rent from './features/rent/pages/Rent';
 import Return from './features/return/pages/Return';
 import MyPage from './features/mypage/pages/MyPage';
 import Login from './features/auth/pages/Login';
-import ChangePW from './features/auth/pages/ChangePW';
+// import ChangePW from './features/auth/pages/ChangePW';
 
 import Penalty from './features/mypage/pages/Penalty';
 
@@ -18,8 +18,6 @@ import AdminMembers from './features/admin/pages/AdminMembers';
 import AdminMemberDetail from './features/admin/pages/AdminMemberDetail';
 import AdminPenaltyEdit from './features/admin/pages/AdminPenaltyEdit';
 import { useAutoRefreshToken } from './hooks/UseAutoRefreshToken.ts';
-
-// import AdminRoute from './shared/components/AdminRoute';
 
 const App: React.FC = () => {
   useAutoRefreshToken();
@@ -89,18 +87,6 @@ const App: React.FC = () => {
           </>
         }
       />
-      <Route
-        path="/changePW"
-        element={
-          <>
-            <Header />
-            <main className="main-content mx-auto w-full max-w-[1200px] flex-1 px-4">
-              <ChangePW />
-            </main>
-            <BottomBar />
-          </>
-        }
-      />
 
       {/* 관리자  */}
       <Route path="/admin" element={<AdminLayout />}>
@@ -110,7 +96,8 @@ const App: React.FC = () => {
         <Route path="users/:id" element={<AdminMemberDetail />} />
         <Route path="users/:id/penalty" element={<AdminPenaltyEdit />} />
         <Route path="inspect" element={<div>물품 검수 페이지</div>} />
-        <Route path="stats" element={<div>통계 페이지</div>} />
+        {/* <Route path="stats" element={<div>통계 페이지</div>} /> */}
+        {/* <Route path="stats" element={<AdminStatistics />} /> */}
       </Route>
     </Routes>
   );
