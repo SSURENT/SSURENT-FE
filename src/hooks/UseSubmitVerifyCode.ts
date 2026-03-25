@@ -1,14 +1,19 @@
 import { postVerifyCode } from '../api/endpoints/VerifyCode';
+import { useUserInfo } from '../store/userStore';
 
 export const useSubmitVerifyCode = () => {
   const handleSubmitVerifyCode = async (inputVerifyCode: string) => {
     // NOTE: 나중에 inputVerifyCode 형식 검사 로직 짤 듯?
+    const phoneNum: string = useUserInfo((state) => state.phoneNum);
     if (!inputVerifyCode) {
       alert('인증코드를 입력해주세요.');
       return;
     }
     try {
-      const res = await postVerifyCode({ verifyCode: inputVerifyCode });
+      const res = await postVerifyCode({
+        phoneNum: phoneNum,
+        code: inputVerifyCode,
+      });
       if (res.code === 'AUTH_200') alert(res.message);
       // TODO: 스웨거에 에러코드 뜨면 에러처리하기
     } catch (error) {
