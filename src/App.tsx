@@ -9,7 +9,7 @@ import Rent from './features/rent/pages/Rent';
 import Return from './features/return/pages/Return';
 import MyPage from './features/mypage/pages/MyPage';
 import Login from './features/auth/pages/Login';
-// import ChangePW from './features/auth/pages/ChangePW';
+import ChangePW from './features/auth/pages/RequestResetPW.tsx';
 
 import Penalty from './features/mypage/pages/Penalty';
 
@@ -82,6 +82,18 @@ const App: React.FC = () => {
             <Header />
             <main className="main-content mx-auto w-full max-w-[1200px] flex-1 px-4">
               <Login />
+            </main>
+            <BottomBar />
+          </>
+        }
+      />
+      <Route
+        path="/changePW"
+        element={
+          <>
+            <Header />
+            <main className="main-content mx-auto w-full max-w-[1200px] flex-1 px-4">
+              <ChangePW />
             </main>
             <BottomBar />
           </>
