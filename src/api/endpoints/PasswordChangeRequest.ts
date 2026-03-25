@@ -1,12 +1,14 @@
-// #2 비밀번호 변경 요청 API
+// #2 인증번호 발송 API
 import { apiClient } from '../Client';
 import { BaseResponseDto } from '../dto/BaseResponse.dto';
 
-export const patchChangePwRequest = async (): Promise<
-  BaseResponseDto<void>
-> => {
-  const res = await apiClient<BaseResponseDto<void>>('/v1/api/auth/sms', {
+export const patchChangePwRequest = async (data: {
+  studentNum: string;
+  inputPhoneNum: string;
+}): Promise<BaseResponseDto<void>> => {
+  const res = await apiClient<BaseResponseDto<void>>('v1/api/auth/sms/send', {
     method: 'PATCH',
+    body: JSON.stringify(data),
   });
   return res;
 };

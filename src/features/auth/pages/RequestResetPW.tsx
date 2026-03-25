@@ -5,7 +5,6 @@ import { useRequestResetPW } from '../../../hooks/UseRequestResetPW';
 export default function RequestResetPW() {
   const { phoneNum: savedPhoneNum } = useUserInfo();
   const [inputPhoneNum, setInputPhoneNum] = useState(savedPhoneNum || '');
-  // TODO: 아직 비밀번호 변경 요청 api 확정X
   const {
     handleRequestResetPW,
     isRequestResetPWLoading,

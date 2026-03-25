@@ -3,6 +3,7 @@ import { patchChangePwRequest } from '../api/endpoints/PasswordChangeRequest';
 import { useUserInfo } from '../store/userStore';
 
 export const useRequestResetPW = () => {
+  const studentNum = useUserInfo((state) => state.studentNum);
   const [isRequestResetPWLoading, setIsRequestResetPWLoading] = useState(false);
   const [isRequestResetPWError, setIsRequestResetPWError] = useState(false);
   const setPhoneNum = useUserInfo((state) => state.setPhoneNum);
@@ -14,8 +15,7 @@ export const useRequestResetPW = () => {
     }
     try {
       setIsRequestResetPWLoading(true);
-      // TODO: 비밀번호 변경 요청 api아직 완성X, 완성되면 나중에 완성하기
-      const res = await patchChangePwRequest();
+      const res = await patchChangePwRequest({ studentNum, inputPhoneNum });
       if (res.code === 'AUTH_200') alert(res.message);
     } catch (error) {
       setIsRequestResetPWError(true);
