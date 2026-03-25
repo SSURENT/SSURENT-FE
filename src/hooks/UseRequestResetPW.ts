@@ -7,7 +7,7 @@ export const useRequestResetPW = () => {
   const [isRequestResetPWError, setIsRequestResetPWError] = useState(false);
   const setPhoneNum = useUserInfo((state) => state.setPhoneNum);
 
-  const handleRequestRestPW = async (inputPhoneNum: string) => {
+  const handleRequestResetPW = async (inputPhoneNum: string) => {
     if (!inputPhoneNum) {
       alert('전화번호를 입력해주세요.');
       return;
@@ -27,7 +27,7 @@ export const useRequestResetPW = () => {
   };
 
   return {
-    handleRequestRestPW,
+    handleRequestResetPW,
     isRequestResetPWLoading,
     isRequestResetPWError,
   };
