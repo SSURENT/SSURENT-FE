@@ -10,8 +10,6 @@ export const useGetUserInfo = () => {
   const fetchUserInfo = async () => {
     try {
       const res = await getUserInfo();
-      console.log(`--UseGetUserInfo--`);
-      console.log(`res: ${res.name}`);
       setUserInfo(res.studentNum, res.name, res.role, res.status, res.phoneNum);
     } catch (error) {
       setIsUserInfoError(true);
