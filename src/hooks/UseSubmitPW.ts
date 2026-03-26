@@ -11,6 +11,9 @@ export const useSubmitPW = () => {
       alert('새로운 비밀번호를 입력해주세요.');
       return;
     }
+    if (!refreshToken) {
+      alert('로그인 세션이 만료되었습니다. 다시 로그인해주세요.');
+    }
 
     try {
       setIsSubmitPWLoading(true);
