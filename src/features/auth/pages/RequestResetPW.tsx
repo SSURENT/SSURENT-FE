@@ -4,6 +4,7 @@ import { useRequestResetPW } from '../../../hooks/UseRequestResetPW';
 
 export default function RequestResetPW() {
   const { phoneNum: savedPhoneNum } = useUserInfo();
+  const [inputStudentNum, setInputStudentNum] = useState('');
   const [inputPhoneNum, setInputPhoneNum] = useState(savedPhoneNum || '');
   const {
     handleRequestResetPW,
@@ -44,7 +45,7 @@ export default function RequestResetPW() {
           <input
             type="text"
             placeholder="학번 (ex. 2024XXXX)"
-            // focus 시 보라색(#6610F2)으로 강조선이 생기도록 설정
+            onChange={(e) => setInputStudentNum(e.target.value)}
             className="w-full p-2.5 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-[#6610F2] focus:border-[#6610F2] outline-none"
           />
         </div>
@@ -74,7 +75,7 @@ export default function RequestResetPW() {
         <div className="flex justify-center">
           <button
             className="w-1/2 py-3 px-5 text-[#6610F2] border border-[#6610F2] rounded-lg hover:bg-[#6610f205] transition-colors font-semibold text-sm"
-            onClick={() => handleRequestResetPW(inputPhoneNum)}
+            onClick={() => handleRequestResetPW(inputStudentNum, inputPhoneNum)}
           >
             변경 SMS 전송
           </button>
