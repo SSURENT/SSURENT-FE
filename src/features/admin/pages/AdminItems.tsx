@@ -14,7 +14,6 @@ const AdminItems: React.FC = () => {
   return (
     <div className="admin-items-container py-4">
       <div className="mb-4">
-        <small className="text-muted">물품 상태관리</small>
         <h2 className="fw-bold">물품관리</h2>
       </div>
 
