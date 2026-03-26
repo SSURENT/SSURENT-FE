@@ -1,22 +1,28 @@
 import { useState } from 'react';
-import { patchChangePW } from '../../../api/endpoints/PasswordChange';
+import { useSubmitPW } from '../../../hooks/UseSubmitPW';
 
 export default function ResetPW() {
   const [inputPassword, setInputPassword] = useState('');
-  if (!inputPassword) {
-    alert('새로운 비밀번호를 입력해주세요.');
-    return;
+
+  const { handleSubmitPW, isSubmitPWLoading, isSubmitPWError } = useSubmitPW();
+
+  if (isSubmitPWLoading) {
+    return (
+      <div className="text-center py-5">
+        <div className="spinner-border text-primary mb-3" />
+        <div>요청 처리 중...</div>
+      </div>
+    );
   }
-  const handleSubmit = async () => {
-    // NOTE: 비밀번호 형식 지키는 로직 짤 듯?
-    try {
-      const res = await patchChangePW(inputPassword);
-      if (res.code === 'AUTH_200') alert(res.message);
-      // TODO: 스웨거에 에러코드 뜨면 에러처리하기
-    } catch (error) {
-      alert('비밀번호 변경에 실패했습니다.');
-    }
-  };
+
+  if (isSubmitPWError) {
+    return (
+      <div className="alert alert-danger text-center">
+        요청 처리 중 문제가 발생했습니다.
+      </div>
+    );
+  }
+
   return (
     // flex flex-col: 세로 정렬 (LinearLayout orientation="vertical")
     // items-center: 중앙 정렬 (layout_gravity="center")
@@ -45,7 +51,7 @@ export default function ResetPW() {
         <div className="flex justify-center">
           <button
             className="w-1/2 py-3 px-5 text-[#6610F2] border border-[#6610F2] rounded-lg hover:bg-[#6610f205] transition-colors font-semibold text-sm"
-            onClick={handleSubmit}
+            onClick={() => handleSubmitPW(inputPassword)}
           >
             변경하기
           </button>
