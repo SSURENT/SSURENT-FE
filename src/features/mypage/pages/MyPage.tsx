@@ -1,28 +1,46 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useUserInfo } from '../../../store/userStore';
+import { useChangePhoneNum } from '../../../hooks/UseChangePhoneNum';
 import { useGetUserInfo } from '../../../hooks/UseGetUserInfo';
-import { useLogout } from '../../../hooks/UseLogout.ts';
-import { useChangePhoneNum } from '../../../hooks/UseChangePhoneNum.ts';
+import { useLogout } from '../../../hooks/UseLogout';
+import { useSubmitPhoneNum } from '../../../hooks/UseSubmitPhoneNum';
 
 export default function MyPage() {
-  const navigate = useNavigate();
-
-  const { name, studentNum, labelRole, labelStatus, phoneNum, setPhoneNum } =
-    useGetUserInfo();
-
-  const { logout } = useLogout();
-
+  // 전화번호 변경 모달 열림 상태 관리 변수
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  // Hook 관련 로딩, 에러 상태 관리 변수
+  const { isUserInfoLoading, isUserInfoError } = useGetUserInfo();
+  const { handleLogout, isLogoutLoading, isLogoutError } = useLogout();
   const {
-    newPhoneNum,
-    phoneError,
-    isModalOpen,
-    setIsModalOpen,
-    handlePhoneChange,
-    changePhoneNum,
-  } = useChangePhoneNum(setPhoneNum);
+    handleSubmitPhoneNum,
+    isSubmitPhoneNumLoading,
+    isSubmitPhoneNumError,
+  } = useSubmitPhoneNum();
+  const { handleChangePhoneNum, newPhoneNum, isPhoneNumFormatError } =
+    useChangePhoneNum();
+  // 페이지 이동함수
+  const navigate = useNavigate();
+  const goToPenalty = () => navigate('/penalty');
+  // 전역변수에 저장된 유저 정보값 저장 변수
+  const { name, studentNum, role, status, phoneNum } = useUserInfo();
 
-  const goToPenalty = () => {
-    navigate('/penalty');
-  };
+  if (isUserInfoLoading || isLogoutLoading || isSubmitPhoneNumLoading) {
+    return (
+      <div className="text-center py-5">
+        <div className="spinner-border text-primary mb-3" />
+        <div>요청 처리 중...</div>
+      </div>
+    );
+  }
+
+  if (isUserInfoError || isLogoutError || isSubmitPhoneNumError) {
+    return (
+      <div className="alert alert-danger text-center">
+        요청 처리 중 문제가 발생했습니다.
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -35,9 +53,8 @@ export default function MyPage() {
           <div className="border border-[#B3B3B3] p-8 w-[700px] shadow-sm">
             <h1 className="font-bold">이름: {name}</h1>
             <h1 className="font-bold">학번: {studentNum}</h1>
-            <h1>{labelRole}</h1>
-            <h1>{labelStatus}</h1>
-
+            <h1>{role}</h1>
+            <h1>{status}</h1>
             <div className="flex flex-row gap-3">
               <h1>전화번호: {phoneNum}</h1>
               <button
@@ -58,10 +75,11 @@ export default function MyPage() {
             </button>
 
             <button
-              className="font-bold border border-[#6610F2] rounded-lg text-[#6610F2] px-8 py-3"
-              onClick={logout}
+              className="text text-right font-bold border border-[#6610F2] rounded-lg text-[#6610F2] px-8 py-3"
+              onClick={handleLogout}
+              disabled={isLogoutLoading}
             >
-              로그아웃
+              {isLogoutLoading ? '처리 중 ...' : '로그아웃'}
             </button>
           </div>
         </div>
@@ -86,13 +104,12 @@ export default function MyPage() {
                 <input
                   type="text"
                   value={newPhoneNum}
-                  onChange={(e) => handlePhoneChange(e.target.value)}
-                  className="border w-64 rounded-sm px-2 py-1"
+                  onChange={handleChangePhoneNum}
+                  className="border border-gray-100 w-64 border rounded-sm px-2"
                   placeholder="전화번호 입력(010-xxxx-xxxx)"
                 />
               </div>
-
-              {phoneError && (
+              {isPhoneNumFormatError && (
                 <p className="text-[#AA0000] text-[11px] font-bold ml-26">
                   유효하지 않은 입력입니다
                 </p>
@@ -102,8 +119,9 @@ export default function MyPage() {
 
               <div className="flex justify-between w-[400px]">
                 <button
-                  onClick={changePhoneNum}
-                  className="text-white font-bold border border-[#6610F2] bg-[#6610F2] rounded-lg px-8 py-3 ml-24"
+                  onClick={() => handleSubmitPhoneNum(newPhoneNum)}
+                  disabled={isPhoneNumFormatError}
+                  className="text text-left text-white font-bold border border-[#6610F2] bg-[#6610F2] rounded-lg text-[#6610F2] px-8 py-3 ml-24"
                 >
                   확인
                 </button>

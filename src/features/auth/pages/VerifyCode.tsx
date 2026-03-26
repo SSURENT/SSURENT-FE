@@ -1,26 +1,9 @@
 import { useState } from 'react';
-import { postVerifyCode } from '../../../api/endpoints/VerifyCode';
+import { useSubmitVerifyCode } from '../../../hooks/UseSubmitVerifyCode';
 
 export default function VerifyCode() {
   const [inputVerifyCode, setInputVerifyCode] = useState('');
-  const handleSubmit = async () => {
-    // NOTE: 나중에 inputVerifyCode 형식 검사 로직 짤 듯?
-    if (!inputVerifyCode) {
-      alert('인증코드를 입력해주세요.');
-      return;
-    }
-    try {
-      setInputVerifyCode(inputVerifyCode);
-      const res = await postVerifyCode({ verifyCode: inputVerifyCode });
-      if (res.code === 'AUTH_200') alert(res.message);
-      // TODO: 스웨거에 에러코드 뜨면 에러처리하기
-    } catch (error) {
-      alert('오류가 발생했습니다. 다시 시도해주세요.');
-    }
-  };
-  const handleRequestVerifyCode = async () => {
-    // TODO: 인증코드를 사용자한테 전송하는 api는 아직 sms회사?를 못 정해서 미정인 듯
-  };
+  const { handleSubmitVerifyCode } = useSubmitVerifyCode();
   return (
     // flex flex-col: 세로 정렬 (LinearLayout orientation="vertical")
     // items-center: 중앙 정렬 (layout_gravity="center")
@@ -49,7 +32,7 @@ export default function VerifyCode() {
           <button
             className="w-1/2 py-3 px-5 text-[#6610F2] border border-[#6610F2] rounded-lg hover:bg-[#6610f205] transition-colors font-semibold text-sm"
             value={inputVerifyCode}
-            onClick={handleSubmit}
+            onClick={() => handleSubmitVerifyCode(inputVerifyCode)}
           >
             인증하기
           </button>
@@ -60,7 +43,7 @@ export default function VerifyCode() {
       <div className="text-center mt-6 max-w-[400px]">
         <p
           className="text-[#102ACF] text-xs leading-relaxed hover:underline"
-          onClick={handleRequestVerifyCode}
+          onClick={() => handleSubmitVerifyCode(inputVerifyCode)}
         >
           인증번호가 오지 않을 경우 여기를 눌러 재전송을 요청해주세요
         </p>
