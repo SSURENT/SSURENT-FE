@@ -10,6 +10,6 @@ export const postSmsCode = async (
     method: 'POST',
     body: JSON.stringify(data),
   });
-  alert(`PasswordChangeRequest.ts_res: ${res.data}`);
+  alert(`SendSmsCode.ts_res: ${res}`);
   return res;
 };
