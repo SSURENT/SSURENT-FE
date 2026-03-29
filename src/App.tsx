@@ -10,6 +10,7 @@ import Return from './features/return/pages/Return';
 import MyPage from './features/mypage/pages/MyPage';
 import Login from './features/auth/pages/Login';
 import SendSmsCode from './features/auth/pages/SendSmsCode.tsx';
+import VerifyCode from './features/auth/pages/VerifySmsCode.tsx';
 import ResetPW from './features/auth/pages/ResetPW.tsx';
 
 import Penalty from './features/mypage/pages/Penalty';
@@ -95,6 +96,18 @@ const App: React.FC = () => {
             <Header />
             <main className="main-content mx-auto w-full max-w-[1200px] flex-1 px-4">
               <SendSmsCode />
+            </main>
+            <BottomBar />
+          </>
+        }
+      />
+      <Route
+        path="/verify-code"
+        element={
+          <>
+            <Header />
+            <main className="main-content mx-auto w-full max-w-[1200px] flex-1 px-4">
+              <VerifyCode />
             </main>
             <BottomBar />
           </>
