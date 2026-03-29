@@ -10,7 +10,7 @@ export const patchChangePW = async (data: {
     '/v1/api/auth/password/reset',
     {
       method: 'PATCH',
-      body: JSON.stringify({ data }),
+      body: JSON.stringify(data),
     },
   );
   return res;
