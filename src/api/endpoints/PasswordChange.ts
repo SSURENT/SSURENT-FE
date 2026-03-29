@@ -3,7 +3,7 @@ import { BaseResponseDto } from '../dto/BaseResponse.dto';
 import { apiClient } from '../Client';
 
 export const patchChangePW = async (data: {
-  refreshToken: string;
+  resetToken: string;
   newPassword: string;
 }): Promise<BaseResponseDto<void>> => {
   const res = await apiClient<BaseResponseDto<void>>(

@@ -6,18 +6,18 @@ export const useSubmitPW = () => {
   const [isSubmitPWError, setIsSubmitPWError] = useState(false);
 
   const handleSubmitPW = async (inputPassword: string) => {
-    const refreshToken: string = sessionStorage.getItem('refreshToken') ?? '';
+    const resetToken: string = sessionStorage.getItem('resetToken') ?? '';
     if (!inputPassword) {
       alert('새로운 비밀번호를 입력해주세요.');
       return;
     }
-    if (!refreshToken) {
+    if (!resetToken) {
       alert('로그인 세션이 만료되었습니다. 다시 로그인해주세요.');
     }
 
     try {
       setIsSubmitPWLoading(true);
-      await patchChangePW({ refreshToken, newPassword: inputPassword });
+      await patchChangePW({ resetToken, newPassword: inputPassword });
     } catch (error) {
       setIsSubmitPWError(true);
       alert('비밀번호 변경에 실패했습니다.');
