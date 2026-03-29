@@ -1,7 +1,9 @@
+import { useNavigate } from 'react-router-dom';
 import { postVerifyCode } from '../api/endpoints/VerifySmsCode';
 import { useUserInfo } from '../store/userStore';
 
 export const useSubmitVerifyCode = () => {
+  const navigate = useNavigate();
   const phoneNum: string = useUserInfo((state) => state.phoneNum);
   const handleSubmitVerifyCode = async (inputVerifyCode: string) => {
     if (!inputVerifyCode) {
@@ -17,7 +19,7 @@ export const useSubmitVerifyCode = () => {
         phoneNum: phoneNum,
         code: inputVerifyCode,
       });
-      alert(`UseSubmitVerifyCode.ts_resetToken: ${res.resetToken}`);
+      navigate('/reset-pw');
     } catch (error) {
       alert('오류가 발생했습니다. 다시 시도해주세요.');
     }
