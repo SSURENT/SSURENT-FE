@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { postSmsCode } from '../api/endpoints/SendSmsCode';
 import { useUserInfo } from '../store/userStore';
+import { useNavigate } from 'react-router-dom';
 
 export const useSendSmsCode = () => {
+  const navigate = useNavigate();
   const [isSendSmsCodeLoading, setIsSendSmsCodeLoading] = useState(false);
   const [isSendSmsCodePWError, setIsSendSmsCodePWError] = useState(false);
   const setPhoneNum = useUserInfo((state) => state.setPhoneNum);
@@ -21,7 +23,7 @@ export const useSendSmsCode = () => {
         studentNum: inputStudentNum,
         phoneNum: inputPhoneNum,
       });
-      alert(`UseRequestResetPW.ts_res: ${res}`);
+      navigate('/verify-code');
     } catch (error) {
       setIsSendSmsCodePWError(true);
       alert('비밀번호 변경 요청에 실패했습니다.');
