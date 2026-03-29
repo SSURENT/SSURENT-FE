@@ -56,7 +56,7 @@ export default function Login() {
 
       <div className="text-center mt-6">
         <NavLink
-          to="/changePW"
+          to="/send-sms-code"
           className="text-[#6610F2] hover:underline text-sm"
         >
           비밀번호 재설정

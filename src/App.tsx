@@ -90,7 +90,7 @@ const App: React.FC = () => {
         }
       />
       <Route
-        path="/SendSmsCode"
+        path="/send-sms-code"
         element={
           <>
             <Header />
