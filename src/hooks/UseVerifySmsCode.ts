@@ -14,11 +14,18 @@ export const useSubmitVerifyCode = () => {
       alert('인증코드 형식을 맞춰주세요.');
       return;
     }
+    if (!phoneNum) {
+      alert(`전화번호를 입력해주세요`);
+      return;
+    }
     try {
       const res = await postVerifyCode({
         phoneNum: phoneNum,
         code: inputVerifyCode,
       });
+      if (!res.resetToken) {
+        alert(`resetToken을 받지 못했습니다.`);
+      }
       sessionStorage.setItem('resetToken', res.resetToken);
       navigate('/reset-pw');
     } catch (error) {
