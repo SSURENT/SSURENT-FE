@@ -19,7 +19,7 @@ export const useSendSmsCode = () => {
     }
     try {
       setIsSendSmsCodeLoading(true);
-      const res = await postSmsCode({
+      await postSmsCode({
         studentNum: inputStudentNum,
         phoneNum: inputPhoneNum,
       });
