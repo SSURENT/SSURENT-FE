@@ -20,6 +20,7 @@ import AdminMembers from './features/admin/pages/AdminMembers';
 import AdminMemberDetail from './features/admin/pages/AdminMemberDetail';
 import AdminPenaltyEdit from './features/admin/pages/AdminPenaltyEdit';
 import { useAutoRefreshToken } from './hooks/UseAutoRefreshToken.ts';
+import AdminStatistics from '../src/features/admin/pages/AdminStatistics.tsx';
 
 const App: React.FC = () => {
   useAutoRefreshToken();
@@ -134,8 +135,7 @@ const App: React.FC = () => {
         <Route path="users/:id" element={<AdminMemberDetail />} />
         <Route path="users/:id/penalty" element={<AdminPenaltyEdit />} />
         <Route path="inspect" element={<div>물품 검수 페이지</div>} />
-        {/* <Route path="stats" element={<div>통계 페이지</div>} /> */}
-        {/* <Route path="stats" element={<AdminStatistics />} /> */}
+        <Route path="stats" element={<AdminStatistics />} />
       </Route>
     </Routes>
   );
