@@ -23,7 +23,6 @@ export const useSendSmsCode = () => {
         studentNum: inputStudentNum,
         phoneNum: inputPhoneNum,
       });
-      alert(`UseSendSmsCode.ts_res: ${res}`);
       navigate('/verify-code');
     } catch (error) {
       setIsSendSmsCodePWError(true);

@@ -16,6 +16,5 @@ export const postVerifyCode = async (
       body: JSON.stringify(data),
     },
   );
-  alert(`VerifySmsCode.ts_res.data.resetToken: ${res.data.resetToken}`);
   return res.data;
 };
