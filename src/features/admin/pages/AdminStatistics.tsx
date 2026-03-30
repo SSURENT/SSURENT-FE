@@ -13,7 +13,7 @@ import {
 import './AdminStatistics.css';
 
 import { CategoryInfo } from '../../../types/Statistics';
-import { useGetStatics } from '../../../hooks/UseGetStatistics';
+import { useGetStatics } from '../../../hooks/useGetStatistics';
 
 export const AdminStatistics: React.FC = () => {
   const [startDate, setStartDate] = useState('');
