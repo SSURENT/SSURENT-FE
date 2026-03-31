@@ -20,6 +20,7 @@ import AdminRentalEdit from './features/admin/pages/Adminrentaledit.tsx';
  * 폴더 구조상 features/admin/context 안에 있다면 아래 경로가 맞을 겁니다.
  */
 import { MemberProvider } from './features/admin/context/MemberContext';
+import AdminInspect from './features/admin/pages/AdminInspect.tsx';
 
 // ============================================================
 // 🔒 개발용 가짜 인증 훅 (편의를 위해 항상 true)
@@ -110,7 +111,7 @@ const App: React.FC = () => {
         <Route path="users/:id" element={<AdminMemberDetail />} />
         <Route path="users/:id/penalty" element={<AdminPenaltyEdit />} />
         <Route path="users/:id/rental-edit" element={<AdminRentalEdit />} />
-        <Route path="inspect" element={<div>물품 검수 페이지</div>} />
+        <Route path="inspect" element={<AdminInspect />} />
       </Route>
     </Routes>
   );
