@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import './AdminPenaltyEdit.css';
 
+type MemberStatus = 'active' | 'banned' | 'deleted';
+
+const STATUS_LABEL: Record<MemberStatus, string> = {
+  active: '이용가능',
+  banned: '정지회원',
+  deleted: '비활성화(회원삭제)',
+};
+
 interface Penalty {
   id: number;
   date: string;
@@ -9,26 +17,49 @@ interface Penalty {
 }
 
 const AdminPenaltyEdit: React.FC = () => {
-  const [memberStatus, setMemberStatus] = useState<
-    '이용가능' | '정지회원' | '비활성화'
-  >('이용가능');
-
-  // 샘플 데이터
+  const [memberStatus, setMemberStatus] = useState<MemberStatus>('active');
   const [penalties, setPenalties] = useState<Penalty[]>([
     { id: 1, date: '2027.01.02', item: '우산(102)', reason: '반납기한 초과' },
     { id: 2, date: '2027.05.03', item: '우산(104)', reason: '반납기한 초과' },
     { id: 3, date: '2028.01.01', item: '우산(105)', reason: '반납기한 초과' },
   ]);
-
   const [selectedPenalty, setSelectedPenalty] = useState<Penalty | null>(
     penalties[0],
   );
 
-  const handleDelete = (id: number) => {
+  // 추가 폼
+  const [addMode, setAddMode] = useState(false);
+  const [newDate, setNewDate] = useState('');
+  const [newItem, setNewItem] = useState('');
+  const [newReason, setNewReason] = useState('');
+
+  const handleDelete = () => {
+    if (!selectedPenalty) return;
     if (window.confirm('해당 징계 내역을 삭제하시겠습니까?')) {
-      setPenalties(penalties.filter((p) => p.id !== id));
-      setSelectedPenalty(null);
+      const updated = penalties.filter((p) => p.id !== selectedPenalty.id);
+      setPenalties(updated);
+      setSelectedPenalty(updated[0] ?? null);
     }
+  };
+
+  const handleStatusUpdate = () => {
+    alert(`회원 상태를 "${STATUS_LABEL[memberStatus]}"으로 수정했습니다.`);
+  };
+
+  const handleAddPenalty = () => {
+    if (!newDate || !newItem || !newReason) return;
+    const newEntry: Penalty = {
+      id: Date.now(),
+      date: newDate,
+      item: newItem,
+      reason: newReason,
+    };
+    setPenalties((prev) => [...prev, newEntry]);
+    setSelectedPenalty(newEntry);
+    setNewDate('');
+    setNewItem('');
+    setNewReason('');
+    setAddMode(false);
   };
 
   return (
@@ -37,33 +68,33 @@ const AdminPenaltyEdit: React.FC = () => {
 
       <div className="penalty-edit-card">
         <div className="edit-layout">
-          {/* 왼쪽: 회원 상태 및 징계 목록 */}
+          {/* 왼쪽 */}
           <div className="edit-left">
+            {/* 회원 상태 변경 */}
             <div className="status-change-section">
               <span className="section-label">회원 상태</span>
               <div className="status-button-group">
                 <div className="status-selector">
-                  <div
-                    className={`status-opt ${memberStatus === '이용가능' ? 'active' : ''}`}
-                    onClick={() => setMemberStatus('이용가능')}
-                  >
-                    이용가능
-                  </div>
-                  <div
-                    className={`status-opt ${memberStatus === '정지회원' ? 'active' : ''}`}
-                    onClick={() => setMemberStatus('정지회원')}
-                  >
-                    정지회원
-                  </div>
-                  <div
-                    className={`status-opt ban ${memberStatus === '비활성화' ? 'active' : ''}`}
-                    onClick={() => setMemberStatus('비활성화')}
-                  >
-                    비활성화(회원삭제)
-                  </div>
+                  <div className="status-selector-header">SMALL HEADING</div>
+                  {(['active', 'banned', 'deleted'] as MemberStatus[]).map(
+                    (s) => (
+                      <div
+                        key={s}
+                        className={`status-opt${s === 'deleted' ? ' ban' : ''}${memberStatus === s ? ' active' : ''}`}
+                        onClick={() => setMemberStatus(s)}
+                      >
+                        {STATUS_LABEL[s]}
+                      </div>
+                    ),
+                  )}
                 </div>
                 <div className="status-info-box">
-                  <button className="btn-text-purple">수정하기</button>
+                  <button
+                    className="btn-text-purple"
+                    onClick={handleStatusUpdate}
+                  >
+                    수정하기
+                  </button>
                   <p className="status-help-text">
                     징계내역이 3번 이상인 경우
                     <br />
@@ -73,10 +104,55 @@ const AdminPenaltyEdit: React.FC = () => {
               </div>
             </div>
 
+            {/* 징계 목록 */}
             <div className="penalty-list-section">
               <div className="list-header">
-                <button className="btn-outline-purple">내역추가</button>
+                <button
+                  className="btn-outline-purple"
+                  onClick={() => setAddMode((v) => !v)}
+                >
+                  내역추가
+                </button>
               </div>
+
+              {/* 추가 폼 */}
+              {addMode && (
+                <div className="add-form">
+                  <input
+                    type="text"
+                    placeholder="날짜 (예: 2027.01.02)"
+                    value={newDate}
+                    onChange={(e) => setNewDate(e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="물품명 (예: 우산(102))"
+                    value={newItem}
+                    onChange={(e) => setNewItem(e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="사유"
+                    value={newReason}
+                    onChange={(e) => setNewReason(e.target.value)}
+                  />
+                  <div className="add-form-btns">
+                    <button
+                      className="btn-outline-purple"
+                      onClick={handleAddPenalty}
+                    >
+                      저장
+                    </button>
+                    <button
+                      className="btn-cancel-sm"
+                      onClick={() => setAddMode(false)}
+                    >
+                      취소
+                    </button>
+                  </div>
+                </div>
+              )}
+
               <table className="edit-table">
                 <thead>
                   <tr>
@@ -92,6 +168,7 @@ const AdminPenaltyEdit: React.FC = () => {
                       key={p.id}
                       className={selectedPenalty?.id === p.id ? 'selected' : ''}
                       onClick={() => setSelectedPenalty(p)}
+                      style={{ cursor: 'pointer' }}
                     >
                       <td>{p.id}</td>
                       <td>{p.date}</td>
@@ -104,7 +181,7 @@ const AdminPenaltyEdit: React.FC = () => {
             </div>
           </div>
 
-          {/* 오른쪽: 상세 정보 및 삭제 버튼 */}
+          {/* 오른쪽: 선택된 내역 상세 */}
           <div className="edit-right">
             {selectedPenalty ? (
               <div className="penalty-detail-view">
@@ -123,7 +200,7 @@ const AdminPenaltyEdit: React.FC = () => {
                 <div className="action-row">
                   <button
                     className="btn-outline-purple small"
-                    onClick={() => handleDelete(selectedPenalty.id)}
+                    onClick={handleDelete}
                   >
                     삭제
                   </button>

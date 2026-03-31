@@ -139,3 +139,51 @@
   border-bottom: 1px solid #f9f9f9;
   font-size: 14px;
 }
+/* AdminMemberDetail.css 에 추가 */
+
+/* 상태 변경 버튼 그룹 */
+.status-change-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0 8px 0;
+}
+
+.status-label-text {
+  font-size: 13px;
+  color: #555;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.status-btn-group {
+  display: flex;
+  gap: 6px;
+}
+
+.status-btn {
+  padding: 5px 12px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-size: 12px;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.status-btn.active {
+  background: #6c5ce7;
+  border-color: #6c5ce7;
+  color: #fff;
+}
+
+.status-btn.danger.active {
+  background: #e53e3e;
+  border-color: #e53e3e;
+  color: #fff;
+}
+
+.status-btn:hover:not(.active) {
+  background: #f5f5f5;
+}
