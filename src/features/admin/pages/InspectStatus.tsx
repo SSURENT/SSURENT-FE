@@ -20,9 +20,9 @@ interface InspectStatusProps {
   searchRange?: { start: string; end: string };
 }
 
-const InspectStatus: React.FC<InspectStatusProps> = ({ searchRange }) => {
+const InspectStatus: React.FC<InspectStatusProps> = () => {
   // 실제 API 연동 시 이 상태를 업데이트하면 표와 엑셀 다운로드에 자동 반영됩니다.
-  const [fetchedItems, setFetchedItems] = useState<ItemRow[]>([
+  const [fetchedItems] = useState<ItemRow[]>([
     {
       no: 1,
       name: '우산',

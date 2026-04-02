@@ -21,7 +21,7 @@ interface ActivityLog {
 const useActivityLogs = () => {
   const [data, setData] = React.useState<ActivityLog[]>([]);
   const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState(false);
+  const [error] = React.useState(false);
 
   const refetch = () => {
     setLoading(true);
