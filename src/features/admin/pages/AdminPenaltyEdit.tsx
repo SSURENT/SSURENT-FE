@@ -17,7 +17,7 @@ interface Penalty {
 
 const AdminPenaltyEdit: React.FC = () => {
   const [memberStatus, setMemberStatus] = useState<MemberStatus>('active');
-  const [penalties, setPenalties] = useState<Penalty[]>([
+  const [penalties] = useState<Penalty[]>([
     { id: 1, date: '2027.01.02', item: '우산(102)', reason: '반납기한 초과' },
     { id: 2, date: '2027.05.03', item: '우산(104)', reason: '반납기한 초과' },
     { id: 3, date: '2028.01.01', item: '우산(105)', reason: '반납기한 초과' },
