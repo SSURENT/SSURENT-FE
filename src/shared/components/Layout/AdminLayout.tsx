@@ -9,7 +9,7 @@ const AdminLayout: React.FC = () => {
       {/* 관리자 전용 헤더 */}
       <AdminHeader />
 
-      <main className="main-content mx-auto w-full max-w-[1200px] flex-1 px-4">
+      <main className="main-content mx-auto w-full max-w-[1400px] flex-1 px-4">
         <Outlet />
       </main>
 

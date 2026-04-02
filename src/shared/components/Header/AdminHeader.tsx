@@ -19,7 +19,7 @@ const AdminHeader: React.FC = () => {
 
   return (
     <div className="container">
-      <nav className="navbar py-3 mb-4 border-bottom">
+      <nav className="navbar py-3 mb-0 border-bottom">
         <div className="container-fluid d-flex align-items-center justify-content-between">
           {/* 로고 영역 */}
           <NavLink

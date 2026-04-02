@@ -75,11 +75,15 @@ export const AdminStatistics: React.FC = () => {
   }, [monthRentalInfoData]);
 
   return (
-    <div className="min-h-screen bg-[#f8f9fa] py-12 px-10 text-left">
-      <div className="w-[80%] max-w-[1600px] mx-auto">
-        <h2 className="text-2xl font-bold mb-6 text-[#1a1a1a]">통계 조회</h2>
+    <div className="pt-2 pb-10 w-full mx-auto text-left">
+      <div className="w-[90%] mx-auto text-left">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-800 tracking-tight">
+            통계 조회
+          </h2>
+        </div>
 
-        <div className="min-h-[850px] bg-white border border-[#e0e0e0] rounded-[20px] p-12 shadow-sm flex flex-col">
+        <div className="bg-white border border-gray-200 rounded-[15px] p-[50px] min-h-[850px] shadow-sm flex flex-col w-full h-full">
           {/* 🔍 검색 필터 영역 */}
           <div className="flex flex-col gap-5 mb-12 bg-slate-50 p-8 rounded-2xl border border-slate-100">
             <div className="flex items-center gap-6">

@@ -33,13 +33,13 @@ const MemberList: React.FC = () => {
             <div
               key={member.id}
               onClick={() => navigate(`/admin/users/${member.id}`)}
-              className="h-44 border border-[#f0f0f0] rounded-[20px] p-6 flex flex-col justify-between hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer bg-white group shadow-sm"
+              className="h-32 border border-[#f0f0f0] rounded-[20px] p-6 flex flex-col justify-between hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer bg-white group shadow-sm"
             >
-              <div className="flex flex-col">
+              <div className="flex items-center gap-2">
                 <span className="text-lg font-bold text-gray-800 group-hover:text-[#6c5ce7] transition-colors truncate">
                   {member.name}
                 </span>
-                <span className="text-xs text-gray-400 font-medium mt-1">
+                <span className="text-xs text-gray-400 font-medium mt-0.5">
                   {member.studentId}
                 </span>
               </div>

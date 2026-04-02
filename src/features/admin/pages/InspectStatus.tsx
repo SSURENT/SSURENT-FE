@@ -87,14 +87,29 @@ const InspectStatus: React.FC = () => {
     ];
 
     statusItems.forEach((item) => {
-      const details = item.units
-        .map(
-          (u) =>
-            `${u.id}(${u.status === 'returned' ? '완료' : u.status === 'rented' ? '대여중' : u.status === 'overdue' ? '연체' : '불가'})`,
-        )
-        .join(', ');
+      const richText = item.units.map((u, i) => {
+        const isLast = i === item.units.length - 1;
+        let color = 'FF000000';
+        let statusStr = '불가';
+        if (u.status === 'returned') {
+          color = 'FF22C55E';
+          statusStr = '완료';
+        } else if (u.status === 'rented') {
+          color = 'FF94A3B8';
+          statusStr = '대여중';
+        } else if (u.status === 'overdue') {
+          color = 'FFDC2626';
+          statusStr = '연체';
+        }
 
-      worksheet.addRow({ no: item.no, name: item.name, details });
+        return {
+          text: `${u.id}(${statusStr})${isLast ? '' : ', '}`,
+          font: { color: { argb: color }, bold: true },
+        };
+      });
+
+      const row = worksheet.addRow({ no: item.no, name: item.name });
+      row.getCell('details').value = { richText };
     });
 
     const buffer = await workbook.xlsx.writeBuffer();

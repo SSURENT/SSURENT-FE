@@ -28,7 +28,7 @@ import { MemberProvider } from './features/admin/context/MemberContext';
 import AdminInspect from './features/admin/pages/AdminInspect.tsx';
 
 // ============================================================
-// 🔒 개발용 가짜 인증 훅 (편의를 위해 항상 true)
+// 개발용 가짜 인증 훅 (편의를 위해 항상 true)
 // ============================================================
 const useAuth = () => ({
   isAuthenticated: true,
@@ -36,7 +36,7 @@ const useAuth = () => ({
 });
 
 // ============================================================
-// 🛡️ 권한 보호 컴포넌트
+// 권한 보호 컴포넌트
 // ============================================================
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -61,7 +61,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 };
 
 // ============================================================
-// 📱 유저 레이아웃 (공통 헤더/푸터)
+// 유저 레이아웃 (공통 헤더/푸터)
 // ============================================================
 const UserLayout: React.FC = () => (
   <div className="flex min-h-screen flex-col">
@@ -88,7 +88,7 @@ const UserLayout: React.FC = () => (
 );
 
 // ============================================================
-// 🏗️ 메인 App 컴포넌트
+// 메인 App 컴포넌트
 // ============================================================
 const App: React.FC = () => {
   useAutoRefreshToken();
@@ -109,7 +109,16 @@ const App: React.FC = () => {
             </MemberProvider>
           </ProtectedRoute>
         }
-      />
+      >
+        <Route index element={<Navigate to="items" replace />} />
+        <Route path="items" element={<AdminItems />} />
+        <Route path="users" element={<AdminMembers />} />
+        <Route path="users/:id" element={<AdminMemberDetail />} />
+        <Route path="users/:id/penalty" element={<AdminPenaltyEdit />} />
+        <Route path="stats" element={<AdminStatistics />} />
+        <Route path="users/:id/rental-edit" element={<AdminRentalEdit />} />
+        <Route path="inspect" element={<AdminInspect />} />
+      </Route>
       <Route
         path="/return"
         element={
@@ -182,18 +191,6 @@ const App: React.FC = () => {
           </>
         }
       />
-
-      {/* 관리자  */}
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route index element={<Navigate to="items" replace />} />
-        <Route path="items" element={<AdminItems />} />
-        <Route path="users" element={<AdminMembers />} />
-        <Route path="users/:id" element={<AdminMemberDetail />} />
-        <Route path="users/:id/penalty" element={<AdminPenaltyEdit />} />
-        <Route path="stats" element={<AdminStatistics />} />
-        <Route path="users/:id/rental-edit" element={<AdminRentalEdit />} />
-        <Route path="inspect" element={<AdminInspect />} />
-      </Route>
     </Routes>
   );
 };
