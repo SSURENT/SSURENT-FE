@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import InspectHistory from './InspectHistory';
 import InspectStatus from './InspectStatus';
-import './AdminMembers.css'; // 기존 관리자 공통 스타일 활용
 
 const AdminInspect: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'history' | 'status'>('history');

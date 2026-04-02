@@ -13,8 +13,8 @@ import AdminItems from './features/admin/pages/AdminItems';
 import AdminMembers from './features/admin/pages/AdminMembers';
 import AdminMemberDetail from './features/admin/pages/AdminMemberDetail';
 import AdminPenaltyEdit from './features/admin/pages/AdminPenaltyEdit';
+import AdminRentalEdit from './features/admin/pages/Adminrentaledit';
 import { useAutoRefreshToken } from './hooks/UseAutoRefreshToken.ts';
-import AdminRentalEdit from './features/admin/pages/Adminrentaledit.tsx';
 
 /** * 💡 핵심 수정 사항: MemberProvider 임포트
  * 폴더 구조상 features/admin/context 안에 있다면 아래 경로가 맞을 겁니다.

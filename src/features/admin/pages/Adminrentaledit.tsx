@@ -1,244 +1,87 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import './AdminMemberDetail.css';
-
-interface Rental {
-  id: number;
-  item: string;
-  rentDate: string;
-  dueDate: string;
-}
 
 const AdminRentalEdit: React.FC = () => {
   const navigate = useNavigate();
-
-  const [rentals, setRentals] = useState<Rental[]>([
-    { id: 1, item: '우산(101)', rentDate: '2026.01.25', dueDate: '2026.01.28' },
-    {
-      id: 2,
-      item: '무선마우스(1202)',
-      rentDate: '2026.01.25',
-      dueDate: '2026.01.28',
-    },
-    {
-      id: 3,
-      item: '보조배터리(502)',
-      rentDate: '2026.01.25',
-      dueDate: '2026.01.28',
-    },
-  ]);
-
-  const [selectedRental, setSelectedRental] = useState<Rental | null>(
-    rentals[0],
-  );
-  const [editItem, setEditItem] = useState('');
-  const [editRentDate, setEditRentDate] = useState('');
-  const [editDueDate, setEditDueDate] = useState('');
-
-  // 추가 폼
-  const [addMode, setAddMode] = useState(false);
-  const [newItem, setNewItem] = useState('');
-  const [newRentDate, setNewRentDate] = useState('');
-  const [newDueDate, setNewDueDate] = useState('');
-
-  const handleSelect = (r: Rental) => {
-    setSelectedRental(r);
-    setEditItem(r.item);
-    setEditRentDate(r.rentDate);
-    setEditDueDate(r.dueDate);
-  };
-
-  const handleSaveEdit = () => {
-    if (!selectedRental) return;
-    setRentals((prev) =>
-      prev.map((r) =>
-        r.id === selectedRental.id
-          ? {
-              ...r,
-              item: editItem,
-              rentDate: editRentDate,
-              dueDate: editDueDate,
-            }
-          : r,
-      ),
-    );
-    setSelectedRental({
-      ...selectedRental,
-      item: editItem,
-      rentDate: editRentDate,
-      dueDate: editDueDate,
-    });
-    alert('수정되었습니다.');
-  };
-
-  const handleDelete = () => {
-    if (!selectedRental) return;
-    if (window.confirm('해당 대여 내역을 삭제하시겠습니까?')) {
-      const updated = rentals.filter((r) => r.id !== selectedRental.id);
-      setRentals(updated);
-      setSelectedRental(updated[0] ?? null);
-    }
-  };
-
-  const handleAdd = () => {
-    if (!newItem || !newRentDate || !newDueDate) return;
-    const newEntry: Rental = {
-      id: Date.now(),
-      item: newItem,
-      rentDate: newRentDate,
-      dueDate: newDueDate,
-    };
-    setRentals((prev) => [...prev, newEntry]);
-    handleSelect(newEntry);
-    setNewItem('');
-    setNewRentDate('');
-    setNewDueDate('');
-    setAddMode(false);
-  };
-
   return (
-    <div className="admin-detail-container">
-      <div className="detail-header-row">
-        <h1 className="detail-title">대여내역 수정</h1>
-        <button className="btn-view-all" onClick={() => navigate(-1)}>
-          돌아가기
+    <div className="p-10 max-w-[1200px] mx-auto text-left">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-[#1a1a1a]">대여내역 수정</h1>
+        <button
+          onClick={() => navigate(-1)}
+          className="text-gray-400 hover:text-gray-600 text-sm font-bold transition"
+        >
+          ← 뒤로가기
         </button>
       </div>
 
-      <div className="detail-main-card">
-        <div className="edit-layout" style={{ display: 'flex', gap: '32px' }}>
-          {/* 왼쪽: 목록 */}
-          <div className="edit-left" style={{ flex: 1 }}>
-            <div
-              className="list-header"
-              style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                marginBottom: '10px',
-              }}
-            >
-              <button
-                className="btn-outline-purple"
-                onClick={() => setAddMode((v) => !v)}
-              >
-                내역추가
+      <div className="bg-white border border-gray-200 rounded-2xl p-10 min-h-[600px] shadow-sm">
+        <div className="flex gap-12">
+          {/* 왼쪽: 리스트 */}
+          <div className="flex-[2.5]">
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-xs text-gray-400 italic font-medium">
+                대여 기록 리스트를 선택하여 수정하세요.
+              </span>
+              <button className="text-[#6c5ce7] border border-[#6c5ce7] px-3 py-1 rounded-md text-xs font-bold hover:bg-indigo-50">
+                내역 추가
               </button>
             </div>
-
-            {/* 추가 폼 */}
-            {addMode && (
-              <div className="add-form">
-                <input
-                  type="text"
-                  placeholder="물품명 (예: 우산(101))"
-                  value={newItem}
-                  onChange={(e) => setNewItem(e.target.value)}
-                />
-                <input
-                  type="text"
-                  placeholder="대여일 (예: 2026.01.25)"
-                  value={newRentDate}
-                  onChange={(e) => setNewRentDate(e.target.value)}
-                />
-                <input
-                  type="text"
-                  placeholder="반납기한 (예: 2026.01.28)"
-                  value={newDueDate}
-                  onChange={(e) => setNewDueDate(e.target.value)}
-                />
-                <div className="add-form-btns">
-                  <button className="btn-outline-purple" onClick={handleAdd}>
-                    저장
-                  </button>
-                  <button
-                    className="btn-cancel-sm"
-                    onClick={() => setAddMode(false)}
-                  >
-                    취소
-                  </button>
-                </div>
-              </div>
-            )}
-
-            <table className="edit-table">
-              <thead>
-                <tr>
-                  <th>물품명</th>
-                  <th>대여일</th>
-                  <th>반납기한</th>
+            <table className="w-full border-collapse">
+              <thead className="bg-slate-50 border-y border-gray-100">
+                <tr className="text-gray-500 text-[11px] uppercase font-bold">
+                  <th className="p-4 text-left">물품명</th>
+                  <th className="p-4 text-left">대여일</th>
+                  <th className="p-4 text-left">반납기한</th>
                 </tr>
               </thead>
-              <tbody>
-                {rentals.map((r) => (
-                  <tr
-                    key={r.id}
-                    className={selectedRental?.id === r.id ? 'selected' : ''}
-                    onClick={() => handleSelect(r)}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <td>{r.item}</td>
-                    <td>{r.rentDate}</td>
-                    <td>{r.dueDate}</td>
-                  </tr>
-                ))}
+              <tbody className="divide-y divide-gray-50">
+                <tr className="hover:bg-indigo-50/30 cursor-pointer transition-colors bg-indigo-50/10">
+                  <td className="p-4 text-sm font-bold text-gray-700">
+                    우산(101)
+                  </td>
+                  <td className="p-4 text-sm text-gray-500 font-medium">
+                    2026.01.25
+                  </td>
+                  <td className="p-4 text-sm text-red-500 font-bold">
+                    2026.01.28
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
 
           {/* 오른쪽: 수정 폼 */}
-          <div className="edit-right" style={{ width: '240px', flexShrink: 0 }}>
-            {selectedRental ? (
-              <div className="penalty-detail-view">
-                <div className="input-group">
-                  <label>물품명</label>
+          <div className="flex-1 border-l border-gray-100 pl-10">
+            <h4 className="text-xs font-bold text-gray-400 mb-6 uppercase tracking-wider">
+              기록 수정
+            </h4>
+            <div className="space-y-6">
+              {[
+                { label: '물품명', value: '우산(101)' },
+                { label: '대여일', value: '2026.01.25' },
+                { label: '반납기한', value: '2026.01.28' },
+              ].map((field, idx) => (
+                <div key={idx} className="flex flex-col gap-2">
+                  <label className="text-xs font-bold text-gray-500 ml-1">
+                    {field.label}
+                  </label>
                   <input
                     type="text"
-                    value={editItem}
-                    onChange={(e) => setEditItem(e.target.value)}
+                    defaultValue={field.value}
+                    className="w-full p-3 bg-slate-50 border border-gray-100 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-100"
                   />
                 </div>
-                <div className="input-group">
-                  <label>대여일</label>
-                  <input
-                    type="text"
-                    value={editRentDate}
-                    onChange={(e) => setEditRentDate(e.target.value)}
-                  />
-                </div>
-                <div className="input-group">
-                  <label>반납기한</label>
-                  <input
-                    type="text"
-                    value={editDueDate}
-                    onChange={(e) => setEditDueDate(e.target.value)}
-                  />
-                </div>
-                <div
-                  className="action-row"
-                  style={{
-                    display: 'flex',
-                    gap: '8px',
-                    justifyContent: 'flex-end',
-                  }}
-                >
-                  <button
-                    className="btn-outline-purple small"
-                    onClick={handleSaveEdit}
-                  >
-                    수정
-                  </button>
-                  <button
-                    className="btn-outline-purple small"
-                    style={{ borderColor: '#e53e3e', color: '#e53e3e' }}
-                    onClick={handleDelete}
-                  >
-                    삭제
-                  </button>
-                </div>
+              ))}
+              <div className="flex gap-2 justify-end pt-4">
+                <button className="bg-[#6c5ce7] text-white px-6 py-2 rounded-lg font-bold text-xs shadow-md hover:bg-[#5a4ccb] transition">
+                  수정 완료
+                </button>
+                <button className="border border-red-400 text-red-500 px-6 py-2 rounded-lg font-bold text-xs hover:bg-red-50 transition">
+                  기록 삭제
+                </button>
               </div>
-            ) : (
-              <div className="empty-view">항목을 선택해주세요.</div>
-            )}
+            </div>
           </div>
         </div>
       </div>
