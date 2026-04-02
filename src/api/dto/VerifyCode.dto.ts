@@ -1,3 +1,8 @@
 export interface VerifyCodeRequestDto {
-  verifyCode: string;
+  phoneNum: string;
+  code: string;
+}
+
+export interface VerifyCodeResponseDto {
+  resetToken: string;
 }

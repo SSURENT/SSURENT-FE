@@ -14,7 +14,6 @@ export default function Penalty() {
     return `${date.split('-')[0]}.${date.split('-')[1]}.${date.split('-')[2]}`;
   };
   const getReason = (penaltyType: PenaltyType): string => {
-    // TODO: 페널티 타입에 따라서 "사유"를 번역해서 return하는 로직 추가해야 함
     if (penaltyType === 'OVERDUE') return '반납기한 경과';
     if (penaltyType === 'UNAUTHORIZED_USE') return '무단 사용';
     else return '상세한 사유는 학생회에 문의해주세요.';

@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { UserRoleType, UserStatusType } from '../types/Types';
 
 interface UserInfo {
-  studentNum: string | null;
+  studentNum: string;
   name: string;
   role: UserRoleType;
   status: UserStatusType;
@@ -26,7 +26,7 @@ interface UserInfo {
 }
 
 export const useUserInfo = create<UserInfo>((set) => ({
-  studentNum: null,
+  studentNum: '',
   name: '',
   role: 'NORMAL',
   status: 'ACTIVE',
@@ -63,7 +63,7 @@ export const useUserInfo = create<UserInfo>((set) => ({
   setUserRoleType: (role: UserRoleType) => set({ role: role }),
   clearUserInfo: () =>
     set({
-      studentNum: null,
+      studentNum: '',
       name: '',
       role: '',
       status: '',
