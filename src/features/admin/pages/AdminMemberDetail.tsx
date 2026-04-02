@@ -93,7 +93,7 @@ const AdminMemberDetail: React.FC = () => {
               className="border border-[#6c5ce7] text-[#6c5ce7] bg-white px-4 py-1.5 rounded-md font-semibold text-sm hover:bg-indigo-50 transition"
               onClick={() => navigate(`/admin/users/${member.id}/penalty`)}
             >
-              대여내역보기
+              징계내역보기
             </button>
             <button
               className="border border-[#ff4d4f] text-[#ff4d4f] bg-white px-4 py-1.5 rounded-md font-semibold text-sm hover:bg-red-50 transition"

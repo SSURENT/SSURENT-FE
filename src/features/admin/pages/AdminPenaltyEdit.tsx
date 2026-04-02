@@ -17,7 +17,7 @@ interface Penalty {
 
 const AdminPenaltyEdit: React.FC = () => {
   const [memberStatus, setMemberStatus] = useState<MemberStatus>('active');
-  const [penalties] = useState<Penalty[]>([
+  const [penalties, setPenalties] = useState<Penalty[]>([
     { id: 1, date: '2027.01.02', item: '우산(102)', reason: '반납기한 초과' },
     { id: 2, date: '2027.05.03', item: '우산(104)', reason: '반납기한 초과' },
     { id: 3, date: '2028.01.01', item: '우산(105)', reason: '반납기한 초과' },
@@ -25,7 +25,41 @@ const AdminPenaltyEdit: React.FC = () => {
   const [selectedPenalty, setSelectedPenalty] = useState<Penalty | null>(
     penalties[0],
   );
-  const [addMode, setAddMode] = useState(false);
+  // 편집 중인 상태를 관리 (현재는 초기값만 연동)
+  const [editForm, setEditForm] = useState<Penalty | null>(penalties[0]);
+
+  // 선택이 바뀔 때 폼 상태도 업데이트
+  const handleSelectPenalty = (p: Penalty) => {
+    setSelectedPenalty(p);
+    setEditForm(p);
+  };
+
+  const handleAddMode = () => {
+    const newPenalty: Penalty = {
+      id: Date.now(),
+      date: '',
+      item: '',
+      reason: '',
+    };
+    setPenalties([...penalties, newPenalty]);
+    handleSelectPenalty(newPenalty);
+  };
+
+  const handleSave = () => {
+    if (!editForm) return;
+    setPenalties(penalties.map((p) => (p.id === editForm.id ? editForm : p)));
+    setSelectedPenalty(editForm);
+    alert('저장되었습니다.');
+  };
+
+  const handleDelete = () => {
+    if (!selectedPenalty) return;
+    if (window.confirm('해당 징계 내역을 삭제하시겠습니까?')) {
+      setPenalties(penalties.filter((p) => p.id !== selectedPenalty.id));
+      setSelectedPenalty(null);
+      setEditForm(null);
+    }
+  };
 
   return (
     <div className="pt-2 pb-10 w-full mx-auto text-left">
@@ -72,7 +106,7 @@ const AdminPenaltyEdit: React.FC = () => {
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-sm font-bold text-gray-800">징계 기록</h3>
                 <button
-                  onClick={() => setAddMode(!addMode)}
+                  onClick={handleAddMode}
                   className="text-[#6c5ce7] border border-[#6c5ce7] px-3 py-1 rounded text-xs font-bold hover:bg-indigo-50"
                 >
                   내역 추가
@@ -91,7 +125,7 @@ const AdminPenaltyEdit: React.FC = () => {
                   {penalties.map((p) => (
                     <tr
                       key={p.id}
-                      onClick={() => setSelectedPenalty(p)}
+                      onClick={() => handleSelectPenalty(p)}
                       className={`cursor-pointer transition-colors text-sm ${
                         selectedPenalty?.id === p.id
                           ? 'bg-indigo-50/50'
@@ -114,12 +148,24 @@ const AdminPenaltyEdit: React.FC = () => {
               <h4 className="text-xs font-bold text-gray-400 mb-6 uppercase tracking-wider">
                 상세 정보
               </h4>
-              {selectedPenalty ? (
+              {selectedPenalty && editForm ? (
                 <div className="space-y-5">
                   {[
-                    { label: '날짜', value: selectedPenalty.date },
-                    { label: '물품명', value: selectedPenalty.item },
-                    { label: '사유', value: selectedPenalty.reason },
+                    {
+                      label: '날짜',
+                      value: editForm.date,
+                      key: 'date' as keyof Penalty,
+                    },
+                    {
+                      label: '물품명',
+                      value: editForm.item,
+                      key: 'item' as keyof Penalty,
+                    },
+                    {
+                      label: '사유',
+                      value: editForm.reason,
+                      key: 'reason' as keyof Penalty,
+                    },
                   ].map((field, idx) => (
                     <div key={idx} className="flex flex-col gap-2">
                       <label className="text-xs font-bold text-gray-500 ml-1">
@@ -127,16 +173,30 @@ const AdminPenaltyEdit: React.FC = () => {
                       </label>
                       <input
                         type="text"
-                        defaultValue={field.value}
+                        value={field.value}
+                        onChange={(e) =>
+                          setEditForm({
+                            ...editForm,
+                            [field.key]: e.target.value,
+                          })
+                        }
                         className="w-full p-3 bg-slate-50 border border-gray-100 rounded-xl text-sm text-gray-700 outline-none focus:ring-2 focus:ring-indigo-100 transition-all"
                       />
                     </div>
                   ))}
                   <div className="flex justify-end gap-2 pt-4">
-                    <button className="bg-[#6c5ce7] text-white px-5 py-2 rounded-lg text-xs font-bold shadow-md hover:bg-[#5a4ccb]">
+                    <button
+                      type="button"
+                      onClick={handleSave}
+                      className="bg-[#6c5ce7] text-white px-5 py-2 rounded-lg text-xs font-bold shadow-md hover:bg-[#5a4ccb]"
+                    >
                       저장
                     </button>
-                    <button className="border border-red-400 text-red-500 px-5 py-2 rounded-lg text-xs font-bold hover:bg-red-50">
+                    <button
+                      type="button"
+                      onClick={handleDelete}
+                      className="border border-red-400 text-red-500 px-5 py-2 rounded-lg text-xs font-bold hover:bg-red-50"
+                    >
                       삭제
                     </button>
                   </div>

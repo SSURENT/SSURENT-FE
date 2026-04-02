@@ -3,12 +3,12 @@ import React, { useState } from 'react';
 const AdminHelpers: React.FC = () => {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
-  const helpers = [
+  const [helpers, setHelpers] = useState([
     { id: '1', name: '양도영', studentId: '2024XXXX', role: '최고관리자' },
     { id: '2', name: '이웅재', studentId: '2024XXXX', role: '일반학우' },
     { id: '3', name: '김세훈', studentId: '2025XXXX', role: '관리자' },
     { id: '4', name: '오승연', studentId: '2024XXXX', role: '일반학우' },
-  ];
+  ]);
 
   // 전체 선택/해제 로직
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,13 +26,28 @@ const AdminHelpers: React.FC = () => {
     );
   };
 
+  const handleDelete = () => {
+    if (selectedIds.length === 0) return;
+    if (window.confirm('선택한 관리자를 삭제하시겠습니까?')) {
+      setHelpers((prev) => prev.filter((h) => !selectedIds.includes(h.id)));
+      setSelectedIds([]);
+      alert('삭제되었습니다.');
+    }
+  };
+
   return (
     <div className="flex flex-col">
       {/* helper-table-actions 대응 */}
       <div className="flex justify-end mb-[15px]">
         <button
-          className="bg-white border border-[#ff4d4f] text-[#ff4d4f] px-[15px] py-1 rounded-[5px] text-[13px] font-semibold hover:bg-[#fff1f0] transition-colors"
-          onClick={() => alert(`${selectedIds.length}명 삭제 로직 실행`)}
+          type="button"
+          onClick={handleDelete}
+          disabled={selectedIds.length === 0}
+          className={`px-[15px] py-1 rounded-[5px] text-[13px] font-semibold transition-colors ${
+            selectedIds.length > 0
+              ? 'bg-red-50 text-red-500 border border-red-200 hover:bg-red-100'
+              : 'bg-gray-100 border border-gray-300 text-gray-400 cursor-not-allowed'
+          }`}
         >
           삭제
         </button>

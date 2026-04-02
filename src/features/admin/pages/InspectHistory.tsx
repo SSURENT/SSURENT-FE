@@ -13,7 +13,11 @@ interface RentalHistory {
   item: string;
 }
 
-const InspectHistory: React.FC = () => {
+interface InspectHistoryProps {
+  searchRange?: { start: string; end: string };
+}
+
+const InspectHistory: React.FC<InspectHistoryProps> = ({ searchRange }) => {
   // 실제 구글 폼 응답 시트 컬럼 구조 반영 샘플 데이터
   const historyData: RentalHistory[] = [
     {
@@ -54,6 +58,17 @@ const InspectHistory: React.FC = () => {
     },
   ];
 
+  const filteredHistoryData = React.useMemo(() => {
+    if (!searchRange || (!searchRange.start && !searchRange.end))
+      return historyData;
+    return historyData.filter((h) => {
+      const dateStr = h.timestamp.split(' ')[0]; // 'YYYY-MM-DD' 추출
+      if (searchRange.start && dateStr < searchRange.start) return false;
+      if (searchRange.end && dateStr > searchRange.end) return false;
+      return true;
+    });
+  }, [searchRange, historyData]);
+
   const handleExcelDownload = async () => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('대여반납이력');
@@ -70,7 +85,7 @@ const InspectHistory: React.FC = () => {
     ];
 
     // 2. 데이터 추가 및 조건부 스타일링
-    historyData.forEach((data) => {
+    filteredHistoryData.forEach((data) => {
       const row = worksheet.addRow(data);
 
       // ★ 구분값이 '반납'인 경우 해당 행의 글자색을 빨간색(FF0000)으로 설정
@@ -115,30 +130,40 @@ const InspectHistory: React.FC = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {historyData.map((row, idx) => (
-              <tr
-                key={idx}
-                className={`transition-colors ${row.type === '반납' ? 'bg-red-50 hover:bg-red-100' : 'hover:bg-slate-50'}`}
-              >
-                <td className="p-4 border-r text-slate-400 whitespace-nowrap">
-                  {row.timestamp}
+            {filteredHistoryData.length > 0 ? (
+              filteredHistoryData.map((row, idx) => (
+                <tr
+                  key={idx}
+                  className={`transition-colors ${row.type === '반납' ? 'bg-red-50 hover:bg-red-100' : 'hover:bg-slate-50'}`}
+                >
+                  <td className="p-4 border-r text-slate-400 whitespace-nowrap">
+                    {row.timestamp}
+                  </td>
+                  <td className="p-4 border-r font-semibold text-slate-700">
+                    {row.name}
+                  </td>
+                  <td className="p-4 border-r text-slate-500">
+                    {row.studentId}
+                  </td>
+                  <td className="p-4 border-r">
+                    <span
+                      className={`px-2 py-1 rounded text-xs font-extrabold ${
+                        row.type === '반납' ? 'text-red-600' : 'text-blue-600'
+                      }`}
+                    >
+                      {row.type}
+                    </span>
+                  </td>
+                  <td className="p-4 font-bold text-slate-800">{row.item}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5} className="p-10 text-slate-400">
+                  조회된 이력이 없습니다.
                 </td>
-                <td className="p-4 border-r font-semibold text-slate-700">
-                  {row.name}
-                </td>
-                <td className="p-4 border-r text-slate-500">{row.studentId}</td>
-                <td className="p-4 border-r">
-                  <span
-                    className={`px-2 py-1 rounded text-xs font-extrabold ${
-                      row.type === '반납' ? 'text-red-600' : 'text-blue-600'
-                    }`}
-                  >
-                    {row.type}
-                  </span>
-                </td>
-                <td className="p-4 font-bold text-slate-800">{row.item}</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>

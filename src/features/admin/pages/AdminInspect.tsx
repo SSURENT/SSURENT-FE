@@ -6,6 +6,7 @@ const AdminInspect: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'history' | 'status'>('history');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [searchRange, setSearchRange] = useState({ start: '', end: '' });
 
   return (
     <div className="pt-2 pb-10 w-full mx-auto text-left">
@@ -37,26 +38,42 @@ const AdminInspect: React.FC = () => {
             <div className="flex items-center gap-2">
               <input
                 type="date"
-                className="border border-slate-300 rounded-lg p-2 outline-indigo-500"
+                max={endDate || undefined}
+                className="border border-slate-300 rounded-lg p-2 outline-none focus:border-[#6c5ce7]"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
               />
               <span className="text-slate-400">~</span>
               <input
                 type="date"
-                className="border border-slate-300 rounded-lg p-2 outline-indigo-500"
+                min={startDate || undefined}
+                className="border border-slate-300 rounded-lg p-2 outline-none focus:border-[#6c5ce7]"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
               />
             </div>
-            <button className="bg-indigo-50 text-indigo-600 font-bold px-4 py-2 rounded-lg hover:bg-indigo-100 transition border border-indigo-200">
+            <button
+              type="button"
+              onClick={() => {
+                if (startDate && endDate && startDate > endDate) {
+                  alert('조회 종료일은 시작일보다 빠를 수 없습니다.');
+                  return;
+                }
+                setSearchRange({ start: startDate, end: endDate });
+              }}
+              className="bg-indigo-50 text-indigo-600 font-bold px-4 py-2 rounded-lg border border-indigo-100 hover:bg-indigo-100 transition-colors"
+            >
               결과보기
             </button>
           </div>
 
           {/* 📦 컨텐츠 카드 영역 */}
           <div className="">
-            {activeTab === 'history' ? <InspectHistory /> : <InspectStatus />}
+            {activeTab === 'history' ? (
+              <InspectHistory searchRange={searchRange} />
+            ) : (
+              <InspectStatus searchRange={searchRange} />
+            )}
           </div>
         </div>
       </div>

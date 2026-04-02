@@ -5,6 +5,7 @@ interface Item {
   name: string;
   code: string;
   status: string;
+  condition?: string;
 }
 
 const AdminItems: React.FC = () => {
@@ -13,12 +14,27 @@ const AdminItems: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('전체');
 
   const [items, setItems] = useState<Item[]>([
-    { id: 1, name: '우산', code: '101', status: '보관중' },
-    { id: 2, name: '우산', code: '102', status: '대여중' },
-    { id: 3, name: '보조배터리', code: '201', status: '보관중' },
-    { id: 4, name: '충전케이블', code: '301', status: '대여중' },
-    { id: 5, name: '자', code: '401', status: '보관중' },
+    { id: 1, name: '우산', code: '101', status: '보관중', condition: 'normal' },
+    { id: 2, name: '우산', code: '102', status: '대여중', condition: 'normal' },
+    {
+      id: 3,
+      name: '보조배터리',
+      code: '201',
+      status: '보관중',
+      condition: 'normal',
+    },
+    {
+      id: 4,
+      name: '충전케이블',
+      code: '301',
+      status: '대여중',
+      condition: 'damaged',
+    },
+    { id: 5, name: '자', code: '401', status: '보관중', condition: 'lost' },
   ]);
+
+  const [searchCode, setSearchCode] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
 
   const [categories, setCategories] = useState([
     '자',
@@ -46,6 +62,7 @@ const AdminItems: React.FC = () => {
         name: newItemName,
         code: newItemCode,
         status: '보관중',
+        condition: 'normal',
       },
     ]);
     setNewItemName('');
@@ -60,7 +77,24 @@ const AdminItems: React.FC = () => {
   };
 
   const handleDeleteCategory = (cat: string) => {
+    if (items.some((item) => item.name === cat)) {
+      alert('해당 카테고리에 속한 물품이 있어 삭제할 수 없습니다.');
+      return;
+    }
     setCategories(categories.filter((c) => c !== cat));
+  };
+
+  const handleSaveSystemData = async () => {
+    setIsSaving(true);
+    try {
+      // TODO: Call real API endpoint (e.g., apiClient for sync)
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      alert('데이터가 성공적으로 동기화되었습니다.');
+    } catch (error) {
+      alert('데이터 동기화 중 오류가 발생했습니다.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -92,6 +126,8 @@ const AdminItems: React.FC = () => {
                 type="text"
                 placeholder="물품 코드를 입력하세요"
                 className="border border-gray-200 rounded-full px-6 py-2 w-80 outline-none focus:ring-2 focus:ring-indigo-100 text-sm bg-[#fcfcfc]"
+                value={searchCode}
+                onChange={(e) => setSearchCode(e.target.value)}
               />
             </div>
             <div className="flex gap-3">
@@ -117,6 +153,7 @@ const AdminItems: React.FC = () => {
                 (item) =>
                   selectedCategory === '전체' || item.name === selectedCategory,
               )
+              .filter((item) => item.code.includes(searchCode.trim()))
               .map((item) => (
                 <div
                   key={item.id}
@@ -144,7 +181,13 @@ const AdminItems: React.FC = () => {
                       {item.status}
                     </span>
                     <span className="text-[10px] bg-slate-100 px-3 py-1 rounded-full font-bold text-slate-500">
-                      정상
+                      {item.condition === 'normal'
+                        ? '정상'
+                        : item.condition === 'damaged'
+                          ? '파손'
+                          : item.condition === 'lost'
+                            ? '분실'
+                            : '기타'}
                     </span>
                   </div>
                 </div>
@@ -153,8 +196,12 @@ const AdminItems: React.FC = () => {
 
           {/* 하단 저장 버튼 */}
           <div className="mt-10 pt-8 border-t border-gray-100 flex justify-end">
-            <button className="bg-[#6c5ce7] text-white px-10 py-3 rounded-xl text-sm font-bold shadow-lg hover:bg-[#5a4ccb] active:scale-95 transition-all">
-              시스템 데이터 동기화 및 저장
+            <button
+              onClick={handleSaveSystemData}
+              disabled={isSaving}
+              className="bg-[#6c5ce7] text-white px-10 py-3 rounded-xl text-sm font-bold shadow-lg hover:bg-[#5a4ccb] active:scale-95 transition-all disabled:bg-gray-400"
+            >
+              {isSaving ? '동기화 중...' : '시스템 데이터 동기화 및 저장'}
             </button>
           </div>
         </div>
@@ -163,19 +210,31 @@ const AdminItems: React.FC = () => {
       {/* 물품 추가 모달 */}
       {isItemModalOpen && (
         <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="add-item-modal-title"
           className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4"
           onClick={() => setItemModalOpen(false)}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') setItemModalOpen(false);
+          }}
         >
           <div
             className="bg-white rounded-2xl p-8 w-full max-w-[420px] shadow-2xl relative"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-xl font-bold text-gray-800 mb-6">물품 추가</h3>
+            <h3
+              id="add-item-modal-title"
+              className="text-xl font-bold text-gray-800 mb-6"
+            >
+              물품 추가
+            </h3>
             <div className="space-y-4">
               <select
                 className="w-full border border-gray-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-indigo-100 cursor-pointer bg-white"
                 value={newItemName}
                 onChange={(e) => setNewItemName(e.target.value)}
+                autoFocus
               >
                 <option value="" disabled>
                   카테고리 선택 (물품명)

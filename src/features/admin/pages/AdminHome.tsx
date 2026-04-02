@@ -9,9 +9,62 @@ import {
   ChevronRight,
 } from 'react-bootstrap-icons';
 
+interface ActivityLog {
+  id: string;
+  type: string;
+  user: string;
+  item: string;
+  time: string;
+  color: string;
+}
+
+const useActivityLogs = () => {
+  const [data, setData] = React.useState<ActivityLog[]>([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(false);
+
+  const refetch = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setData([
+        {
+          id: 'log-1',
+          type: '연체',
+          user: '김철수',
+          item: '보조배터리(502)',
+          time: '3분 전',
+          color: 'text-red-500',
+        },
+        {
+          id: 'log-2',
+          type: '반납',
+          user: '이영희',
+          item: '우산(101)',
+          time: '1시간 전',
+          color: 'text-blue-500',
+        },
+      ]);
+      setLoading(false);
+    }, 1000);
+  };
+
+  React.useEffect(() => {
+    refetch();
+  }, []);
+
+  return { data, loading, error, refetch };
+};
+
 const AdminHome: React.FC = () => {
+  const {
+    data: activityLogs,
+    loading: logsLoading,
+    error: logsError,
+  } = useActivityLogs();
+
   const stats = [
     {
+      id: 'stat-rented',
       title: '대여 중',
       count: 12,
       color: 'text-blue-600',
@@ -19,6 +72,7 @@ const AdminHome: React.FC = () => {
       icon: <BoxSeam />,
     },
     {
+      id: 'stat-waiting',
       title: '반납 대기',
       count: 5,
       color: 'text-yellow-600',
@@ -26,6 +80,7 @@ const AdminHome: React.FC = () => {
       icon: <ClipboardCheck />,
     },
     {
+      id: 'stat-overdue',
       title: '연체 물품',
       count: 2,
       color: 'text-red-600',
@@ -33,11 +88,43 @@ const AdminHome: React.FC = () => {
       icon: <ExclamationCircle />,
     },
     {
+      id: 'stat-total-users',
       title: '전체 회원',
       count: 156,
       color: 'text-green-600',
       bgColor: 'bg-green-50',
       icon: <People />,
+    },
+  ];
+
+  const menus = [
+    {
+      id: 'menu-items',
+      title: '물품 관리',
+      link: '/admin/items',
+      icon: <BoxSeam />,
+      desc: '재고 수정 및 등록',
+    },
+    {
+      id: 'menu-users',
+      title: '회원 관리',
+      link: '/admin/users',
+      icon: <People />,
+      desc: '권한 및 이용 제한',
+    },
+    {
+      id: 'menu-inspect',
+      title: '물품 검수',
+      link: '/admin/inspect',
+      icon: <ClipboardCheck />,
+      desc: '반납 승인 대기 목록',
+    },
+    {
+      id: 'menu-stats',
+      title: '대여 통계',
+      link: '/admin/stats',
+      icon: <BarChartLine />,
+      desc: '이용 로그 분석',
     },
   ];
 
@@ -48,9 +135,9 @@ const AdminHome: React.FC = () => {
       <div className="bg-white border border-gray-200 rounded-2xl p-10 min-h-[600px] shadow-sm">
         {/* 상단 통계 그리드 */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {stats.map((stat, idx) => (
+          {stats.map((stat) => (
             <div
-              key={idx}
+              key={stat.id}
               className="border border-gray-100 rounded-2xl p-6 bg-white hover:shadow-md transition-all group"
             >
               <div className="flex items-center gap-4">
@@ -79,33 +166,12 @@ const AdminHome: React.FC = () => {
               주요 관리 기능
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {[
-                {
-                  title: '물품 관리',
-                  link: '/admin/items',
-                  icon: <BoxSeam />,
-                  desc: '재고 수정 및 등록',
-                },
-                {
-                  title: '회원 관리',
-                  link: '/admin/users',
-                  icon: <People />,
-                  desc: '권한 및 이용 제한',
-                },
-                {
-                  title: '물품 검수',
-                  link: '/admin/inspect',
-                  icon: <ClipboardCheck />,
-                  desc: '반납 승인 대기 목록',
-                },
-                {
-                  title: '대여 통계',
-                  link: '/admin/stats',
-                  icon: <BarChartLine />,
-                  desc: '이용 로그 분석',
-                },
-              ].map((menu, idx) => (
-                <Link key={idx} to={menu.link} className="no-underline group">
+              {menus.map((menu) => (
+                <Link
+                  key={menu.id}
+                  to={menu.link}
+                  className="no-underline group"
+                >
                   <div className="border border-gray-100 rounded-2xl p-5 flex justify-between items-center bg-white group-hover:bg-slate-50 group-hover:border-indigo-100 transition-all shadow-sm">
                     <div className="flex items-center gap-4">
                       <div className="text-2xl text-gray-300 group-hover:text-[#6c5ce7] transition-colors">
@@ -132,42 +198,39 @@ const AdminHome: React.FC = () => {
               최근 활동
             </h3>
             <div className="space-y-4">
-              {[
-                {
-                  type: '연체',
-                  user: '김철수',
-                  item: '보조배터리(502)',
-                  time: '3분 전',
-                  color: 'text-red-500',
-                },
-                {
-                  type: '반납',
-                  user: '이영희',
-                  item: '우산(101)',
-                  time: '1시간 전',
-                  color: 'text-blue-500',
-                },
-              ].map((log, i) => (
-                <div
-                  key={i}
-                  className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm"
-                >
-                  <div className="flex justify-between items-center mb-2">
-                    <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-50 ${log.color}`}
-                    >
-                      {log.type} 발생
-                    </span>
-                    <span className="text-[10px] text-gray-400 font-medium">
-                      {log.time}
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-700 font-bold">
-                    {log.user} 학우
-                  </p>
-                  <p className="text-[11px] text-gray-500 mt-0.5">{log.item}</p>
+              {logsLoading ? (
+                <div className="text-center text-gray-400 text-xs py-10">
+                  로딩 중...
                 </div>
-              ))}
+              ) : logsError ? (
+                <div className="text-center text-red-400 text-xs py-10">
+                  오류가 발생했습니다.
+                </div>
+              ) : (
+                activityLogs.map((log) => (
+                  <div
+                    key={log.id}
+                    className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm"
+                  >
+                    <div className="flex justify-between items-center mb-2">
+                      <span
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-50 ${log.color}`}
+                      >
+                        {log.type} 발생
+                      </span>
+                      <span className="text-[10px] text-gray-400 font-medium">
+                        {log.time}
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-700 font-bold">
+                      {log.user} 학우
+                    </p>
+                    <p className="text-[11px] text-gray-500 mt-0.5">
+                      {log.item}
+                    </p>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>

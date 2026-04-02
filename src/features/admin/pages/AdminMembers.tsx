@@ -20,14 +20,16 @@ const AdminMembers: React.FC = () => {
           {/* 탭 메뉴 */}
           <div className="flex justify-start gap-10 mb-10 border-b border-gray-100">
             {['회원관리', '전체회원갱신'].map((tab) => (
-              <span
+              <button
                 key={tab}
+                type="button"
+                aria-pressed={activeTab === tab}
                 className={`pb-4 text-sm cursor-pointer transition-all duration-200 font-bold
                   ${activeTab === tab ? 'text-[#6c5ce7] border-b-2 border-[#6c5ce7]' : 'text-[#888]'}`}
                 onClick={() => setActiveTab(tab as any)}
               >
                 {tab}
-              </span>
+              </button>
             ))}
           </div>
 
