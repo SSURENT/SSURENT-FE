@@ -8,12 +8,17 @@ import Rent from './features/rent/pages/Rent';
 import Return from './features/return/pages/Return';
 import MyPage from './features/mypage/pages/MyPage';
 import Login from './features/auth/pages/Login';
+import SendSmsCode from './features/auth/pages/SendSmsCode.tsx';
+import VerifyCode from './features/auth/pages/VerifySmsCode.tsx';
+import ResetPW from './features/auth/pages/ResetPW.tsx';
+
 import Penalty from './features/mypage/pages/Penalty';
 import AdminItems from './features/admin/pages/AdminItems';
 import AdminMembers from './features/admin/pages/AdminMembers';
 import AdminMemberDetail from './features/admin/pages/AdminMemberDetail';
 import AdminPenaltyEdit from './features/admin/pages/AdminPenaltyEdit';
 import { useAutoRefreshToken } from './hooks/UseAutoRefreshToken.ts';
+import AdminStatistics from '../src/features/admin/pages/AdminStatistics.tsx';
 import AdminRentalEdit from './features/admin/pages/Adminrentaledit.tsx';
 
 /** * 💡 핵심 수정 사항: MemberProvider 임포트
@@ -104,12 +109,88 @@ const App: React.FC = () => {
             </MemberProvider>
           </ProtectedRoute>
         }
-      >
+      />
+      <Route
+        path="/return"
+        element={
+          <>
+            <Header />
+            <main className="main-content mx-auto w-full max-w-[1200px] flex-1 px-4">
+              <Return />
+            </main>
+            <BottomBar />
+          </>
+        }
+      />
+      <Route
+        path="/mypage"
+        element={
+          <>
+            <Header />
+            <main className="main-content mx-auto w-full max-w-[1200px] flex-1 px-4">
+              <MyPage />
+            </main>
+            <BottomBar />
+          </>
+        }
+      />
+      <Route
+        path="/login"
+        element={
+          <>
+            <Header />
+            <main className="main-content mx-auto w-full max-w-[1200px] flex-1 px-4">
+              <Login />
+            </main>
+            <BottomBar />
+          </>
+        }
+      />
+      <Route
+        path="/send-sms-code"
+        element={
+          <>
+            <Header />
+            <main className="main-content mx-auto w-full max-w-[1200px] flex-1 px-4">
+              <SendSmsCode />
+            </main>
+            <BottomBar />
+          </>
+        }
+      />
+      <Route
+        path="/verify-code"
+        element={
+          <>
+            <Header />
+            <main className="main-content mx-auto w-full max-w-[1200px] flex-1 px-4">
+              <VerifyCode />
+            </main>
+            <BottomBar />
+          </>
+        }
+      />
+      <Route
+        path="/reset-pw"
+        element={
+          <>
+            <Header />
+            <main className="main-content mx-auto w-full max-w-[1200px] flex-1 px-4">
+              <ResetPW />
+            </main>
+            <BottomBar />
+          </>
+        }
+      />
+
+      {/* 관리자  */}
+      <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<Navigate to="items" replace />} />
         <Route path="items" element={<AdminItems />} />
         <Route path="users" element={<AdminMembers />} />
         <Route path="users/:id" element={<AdminMemberDetail />} />
         <Route path="users/:id/penalty" element={<AdminPenaltyEdit />} />
+        <Route path="stats" element={<AdminStatistics />} />
         <Route path="users/:id/rental-edit" element={<AdminRentalEdit />} />
         <Route path="inspect" element={<AdminInspect />} />
       </Route>
