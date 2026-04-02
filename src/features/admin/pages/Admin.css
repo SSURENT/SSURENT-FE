@@ -35,6 +35,7 @@
   transition: transform 0.2s ease-in-out;
   background-color: #fff !important;
   text-align: left !important;
+  overflow: visible !important;
 }
 
 .admin-items-container .card:hover {
