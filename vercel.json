@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/proxy/:path*",
+      "destination": "http://168.107.50.60:8080/:path*"
+    }
+  ]
+}

@@ -17,9 +17,9 @@ import AdminItems from './features/admin/pages/AdminItems';
 import AdminMembers from './features/admin/pages/AdminMembers';
 import AdminMemberDetail from './features/admin/pages/AdminMemberDetail';
 import AdminPenaltyEdit from './features/admin/pages/AdminPenaltyEdit';
+import AdminRentalEdit from './features/admin/pages/AdminRentalEdit';
 import { useAutoRefreshToken } from './hooks/UseAutoRefreshToken.ts';
 import AdminStatistics from '../src/features/admin/pages/AdminStatistics.tsx';
-import AdminRentalEdit from './features/admin/pages/Adminrentaledit.tsx';
 
 /** * 💡 핵심 수정 사항: MemberProvider 임포트
  * 폴더 구조상 features/admin/context 안에 있다면 아래 경로가 맞을 겁니다.
@@ -28,15 +28,22 @@ import { MemberProvider } from './features/admin/context/MemberContext';
 import AdminInspect from './features/admin/pages/AdminInspect.tsx';
 
 // ============================================================
-// 🔒 개발용 가짜 인증 훅 (편의를 위해 항상 true)
+// 개발용 가짜 인증 훅 (편의를 위해 항상 true)
 // ============================================================
-const useAuth = () => ({
-  isAuthenticated: true,
-  isAdmin: true,
-});
+// TODO: REPLACE BEFORE PRODUCTION - 실제 인증 로직(AuthProvider 등)으로 교체해야 합니다.
+const useAuth = () => {
+  if (import.meta.env.MODE === 'production') {
+    // 프로덕션 환경에서는 실제 인증 상태를 반환하도록 임시 예외처리 또는 연동 필수
+    // return { isAuthenticated: false, isAdmin: false };
+  }
+  return {
+    isAuthenticated: true,
+    isAdmin: true,
+  };
+};
 
 // ============================================================
-// 🛡️ 권한 보호 컴포넌트
+// 권한 보호 컴포넌트
 // ============================================================
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -61,7 +68,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 };
 
 // ============================================================
-// 📱 유저 레이아웃 (공통 헤더/푸터)
+// 유저 레이아웃 (공통 헤더/푸터)
 // ============================================================
 const UserLayout: React.FC = () => (
   <div className="flex min-h-screen flex-col">
@@ -81,6 +88,9 @@ const UserLayout: React.FC = () => (
         />
         <Route path="penalty" element={<Penalty />} />
         <Route path="login" element={<Login />} />
+        <Route path="send-sms-code" element={<SendSmsCode />} />
+        <Route path="verify-code" element={<VerifyCode />} />
+        <Route path="reset-pw" element={<ResetPW />} />
       </Routes>
     </main>
     <BottomBar />
@@ -88,7 +98,7 @@ const UserLayout: React.FC = () => (
 );
 
 // ============================================================
-// 🏗️ 메인 App 컴포넌트
+// 메인 App 컴포넌트
 // ============================================================
 const App: React.FC = () => {
   useAutoRefreshToken();
@@ -109,82 +119,7 @@ const App: React.FC = () => {
             </MemberProvider>
           </ProtectedRoute>
         }
-      />
-      <Route
-        path="/return"
-        element={
-          <>
-            <Header />
-            <main className="main-content mx-auto w-full max-w-[1200px] flex-1 px-4">
-              <Return />
-            </main>
-            <BottomBar />
-          </>
-        }
-      />
-      <Route
-        path="/mypage"
-        element={
-          <>
-            <Header />
-            <main className="main-content mx-auto w-full max-w-[1200px] flex-1 px-4">
-              <MyPage />
-            </main>
-            <BottomBar />
-          </>
-        }
-      />
-      <Route
-        path="/login"
-        element={
-          <>
-            <Header />
-            <main className="main-content mx-auto w-full max-w-[1200px] flex-1 px-4">
-              <Login />
-            </main>
-            <BottomBar />
-          </>
-        }
-      />
-      <Route
-        path="/send-sms-code"
-        element={
-          <>
-            <Header />
-            <main className="main-content mx-auto w-full max-w-[1200px] flex-1 px-4">
-              <SendSmsCode />
-            </main>
-            <BottomBar />
-          </>
-        }
-      />
-      <Route
-        path="/verify-code"
-        element={
-          <>
-            <Header />
-            <main className="main-content mx-auto w-full max-w-[1200px] flex-1 px-4">
-              <VerifyCode />
-            </main>
-            <BottomBar />
-          </>
-        }
-      />
-      <Route
-        path="/reset-pw"
-        element={
-          <>
-            <Header />
-            <main className="main-content mx-auto w-full max-w-[1200px] flex-1 px-4">
-              <ResetPW />
-            </main>
-            <BottomBar />
-          </>
-        }
-      />
-
-      {/* 관리자  */}
-      <Route path="/admin" element={<AdminLayout />}>
+      >
         <Route index element={<Navigate to="items" replace />} />
         <Route path="items" element={<AdminItems />} />
         <Route path="users" element={<AdminMembers />} />

@@ -1,327 +1,335 @@
 import React, { useState } from 'react';
-import { Form, Button, Dropdown, Card, Row, Col, Modal } from 'react-bootstrap';
-import { Trash3 } from 'react-bootstrap-icons';
-import './Admin.css';
-
-type ActiveStatus = '활성화' | '비활성화' | '분실';
 
 interface Item {
-  id: string;
+  id: number;
   name: string;
   code: string;
   status: string;
-  active: ActiveStatus;
+  condition?: string;
 }
 
-const INITIAL_CATEGORIES = ['우산', '자', '무선마우스', '보조배터리'];
-
-const INITIAL_ITEMS: Item[] = [
-  { id: '1', name: '우산', code: '101', status: '대여중', active: '활성화' },
-  { id: '2', name: '우산', code: '102', status: '보관중', active: '활성화' },
-  { id: '3', name: '우산', code: '103', status: '보관중', active: '활성화' },
-  { id: '4', name: '우산', code: '104', status: '보관중', active: '활성화' },
-];
-
 const AdminItems: React.FC = () => {
-  const [items, setItems] = useState<Item[]>(INITIAL_ITEMS);
-  const [categories, setCategories] = useState<string[]>(INITIAL_CATEGORIES);
-  const [selectedCategory, setSelectedCategory] = useState<string>('전체');
-  const [searchValue, setSearchValue] = useState('');
+  const [isItemModalOpen, setItemModalOpen] = useState(false);
+  const [isCategoryModalOpen, setCategoryModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('전체');
 
-  // 물품추가 모달
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [newName, setNewName] = useState('');
-  const [newCode, setNewCode] = useState('');
-  const [newStatus, setNewStatus] = useState('보관중');
+  const [items, setItems] = useState<Item[]>([
+    { id: 1, name: '우산', code: '101', status: '보관중', condition: 'normal' },
+    { id: 2, name: '우산', code: '102', status: '대여중', condition: 'normal' },
+    {
+      id: 3,
+      name: '보조배터리',
+      code: '201',
+      status: '보관중',
+      condition: 'normal',
+    },
+    {
+      id: 4,
+      name: '충전케이블',
+      code: '301',
+      status: '대여중',
+      condition: 'damaged',
+    },
+    { id: 5, name: '자', code: '401', status: '보관중', condition: 'lost' },
+  ]);
 
-  // 카테고리 변경 모달
-  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [searchCode, setSearchCode] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+
+  const [categories, setCategories] = useState([
+    '자',
+    '우산',
+    '보조배터리',
+    '충전케이블',
+    '스테이플러',
+    'CtoC',
+  ]);
+
+  const [newItemName, setNewItemName] = useState('');
+  const [newItemCode, setNewItemCode] = useState('');
   const [newCategory, setNewCategory] = useState('');
 
-  // 필터링
-  const filtered = items.filter((item) => {
-    const matchCategory =
-      selectedCategory === '전체' || item.name === selectedCategory;
-    const matchSearch =
-      searchValue.trim() === '' ||
-      item.name.includes(searchValue.trim()) ||
-      item.code.includes(searchValue.trim());
-    return matchCategory && matchSearch;
-  });
-
-  const handleActiveChange = (id: string, value: ActiveStatus) => {
-    setItems((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, active: value } : item)),
-    );
-  };
-
-  const handleDelete = (id: string) => {
-    if (window.confirm('해당 물품을 삭제하시겠습니까?')) {
-      setItems((prev) => prev.filter((item) => item.id !== id));
-    }
+  const handleDeleteItem = (id: number) => {
+    setItems(items.filter((item) => item.id !== id));
   };
 
   const handleAddItem = () => {
-    if (!newName.trim() || !newCode.trim()) return;
-    const newItem: Item = {
-      id: Date.now().toString(),
-      name: newName.trim(),
-      code: newCode.trim(),
-      status: newStatus,
-      active: '활성화',
-    };
-    setItems((prev) => [...prev, newItem]);
-    setNewName('');
-    setNewCode('');
-    setNewStatus('보관중');
-    setShowAddModal(false);
+    if (!newItemName || !newItemCode) return;
+    setItems([
+      ...items,
+      {
+        id: Date.now(),
+        name: newItemName,
+        code: newItemCode,
+        status: '보관중',
+        condition: 'normal',
+      },
+    ]);
+    setNewItemName('');
+    setNewItemCode('');
+    setItemModalOpen(false);
   };
 
   const handleAddCategory = () => {
-    const trimmed = newCategory.trim();
-    if (!trimmed || categories.includes(trimmed)) return;
-    setCategories((prev) => [...prev, trimmed]);
+    if (!newCategory || categories.includes(newCategory)) return;
+    setCategories([...categories, newCategory]);
     setNewCategory('');
   };
 
   const handleDeleteCategory = (cat: string) => {
-    setCategories((prev) => prev.filter((c) => c !== cat));
-    if (selectedCategory === cat) setSelectedCategory('전체');
+    if (items.some((item) => item.name === cat)) {
+      alert('해당 카테고리에 속한 물품이 있어 삭제할 수 없습니다.');
+      return;
+    }
+    setCategories(categories.filter((c) => c !== cat));
   };
 
-  const handleSave = () => {
-    // TODO: API 연동
-    console.log('저장할 데이터:', items);
-    alert('변경사항이 저장되었습니다.');
+  const handleSaveSystemData = async () => {
+    setIsSaving(true);
+    try {
+      // TODO: Call real API endpoint (e.g., apiClient for sync)
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      alert('데이터가 성공적으로 동기화되었습니다.');
+    } catch (error) {
+      alert('데이터 동기화 중 오류가 발생했습니다.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
-    <div className="admin-items-container py-4">
-      <div className="mb-4">
-        <h2 className="fw-bold">물품관리</h2>
-      </div>
-
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <div className="d-flex gap-2">
-          {/* 물품 종류 필터 드롭다운 */}
-          <Dropdown>
-            <Dropdown.Toggle variant="light" className="border">
-              {selectedCategory}
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={() => setSelectedCategory('전체')}>
-                전체
-              </Dropdown.Item>
-              {categories.map((cat) => (
-                <Dropdown.Item
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  active={selectedCategory === cat}
-                >
-                  {cat}
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          </Dropdown>
-
-          {/* 검색 */}
-          <div className="position-relative">
-            <Form.Control
-              placeholder="검색어를 입력하세요"
-              className="ps-4"
-              style={{ width: '250px' }}
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-            />
-          </div>
+    <div className="pt-2 pb-10 w-full mx-auto text-left">
+      <div className="w-[90%] mx-auto text-left">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-800 tracking-tight">
+            물품관리
+          </h2>
         </div>
 
-        <div className="d-flex gap-2">
-          <Button
-            variant="outline-primary"
-            onClick={() => setShowAddModal(true)}
-          >
-            물품추가
-          </Button>
-          <Button
-            variant="outline-primary"
-            onClick={() => setShowCategoryModal(true)}
-          >
-            카테고리 변경
-          </Button>
-        </div>
-      </div>
-
-      {/* 카드 목록 */}
-      <div className="p-4 border rounded-3 bg-white shadow-sm">
-        {filtered.length === 0 ? (
-          <div className="text-center text-muted py-4">
-            해당 물품이 없습니다.
-          </div>
-        ) : (
-          <Row xs={1} sm={2} lg={4} className="g-4">
-            {filtered.map((item) => (
-              <Col key={item.id}>
-                <Card className="h-100 border-0">
-                  <Card.Body>
-                    <div className="d-flex justify-content-between align-items-start mb-4">
-                      <h5 className="fw-bold mb-0">
-                        {item.name}({item.code})
-                      </h5>
-                      <Trash3
-                        className="text-muted"
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => handleDelete(item.id)}
-                      />
-                    </div>
-                    <div className="d-flex justify-content-between align-items-center mt-auto">
-                      <span
-                        className={`fw-bold ${item.status === '대여중' ? 'text-danger' : 'text-primary'}`}
-                      >
-                        {item.status}
-                      </span>
-                      <Dropdown>
-                        <Dropdown.Toggle
-                          variant="light"
-                          size="sm"
-                          className="border"
-                        >
-                          {item.active}
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu>
-                          <Dropdown.Item
-                            onClick={() =>
-                              handleActiveChange(item.id, '활성화')
-                            }
-                          >
-                            활성화
-                          </Dropdown.Item>
-                          <Dropdown.Item
-                            onClick={() =>
-                              handleActiveChange(item.id, '비활성화')
-                            }
-                          >
-                            비활성화
-                          </Dropdown.Item>
-                          <Dropdown.Item
-                            className="bg-primary text-white"
-                            onClick={() => handleActiveChange(item.id, '분실')}
-                          >
-                            분실
-                          </Dropdown.Item>
-                        </Dropdown.Menu>
-                      </Dropdown>
-                    </div>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))}
-          </Row>
-        )}
-      </div>
-
-      <div className="text-end mt-4">
-        <Button variant="primary" className="px-5" onClick={handleSave}>
-          변경사항 저장하기
-        </Button>
-      </div>
-
-      {/* ===== 물품추가 모달 ===== */}
-      <Modal show={showAddModal} onHide={() => setShowAddModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>물품 추가</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form.Group className="mb-3">
-            <Form.Label>물품명</Form.Label>
-            <Form.Select
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-            >
-              <option value="">카테고리 선택</option>
-              {categories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </Form.Select>
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>코드번호</Form.Label>
-            <Form.Control
-              placeholder="예: 105"
-              value={newCode}
-              onChange={(e) => setNewCode(e.target.value)}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>초기 상태</Form.Label>
-            <Form.Select
-              value={newStatus}
-              onChange={(e) => setNewStatus(e.target.value)}
-            >
-              <option value="보관중">보관중</option>
-              <option value="대여중">대여중</option>
-            </Form.Select>
-          </Form.Group>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowAddModal(false)}>
-            취소
-          </Button>
-          <Button
-            variant="primary"
-            onClick={handleAddItem}
-            disabled={!newName || !newCode}
-          >
-            추가
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      {/* ===== 카테고리 변경 모달 ===== */}
-      <Modal
-        show={showCategoryModal}
-        onHide={() => setShowCategoryModal(false)}
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>카테고리 변경</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="mb-3">
-            {categories.map((cat) => (
-              <div
-                key={cat}
-                className="d-flex justify-content-between align-items-center py-2 border-bottom"
+        <div className="bg-white border border-gray-200 rounded-[15px] p-[50px] min-h-[850px] shadow-sm flex flex-col w-full h-full">
+          {/* 컨트롤 영역 */}
+          <div className="flex justify-between items-center mb-10">
+            <div className="flex gap-4">
+              <select
+                className="border border-gray-300 rounded-lg px-4 py-2 text-sm font-bold bg-white cursor-pointer hover:bg-gray-50 outline-none focus:ring-2 focus:ring-indigo-100 transition"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
               >
-                <span>{cat}</span>
-                <Trash3
-                  className="text-muted"
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => handleDeleteCategory(cat)}
-                />
-              </div>
-            ))}
+                <option value="전체">전체</option>
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+              <input
+                type="text"
+                placeholder="물품 코드를 입력하세요"
+                className="border border-gray-200 rounded-full px-6 py-2 w-80 outline-none focus:ring-2 focus:ring-indigo-100 text-sm bg-[#fcfcfc]"
+                value={searchCode}
+                onChange={(e) => setSearchCode(e.target.value)}
+              />
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setItemModalOpen(true)}
+                className="bg-[#6c5ce7] text-white px-5 py-2 rounded-lg text-sm font-bold shadow-md hover:bg-[#5a4ccb] transition"
+              >
+                물품 추가
+              </button>
+              <button
+                onClick={() => setCategoryModalOpen(true)}
+                className="bg-white border border-[#6c5ce7] text-[#6c5ce7] px-5 py-2 rounded-lg text-sm font-bold hover:bg-indigo-50 transition"
+              >
+                카테고리 설정
+              </button>
+            </div>
           </div>
-          <div className="d-flex gap-2 mt-3">
-            <Form.Control
-              placeholder="새 카테고리 이름"
-              value={newCategory}
-              onChange={(e) => setNewCategory(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleAddCategory()}
-            />
-            <Button variant="outline-primary" onClick={handleAddCategory}>
-              추가
-            </Button>
+
+          {/* 물품 그리드: MemberList와 통일된 레이아웃 */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6 flex-1">
+            {items
+              .filter(
+                (item) =>
+                  selectedCategory === '전체' || item.name === selectedCategory,
+              )
+              .filter((item) => item.code.includes(searchCode.trim()))
+              .map((item) => (
+                <div
+                  key={item.id}
+                  className="h-44 border border-[#f0f0f0] rounded-2xl p-6 flex flex-col justify-between hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer bg-white group shadow-sm"
+                >
+                  <div className="flex justify-between items-start">
+                    <span className="text-lg font-bold text-gray-800 group-hover:text-[#6c5ce7] transition-colors">
+                      {item.name}({item.code})
+                    </span>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteItem(item.id);
+                      }}
+                      className="text-gray-300 hover:text-red-500 text-xl transition-colors font-bold leading-none select-none"
+                      title="물품 삭제"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span
+                      className={`text-[11px] font-bold px-3 py-1 rounded-full ${item.status === '대여중' ? 'bg-orange-50 text-orange-500' : 'bg-blue-50 text-blue-500'}`}
+                    >
+                      {item.status}
+                    </span>
+                    <span className="text-[10px] bg-slate-100 px-3 py-1 rounded-full font-bold text-slate-500">
+                      {item.condition === 'normal'
+                        ? '정상'
+                        : item.condition === 'damaged'
+                          ? '파손'
+                          : item.condition === 'lost'
+                            ? '분실'
+                            : '기타'}
+                    </span>
+                  </div>
+                </div>
+              ))}
           </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={() => setShowCategoryModal(false)}>
-            완료
-          </Button>
-        </Modal.Footer>
-      </Modal>
+
+          {/* 하단 저장 버튼 */}
+          <div className="mt-10 pt-8 border-t border-gray-100 flex justify-end">
+            <button
+              onClick={handleSaveSystemData}
+              disabled={isSaving}
+              className="bg-[#6c5ce7] text-white px-10 py-3 rounded-xl text-sm font-bold shadow-lg hover:bg-[#5a4ccb] active:scale-95 transition-all disabled:bg-gray-400"
+            >
+              {isSaving ? '동기화 중...' : '시스템 데이터 동기화 및 저장'}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* 물품 추가 모달 */}
+      {isItemModalOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="add-item-modal-title"
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          onClick={() => setItemModalOpen(false)}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') setItemModalOpen(false);
+          }}
+        >
+          <div
+            className="bg-white rounded-2xl p-8 w-full max-w-[420px] shadow-2xl relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3
+              id="add-item-modal-title"
+              className="text-xl font-bold text-gray-800 mb-6"
+            >
+              물품 추가
+            </h3>
+            <div className="space-y-4">
+              <select
+                className="w-full border border-gray-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-indigo-100 cursor-pointer bg-white"
+                value={newItemName}
+                onChange={(e) => setNewItemName(e.target.value)}
+                autoFocus
+              >
+                <option value="" disabled>
+                  카테고리 선택 (물품명)
+                </option>
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+              <input
+                type="text"
+                placeholder="고유코드 (예: 101)"
+                className="w-full border border-gray-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-indigo-100"
+                value={newItemCode}
+                onChange={(e) => setNewItemCode(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleAddItem()}
+              />
+            </div>
+            <div className="flex justify-end gap-2 mt-8">
+              <button
+                onClick={handleAddItem}
+                className="px-5 py-2.5 bg-[#6c5ce7] text-white rounded-xl font-bold hover:bg-[#5a4ccb] transition"
+              >
+                추가
+              </button>
+              <button
+                onClick={() => setItemModalOpen(false)}
+                className="px-5 py-2.5 bg-gray-100 text-gray-600 rounded-xl font-bold hover:bg-gray-200 transition"
+              >
+                취소
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 카테고리 설정 모달 */}
+      {isCategoryModalOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          onClick={() => setCategoryModalOpen(false)}
+        >
+          <div
+            className="bg-white rounded-2xl p-8 w-full max-w-[420px] shadow-2xl relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-xl font-bold text-gray-800 mb-6">
+              카테고리 설정
+            </h3>
+            <div className="space-y-2 mb-6 max-h-40 overflow-y-auto pr-2">
+              {categories.map((cat) => (
+                <div
+                  key={cat}
+                  className="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
+                >
+                  <span className="text-sm font-medium text-gray-700">
+                    {cat}
+                  </span>
+                  <button
+                    onClick={() => handleDeleteCategory(cat)}
+                    className="text-red-400 text-xs hover:text-red-600 font-bold"
+                  >
+                    삭제
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="새 카테고리 기입"
+                className="flex-1 border border-gray-200 rounded-xl p-2.5 text-sm outline-none focus:ring-2 focus:ring-indigo-100"
+                value={newCategory}
+                onChange={(e) => setNewCategory(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleAddCategory()}
+              />
+              <button
+                onClick={handleAddCategory}
+                className="bg-indigo-50 text-[#6c5ce7] font-bold px-4 rounded-xl hover:bg-indigo-100 transition"
+              >
+                등록
+              </button>
+            </div>
+            <div className="flex justify-end mt-8">
+              <button
+                onClick={() => setCategoryModalOpen(false)}
+                className="px-5 py-2.5 bg-[#6c5ce7] text-white rounded-xl font-bold hover:bg-[#5a4ccb] transition shadow-md"
+              >
+                저장 및 닫기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

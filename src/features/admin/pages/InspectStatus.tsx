@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 
@@ -16,9 +16,13 @@ interface ItemRow {
   units: ItemUnit[];
 }
 
-const InspectStatus: React.FC = () => {
-  // 실제 엑셀 파일 구조를 반영한 샘플 데이터
-  const statusItems: ItemRow[] = [
+interface InspectStatusProps {
+  searchRange?: { start: string; end: string };
+}
+
+const InspectStatus: React.FC<InspectStatusProps> = () => {
+  // 실제 API 연동 시 이 상태를 업데이트하면 표와 엑셀 다운로드에 자동 반영됩니다.
+  const [fetchedItems] = useState<ItemRow[]>([
     {
       no: 1,
       name: '우산',
@@ -58,7 +62,7 @@ const InspectStatus: React.FC = () => {
         { id: '1203', status: 'disabled' },
       ],
     },
-  ];
+  ]);
 
   // 상태별 색상 매핑 함수 (요청 사항 반영)
   const getStatusColor = (status: StatusType) => {
@@ -86,15 +90,30 @@ const InspectStatus: React.FC = () => {
       { header: '라벨 및 상태 (상세)', key: 'details', width: 60 },
     ];
 
-    statusItems.forEach((item) => {
-      const details = item.units
-        .map(
-          (u) =>
-            `${u.id}(${u.status === 'returned' ? '완료' : u.status === 'rented' ? '대여중' : u.status === 'overdue' ? '연체' : '불가'})`,
-        )
-        .join(', ');
+    fetchedItems.forEach((item) => {
+      const richText = item.units.map((u, i) => {
+        const isLast = i === item.units.length - 1;
+        let color = 'FF000000';
+        let statusStr = '불가';
+        if (u.status === 'returned') {
+          color = 'FF22C55E';
+          statusStr = '완료';
+        } else if (u.status === 'rented') {
+          color = 'FF94A3B8';
+          statusStr = '대여중';
+        } else if (u.status === 'overdue') {
+          color = 'FFDC2626';
+          statusStr = '연체';
+        }
 
-      worksheet.addRow({ no: item.no, name: item.name, details });
+        return {
+          text: `${u.id}(${statusStr})${isLast ? '' : ', '}`,
+          font: { color: { argb: color }, bold: true },
+        };
+      });
+
+      const row = worksheet.addRow({ no: item.no, name: item.name });
+      row.getCell('details').value = { richText };
     });
 
     const buffer = await workbook.xlsx.writeBuffer();
@@ -146,7 +165,7 @@ const InspectStatus: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {statusItems.map((item) => (
+            {fetchedItems.map((item) => (
               <tr
                 key={item.no}
                 className="border-b border-slate-100 hover:bg-slate-50 transition-colors"

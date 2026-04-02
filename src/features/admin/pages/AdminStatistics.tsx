@@ -21,6 +21,32 @@ export const AdminStatistics: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const handleOptionKeyDown = (
+    e: React.KeyboardEvent,
+    catId: number,
+    catName: string,
+  ) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      setSelectedCategoryId(catId);
+      setSelectedCategoryName(catName);
+      setIsOpen(false);
+      // 포커스를 버튼으로 되돌릴 수 있지만, 예제 단순화를 위해 생략
+    } else if (e.key === 'Escape') {
+      setIsOpen(false);
+    } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const options = dropdownRef.current?.querySelectorAll('[role="option"]');
+      if (!options) return;
+      const index = Array.from(options).indexOf(e.currentTarget as HTMLElement);
+      if (e.key === 'ArrowDown' && index < options.length - 1) {
+        (options[index + 1] as HTMLElement).focus();
+      } else if (e.key === 'ArrowUp' && index > 0) {
+        (options[index - 1] as HTMLElement).focus();
+      }
+    }
+  };
+
   const {
     handleSearch,
     categoryInfoData,
@@ -75,11 +101,15 @@ export const AdminStatistics: React.FC = () => {
   }, [monthRentalInfoData]);
 
   return (
-    <div className="min-h-screen bg-[#f8f9fa] py-12 px-10 text-left">
-      <div className="w-[80%] max-w-[1600px] mx-auto">
-        <h2 className="text-2xl font-bold mb-6 text-[#1a1a1a]">통계 조회</h2>
+    <div className="pt-2 pb-10 w-full mx-auto text-left">
+      <div className="w-[90%] mx-auto text-left">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-800 tracking-tight">
+            통계 조회
+          </h2>
+        </div>
 
-        <div className="min-h-[850px] bg-white border border-[#e0e0e0] rounded-[20px] p-12 shadow-sm flex flex-col">
+        <div className="bg-white border border-gray-200 rounded-[15px] p-[50px] min-h-[850px] shadow-sm flex flex-col w-full h-full">
           {/* 🔍 검색 필터 영역 */}
           <div className="flex flex-col gap-5 mb-12 bg-slate-50 p-8 rounded-2xl border border-slate-100">
             <div className="flex items-center gap-6">
@@ -89,6 +119,7 @@ export const AdminStatistics: React.FC = () => {
               <div className="flex items-center gap-3">
                 <input
                   type="date"
+                  max={endDate || undefined}
                   className="border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:border-[#6c5ce7]"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
@@ -96,20 +127,26 @@ export const AdminStatistics: React.FC = () => {
                 <span className="text-gray-400">~</span>
                 <input
                   type="date"
+                  min={startDate || undefined}
                   className="border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:border-[#6c5ce7]"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
                 />
               </div>
               <button
+                type="button"
                 className="bg-[#6c5ce7] text-white px-6 py-2 rounded-lg text-sm font-bold hover:bg-[#5a4ccb] transition ml-4"
-                onClick={() =>
+                onClick={() => {
+                  if (startDate && endDate && startDate > endDate) {
+                    alert('검색 종료일은 시작일보다 빠를 수 없습니다.');
+                    return;
+                  }
                   handleSearch(
                     selectedCategoryId.toString(),
                     startDate,
                     endDate,
-                  )
-                }
+                  );
+                }}
               >
                 검색하기
               </button>
@@ -121,20 +158,38 @@ export const AdminStatistics: React.FC = () => {
               </span>
               <div className="relative" ref={dropdownRef}>
                 <div
+                  role="button"
+                  tabIndex={0}
+                  aria-haspopup="listbox"
+                  aria-expanded={isOpen}
                   className="border border-gray-300 rounded-lg px-4 py-2 text-sm font-bold bg-white cursor-pointer min-w-[120px] flex justify-between items-center"
                   onClick={() => setIsOpen(!isOpen)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') setIsOpen(!isOpen);
+                  }}
                 >
                   {selectedCategoryName}{' '}
                   <span className="text-[10px] ml-2 text-gray-400">▼</span>
                 </div>
                 {isOpen && (
-                  <div className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-100 rounded-lg shadow-xl z-10 overflow-hidden">
+                  <div
+                    role="listbox"
+                    className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-100 rounded-lg shadow-xl z-10 overflow-hidden"
+                  >
                     <div
-                      className="px-4 py-2 text-sm hover:bg-indigo-50 cursor-pointer"
+                      role="option"
+                      aria-selected={selectedCategoryId === 0}
+                      tabIndex={0}
+                      className="px-4 py-2 text-sm hover:bg-indigo-50 cursor-pointer focus:bg-indigo-50 outline-none"
                       onClick={() => {
                         setSelectedCategoryId(0);
                         setSelectedCategoryName('ALL');
                         setIsOpen(false);
+                      }}
+                      onKeyDown={(e) => handleOptionKeyDown(e, 0, 'ALL')}
+                      ref={(el) => {
+                        if (el && isOpen && selectedCategoryId === 0)
+                          el.focus();
                       }}
                     >
                       ALL
@@ -142,11 +197,29 @@ export const AdminStatistics: React.FC = () => {
                     {categories.map((cat) => (
                       <div
                         key={cat.categoryId}
-                        className="px-4 py-2 text-sm hover:bg-indigo-50 cursor-pointer"
+                        role="option"
+                        aria-selected={selectedCategoryId === cat.categoryId}
+                        tabIndex={0}
+                        className="px-4 py-2 text-sm hover:bg-indigo-50 cursor-pointer focus:bg-indigo-50 outline-none"
                         onClick={() => {
                           setSelectedCategoryId(cat.categoryId);
                           setSelectedCategoryName(cat.categoryName);
                           setIsOpen(false);
+                        }}
+                        onKeyDown={(e) =>
+                          handleOptionKeyDown(
+                            e,
+                            cat.categoryId,
+                            cat.categoryName,
+                          )
+                        }
+                        ref={(el) => {
+                          if (
+                            el &&
+                            isOpen &&
+                            selectedCategoryId === cat.categoryId
+                          )
+                            el.focus();
                         }}
                       >
                         {cat.categoryName}

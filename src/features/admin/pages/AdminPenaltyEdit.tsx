@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import './AdminPenaltyEdit.css';
 
 type MemberStatus = 'active' | 'banned' | 'deleted';
 
 const STATUS_LABEL: Record<MemberStatus, string> = {
   active: '이용가능',
   banned: '정지회원',
-  deleted: '비활성화(회원삭제)',
+  deleted: '비활성화',
 };
 
 interface Penalty {
@@ -26,189 +25,190 @@ const AdminPenaltyEdit: React.FC = () => {
   const [selectedPenalty, setSelectedPenalty] = useState<Penalty | null>(
     penalties[0],
   );
+  // 편집 중인 상태를 관리 (현재는 초기값만 연동)
+  const [editForm, setEditForm] = useState<Penalty | null>(penalties[0]);
 
-  // 추가 폼
-  const [addMode, setAddMode] = useState(false);
-  const [newDate, setNewDate] = useState('');
-  const [newItem, setNewItem] = useState('');
-  const [newReason, setNewReason] = useState('');
+  // 선택이 바뀔 때 폼 상태도 업데이트
+  const handleSelectPenalty = (p: Penalty) => {
+    setSelectedPenalty(p);
+    setEditForm(p);
+  };
+
+  const handleAddMode = () => {
+    const newPenalty: Penalty = {
+      id: Date.now(),
+      date: '',
+      item: '',
+      reason: '',
+    };
+    setPenalties([...penalties, newPenalty]);
+    handleSelectPenalty(newPenalty);
+  };
+
+  const handleSave = () => {
+    if (!editForm) return;
+    setPenalties(penalties.map((p) => (p.id === editForm.id ? editForm : p)));
+    setSelectedPenalty(editForm);
+    alert('저장되었습니다.');
+  };
 
   const handleDelete = () => {
     if (!selectedPenalty) return;
     if (window.confirm('해당 징계 내역을 삭제하시겠습니까?')) {
-      const updated = penalties.filter((p) => p.id !== selectedPenalty.id);
-      setPenalties(updated);
-      setSelectedPenalty(updated[0] ?? null);
+      setPenalties(penalties.filter((p) => p.id !== selectedPenalty.id));
+      setSelectedPenalty(null);
+      setEditForm(null);
     }
   };
 
-  const handleStatusUpdate = () => {
-    alert(`회원 상태를 "${STATUS_LABEL[memberStatus]}"으로 수정했습니다.`);
-  };
-
-  const handleAddPenalty = () => {
-    if (!newDate || !newItem || !newReason) return;
-    const newEntry: Penalty = {
-      id: Date.now(),
-      date: newDate,
-      item: newItem,
-      reason: newReason,
-    };
-    setPenalties((prev) => [...prev, newEntry]);
-    setSelectedPenalty(newEntry);
-    setNewDate('');
-    setNewItem('');
-    setNewReason('');
-    setAddMode(false);
-  };
-
   return (
-    <div className="admin-penalty-container">
-      <h1 className="page-title">징계내역 수정</h1>
+    <div className="pt-2 pb-10 w-full mx-auto text-left">
+      <div className="w-[90%] mx-auto text-left">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-800 tracking-tight">
+            징계내역 수정
+          </h2>
+        </div>
 
-      <div className="penalty-edit-card">
-        <div className="edit-layout">
-          {/* 왼쪽 */}
-          <div className="edit-left">
-            {/* 회원 상태 변경 */}
-            <div className="status-change-section">
-              <span className="section-label">회원 상태</span>
-              <div className="status-button-group">
-                <div className="status-selector">
-                  <div className="status-selector-header">SMALL HEADING</div>
-                  {(['active', 'banned', 'deleted'] as MemberStatus[]).map(
-                    (s) => (
-                      <div
-                        key={s}
-                        className={`status-opt${s === 'deleted' ? ' ban' : ''}${memberStatus === s ? ' active' : ''}`}
-                        onClick={() => setMemberStatus(s)}
-                      >
-                        {STATUS_LABEL[s]}
-                      </div>
-                    ),
-                  )}
+        <div className="bg-white border border-gray-200 rounded-[15px] p-[50px] min-h-[850px] shadow-sm flex flex-col w-full h-full">
+          <div className="flex gap-12">
+            {/* 왼쪽 영역: 상태 변경 및 리스트 */}
+            <div className="flex-[2.5]">
+              <div className="flex items-start gap-6 mb-10 pb-8 border-b border-gray-50">
+                <div className="flex flex-col gap-2">
+                  <span className="text-sm font-bold text-gray-700">
+                    회원 상태 변경
+                  </span>
+                  <div className="flex border border-gray-200 rounded-lg overflow-hidden">
+                    {(['active', 'banned', 'deleted'] as MemberStatus[]).map(
+                      (s) => (
+                        <button
+                          key={s}
+                          onClick={() => setMemberStatus(s)}
+                          className={`px-4 py-2 text-xs font-bold transition-colors ${
+                            memberStatus === s
+                              ? 'bg-[#6c5ce7] text-white'
+                              : 'bg-white text-gray-500 hover:bg-gray-50'
+                          }`}
+                        >
+                          {STATUS_LABEL[s]}
+                        </button>
+                      ),
+                    )}
+                  </div>
                 </div>
-                <div className="status-info-box">
-                  <button
-                    className="btn-text-purple"
-                    onClick={handleStatusUpdate}
-                  >
-                    수정하기
-                  </button>
-                  <p className="status-help-text">
-                    징계내역이 3번 이상인 경우
-                    <br />
-                    징계내역을 지우고 상태수정
-                  </p>
-                </div>
+                <p className="text-[11px] text-blue-400 mt-8 leading-tight">
+                  * 징계 3회 누적 시<br />
+                  정지 회원으로 전환 권장
+                </p>
               </div>
-            </div>
 
-            {/* 징계 목록 */}
-            <div className="penalty-list-section">
-              <div className="list-header">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-sm font-bold text-gray-800">징계 기록</h3>
                 <button
-                  className="btn-outline-purple"
-                  onClick={() => setAddMode((v) => !v)}
+                  onClick={handleAddMode}
+                  className="text-[#6c5ce7] border border-[#6c5ce7] px-3 py-1 rounded text-xs font-bold hover:bg-indigo-50"
                 >
-                  내역추가
+                  내역 추가
                 </button>
               </div>
 
-              {/* 추가 폼 */}
-              {addMode && (
-                <div className="add-form">
-                  <input
-                    type="text"
-                    placeholder="날짜 (예: 2027.01.02)"
-                    value={newDate}
-                    onChange={(e) => setNewDate(e.target.value)}
-                  />
-                  <input
-                    type="text"
-                    placeholder="물품명 (예: 우산(102))"
-                    value={newItem}
-                    onChange={(e) => setNewItem(e.target.value)}
-                  />
-                  <input
-                    type="text"
-                    placeholder="사유"
-                    value={newReason}
-                    onChange={(e) => setNewReason(e.target.value)}
-                  />
-                  <div className="add-form-btns">
-                    <button
-                      className="btn-outline-purple"
-                      onClick={handleAddPenalty}
-                    >
-                      저장
-                    </button>
-                    <button
-                      className="btn-cancel-sm"
-                      onClick={() => setAddMode(false)}
-                    >
-                      취소
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              <table className="edit-table">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>날짜</th>
-                    <th>물품명</th>
-                    <th>사유</th>
+              <table className="w-full border-collapse">
+                <thead className="bg-slate-50 border-y border-gray-100">
+                  <tr className="text-gray-500 text-[11px] uppercase font-bold">
+                    <th className="p-3 text-left">날짜</th>
+                    <th className="p-3 text-left">물품명</th>
+                    <th className="p-3 text-left">사유</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-gray-50">
                   {penalties.map((p) => (
                     <tr
                       key={p.id}
-                      className={selectedPenalty?.id === p.id ? 'selected' : ''}
-                      onClick={() => setSelectedPenalty(p)}
-                      style={{ cursor: 'pointer' }}
+                      onClick={() => handleSelectPenalty(p)}
+                      className={`cursor-pointer transition-colors text-sm ${
+                        selectedPenalty?.id === p.id
+                          ? 'bg-indigo-50/50'
+                          : 'hover:bg-gray-50'
+                      }`}
                     >
-                      <td>{p.id}</td>
-                      <td>{p.date}</td>
-                      <td>{p.item}</td>
-                      <td>{p.reason}</td>
+                      <td className="p-3 py-4 text-gray-600">{p.date}</td>
+                      <td className="p-3 py-4 font-bold text-gray-800">
+                        {p.item}
+                      </td>
+                      <td className="p-3 py-4 text-gray-500">{p.reason}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-          </div>
 
-          {/* 오른쪽: 선택된 내역 상세 */}
-          <div className="edit-right">
-            {selectedPenalty ? (
-              <div className="penalty-detail-view">
-                <div className="input-group">
-                  <label>날짜</label>
-                  <input type="text" value={selectedPenalty.date} readOnly />
+            {/* 오른쪽 영역: 상세 정보 및 수정 */}
+            <div className="flex-1 border-l border-gray-100 pl-10">
+              <h4 className="text-xs font-bold text-gray-400 mb-6 uppercase tracking-wider">
+                상세 정보
+              </h4>
+              {selectedPenalty && editForm ? (
+                <div className="space-y-5">
+                  {[
+                    {
+                      label: '날짜',
+                      value: editForm.date,
+                      key: 'date' as keyof Penalty,
+                    },
+                    {
+                      label: '물품명',
+                      value: editForm.item,
+                      key: 'item' as keyof Penalty,
+                    },
+                    {
+                      label: '사유',
+                      value: editForm.reason,
+                      key: 'reason' as keyof Penalty,
+                    },
+                  ].map((field, idx) => (
+                    <div key={idx} className="flex flex-col gap-2">
+                      <label className="text-xs font-bold text-gray-500 ml-1">
+                        {field.label}
+                      </label>
+                      <input
+                        type="text"
+                        value={field.value}
+                        onChange={(e) =>
+                          setEditForm({
+                            ...editForm,
+                            [field.key]: e.target.value,
+                          })
+                        }
+                        className="w-full p-3 bg-slate-50 border border-gray-100 rounded-xl text-sm text-gray-700 outline-none focus:ring-2 focus:ring-indigo-100 transition-all"
+                      />
+                    </div>
+                  ))}
+                  <div className="flex justify-end gap-2 pt-4">
+                    <button
+                      type="button"
+                      onClick={handleSave}
+                      className="bg-[#6c5ce7] text-white px-5 py-2 rounded-lg text-xs font-bold shadow-md hover:bg-[#5a4ccb]"
+                    >
+                      저장
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleDelete}
+                      className="border border-red-400 text-red-500 px-5 py-2 rounded-lg text-xs font-bold hover:bg-red-50"
+                    >
+                      삭제
+                    </button>
+                  </div>
                 </div>
-                <div className="input-group">
-                  <label>물품명</label>
-                  <input type="text" value={selectedPenalty.item} readOnly />
+              ) : (
+                <div className="h-64 flex items-center justify-center text-gray-300 italic text-sm text-center">
+                  수정할 내역을
+                  <br />
+                  선택해주세요.
                 </div>
-                <div className="input-group">
-                  <label>사유</label>
-                  <input type="text" value={selectedPenalty.reason} readOnly />
-                </div>
-                <div className="action-row">
-                  <button
-                    className="btn-outline-purple small"
-                    onClick={handleDelete}
-                  >
-                    삭제
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="empty-view">항목을 선택해주세요.</div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>
