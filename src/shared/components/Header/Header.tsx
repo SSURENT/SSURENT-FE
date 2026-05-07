@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from 'react-router-dom';
+import { Navigate, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import logo from '../../assets/images/ssulogo.jpg';
 import '../../styles/App.css';
@@ -13,6 +13,8 @@ export default function Header() {
   const isLoggedIn = !!sessionStorage.getItem('accessToken');
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const navigate = useNavigate();
+  const goToMyPage = () => navigate('/mypage');
 
   const [user, setUser] = useState<{
     studentNum: string;
@@ -114,6 +116,7 @@ export default function Header() {
                         width: '45px',
                         height: '45px',
                       }}
+                      onClick={goToMyPage}
                     >
                       👤
                     </button>
