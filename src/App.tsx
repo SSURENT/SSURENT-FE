@@ -8,13 +8,9 @@ import Rent from './features/rent/pages/Rent';
 import Return from './features/return/pages/Return';
 import MyPage from './features/mypage/pages/MyPage';
 import Login from './features/auth/pages/Login';
-<<<<<<< HEAD
 import SendSmsCode from './features/auth/pages/SendSmsCode.tsx';
 import VerifyCode from './features/auth/pages/VerifySmsCode.tsx';
 import ResetPW from './features/auth/pages/ResetPW.tsx';
-=======
-import ChangePW from './features/auth/pages/RequestResetPW.tsx';
->>>>>>> ccfbfa6 (Refactor: import경로 수정 (#51))
 
 import Penalty from './features/mypage/pages/Penalty';
 import AdminItems from './features/admin/pages/AdminItems';
@@ -23,7 +19,6 @@ import AdminMemberDetail from './features/admin/pages/AdminMemberDetail';
 import AdminPenaltyEdit from './features/admin/pages/AdminPenaltyEdit';
 import AdminRentalEdit from './features/admin/pages/AdminRentalEdit';
 import { useAutoRefreshToken } from './hooks/UseAutoRefreshToken.ts';
-<<<<<<< HEAD
 import AdminStatistics from '../src/features/admin/pages/AdminStatistics.tsx';
 
 /** * 💡 핵심 수정 사항: MemberProvider 임포트
@@ -31,10 +26,6 @@ import AdminStatistics from '../src/features/admin/pages/AdminStatistics.tsx';
  */
 import { MemberProvider } from './features/admin/context/MemberContext';
 import AdminInspect from './features/admin/pages/AdminInspect.tsx';
-=======
-import AdminRoute from './shared/components/AdminRoute';
-import AdminStatistics from '../src/features/admin/pages/AdminStatistics.tsx';
->>>>>>> ccfbfa6 (Refactor: import경로 수정 (#51))
 
 // ============================================================
 // 개발용 가짜 인증 훅 (편의를 위해 항상 true)
