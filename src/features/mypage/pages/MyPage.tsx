@@ -8,17 +8,22 @@ import { useSubmitPhoneNum } from '../../../hooks/UseSubmitPhoneNum';
 
 export default function MyPage() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
   const { isUserInfoLoading, isUserInfoError } = useGetUserInfo();
   const { handleLogout, isLogoutLoading, isLogoutError } = useLogout();
+
   const {
     handleSubmitPhoneNum,
     isSubmitPhoneNumLoading,
     isSubmitPhoneNumError,
   } = useSubmitPhoneNum();
+
   const { handleChangePhoneNum, newPhoneNum, isPhoneNumFormatError } =
     useChangePhoneNum();
+
   const navigate = useNavigate();
   const goToPenalty = () => navigate('/penalty');
+
   const { name, studentNum, role, status, phoneNum } = useUserInfo();
 
   const roleLabel: Record<string, string> = {
@@ -34,106 +39,181 @@ export default function MyPage() {
 
   if (isUserInfoLoading || isLogoutLoading || isSubmitPhoneNumLoading) {
     return (
-      <div className="text-center py-5">
-        <div className="spinner-border text-primary mb-3" />
-        <div>요청 처리 중...</div>
+      <div className="flex flex-col items-center justify-center py-32">
+        <div className="spinner-border text-primary mb-4" />
+        <p className="text-xl font-semibold">요청 처리 중...</p>
       </div>
     );
   }
 
   if (isUserInfoError || isLogoutError || isSubmitPhoneNumError) {
     return (
-      <div className="alert alert-danger text-center">
-        요청 처리 중 문제가 발생했습니다.
+      <div className="flex justify-center py-20">
+        <div className="bg-red-100 text-red-600 px-8 py-4 rounded-lg font-bold">
+          요청 처리 중 문제가 발생했습니다.
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="py-8">
-      <h1 className="text-4xl font-bold mb-8">마이페이지</h1>
+    <div className="w-full min-h-screen bg-[#F5F5F5] py-10 px-6">
+      {/* 제목 */}
+      <h1 className="text-center text-7xl font-black mb-12">마이페이지</h1>
 
-      <div className="flex flex-col items-center gap-4">
-        {/* 정보 카드 */}
-        <div className="border border-[#B3B3B3] w-full px-20 py-12 shadow-sm flex flex-col gap-2">
-          <p className="font-bold text-xl">이름 : {name}</p>
-          <p className="font-bold text-xl">학번 : {studentNum}</p>
-          <p className="font-bold text-xl">권한 : {roleLabel[role] ?? role}</p>
-          <p className="font-bold text-xl">
-            이용 상태 : {stateLabel[status] ?? status}
-          </p>
-          <div className="flex items-center gap-4">
-            <p className="font-bold text-xl">전화번호 : {phoneNum}</p>
+      {/* 메인 카드 */}
+      <div className="max-w-5xl mx-auto border border-gray-300 bg-white px-24 py-20">
+        <div className="flex flex-col items-center gap-10 text-3xl font-bold">
+          <p>이름 : {name}</p>
+
+          <p>학번 : {studentNum}</p>
+
+          <p>{roleLabel[role] ?? role}</p>
+
+          <p>이용 상태 : {stateLabel[status] ?? status}</p>
+
+          {/* 전화번호 */}
+          <div className="flex items-center gap-8">
+            <p>전화번호 : {phoneNum}</p>
+
             <button
               onClick={() => setIsModalOpen(true)}
-              className="border border-[#DC3545] text-[#DC3545] rounded px-4 py-1 text-sm"
+              className="
+                border
+                border-gray-300
+                rounded-xl
+                px-10
+                py-3
+                text-[#C96B6B]
+                text-2xl
+                font-medium
+                hover:bg-gray-50
+                transition
+              "
             >
               번호변경
             </button>
           </div>
         </div>
+      </div>
 
-        {/* 하단 버튼 */}
-        <div className="flex justify-between w-full gap-4">
-          <button
-            className="flex-1 font-bold border border-[#6610F2] rounded-lg text-[#6610F2] py-4 text-lg"
-            onClick={goToPenalty}
-          >
-            징계내역보기
-          </button>
-          <button
-            className="flex-1 font-bold border border-[#6610F2] rounded-lg text-[#6610F2] py-4 text-lg"
-            onClick={handleLogout}
-            disabled={isLogoutLoading}
-          >
-            {isLogoutLoading ? '처리 중 ...' : '로그아웃'}
-          </button>
-        </div>
+      {/* 하단 버튼 */}
+      <div className="max-w-5xl mx-auto flex gap-10 mt-12">
+        <button
+          onClick={goToPenalty}
+          className="
+            flex-1
+            h-36
+            border
+            border-gray-300
+            bg-white
+            text-[#6C2BFF]
+            text-4xl
+            font-bold
+            hover:bg-gray-50
+            transition
+          "
+        >
+          징계내역보기
+        </button>
+
+        <button
+          onClick={handleLogout}
+          disabled={isLogoutLoading}
+          className="
+            flex-1
+            h-36
+            border
+            border-gray-300
+            bg-white
+            text-[#6C2BFF]
+            text-4xl
+            font-bold
+            hover:bg-gray-50
+            transition
+          "
+        >
+          {isLogoutLoading ? '처리 중 ...' : '로그아웃'}
+        </button>
       </div>
 
       {/* 전화번호 변경 모달 */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white p-8 relative w-[480px] rounded-xl shadow-2xl flex flex-col gap-6 border border-gray-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="relative w-[520px] bg-white rounded-2xl px-10 py-12 shadow-2xl">
+            {/* 닫기 버튼 */}
             <button
               onClick={() => setIsModalOpen(false)}
-              className="absolute top-4 right-4"
+              className="absolute top-5 right-5 text-2xl"
             >
               ✕
             </button>
 
-            <h1 className="text-2xl font-bold text-center">전화번호 변경</h1>
+            <h2 className="text-3xl font-bold text-center mb-10">
+              전화번호 변경
+            </h2>
 
-            <div className="flex flex-col gap-2">
-              <div className="flex flex-row gap-8 items-center">
-                <p className="ml-4 font-bold">번호 변경:</p>
+            <div className="flex flex-col gap-6">
+              <div className="flex items-center justify-between">
+                <p className="font-bold text-xl">번호 변경 :</p>
+
                 <input
                   type="text"
                   value={newPhoneNum}
                   onChange={handleChangePhoneNum}
-                  className="border border-gray-300 w-64 rounded-sm px-2 py-1"
-                  placeholder="전화번호 입력(010-xxxx-xxxx)"
+                  placeholder="010-0000-0000"
+                  className="
+                    w-72
+                    border
+                    border-gray-300
+                    rounded-lg
+                    px-4
+                    py-3
+                    text-lg
+                    outline-none
+                    focus:border-[#6610F2]
+                  "
                 />
               </div>
+
               {isPhoneNumFormatError && (
-                <p className="text-[#AA0000] text-[11px] font-bold ml-26">
+                <p className="text-red-600 text-sm font-semibold text-right">
                   유효하지 않은 입력입니다
                 </p>
               )}
 
-              <hr />
-
-              <div className="flex justify-between w-[400px]">
+              <div className="border-t pt-8 flex justify-center gap-6">
                 <button
                   onClick={() => handleSubmitPhoneNum(newPhoneNum)}
                   disabled={isPhoneNumFormatError}
-                  className="text-white font-bold border border-[#6610F2] bg-[#6610F2] rounded-lg px-8 py-3 ml-24"
+                  className="
+                    bg-[#6610F2]
+                    text-white
+                    font-bold
+                    px-10
+                    py-3
+                    rounded-xl
+                    hover:opacity-90
+                    transition
+                    disabled:opacity-50
+                  "
                 >
                   확인
                 </button>
+
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="font-bold border border-[#6610F2] rounded-lg text-[#6610F2] px-8 py-3 mr-24"
+                  className="
+                    border
+                    border-[#6610F2]
+                    text-[#6610F2]
+                    font-bold
+                    px-10
+                    py-3
+                    rounded-xl
+                    hover:bg-[#F5F0FF]
+                    transition
+                  "
                 >
                   취소
                 </button>
