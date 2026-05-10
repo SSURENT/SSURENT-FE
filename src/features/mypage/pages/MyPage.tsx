@@ -58,7 +58,7 @@ export default function MyPage() {
         <div className="border border-[#B3B3B3] w-full px-20 py-12 shadow-sm flex flex-col gap-2">
           <p className="font-bold text-xl">이름 : {name}</p>
           <p className="font-bold text-xl">학번 : {studentNum}</p>
-          <p className="font-bold text-xl">{roleLabel[role] ?? role}</p>
+          <p className="font-bold text-xl">권한 : {roleLabel[role] ?? role}</p>
           <p className="font-bold text-xl">
             이용 상태 : {stateLabel[status] ?? status}
           </p>
