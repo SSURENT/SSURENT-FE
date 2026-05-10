@@ -57,7 +57,7 @@ export default function MyPage() {
   }
 
   return (
-    <div className="w-full min-h-screen bg-[#F5F5F5] py-10 px-6">
+    <div className="w-full min-h-screen py-10 px-6">
       {/* 제목 */}
       <h1 className="text-center text-7xl font-black mb-12">마이페이지</h1>
 
