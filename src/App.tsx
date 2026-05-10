@@ -120,7 +120,8 @@ const App: React.FC = () => {
           </ProtectedRoute>
         }
       >
-        <Route index element={<Navigate to="items" replace />} />
+        {/* <Route index element={<Navigate to="items" replace />} /> */}
+        <Route index element={<Navigate to="/" replace />} />
         <Route path="items" element={<AdminItems />} />
         <Route path="users" element={<AdminMembers />} />
         <Route path="users/:id" element={<AdminMemberDetail />} />

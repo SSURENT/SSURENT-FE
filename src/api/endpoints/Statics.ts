@@ -37,9 +37,6 @@ export const getMonthlyRentalCounts = async (
 
   const res = await apiClient<BaseResponseDto<MonthlyRentalStatsResponseDto>>(
     `/v1/admin/rentals/rental-statistics?${queryParams}`,
-    {
-      body: JSON.stringify(data),
-    },
   );
 
   return res.data;

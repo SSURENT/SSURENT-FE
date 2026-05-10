@@ -1,9 +1,9 @@
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import logo from '../../assets/images/ssulogo.jpg';
 import '../../styles/App.css';
 import './Header.css';
-
+import { useAuthStore } from '../../../features/auth/store/useAuthStore';
 import { useEffect, useRef, useState } from 'react';
 
 export default function Header() {
@@ -13,6 +13,11 @@ export default function Header() {
   const isLoggedIn = !!sessionStorage.getItem('accessToken');
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const role = useAuthStore((state) => state.role);
+  const isAdmin = role === 'admin';
+  console.log(`Header.tsx__role: ${role}`);
+  const navigate = useNavigate();
+  const goToMyPage = () => navigate('/mypage');
 
   const [user, setUser] = useState<{
     studentNum: string;
@@ -78,15 +83,34 @@ export default function Header() {
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink to="/info" className={linkClass}>
-                  정보
-                </NavLink>
-              </li>
-              <li className="nav-item">
                 <NavLink to="/mypage" className={linkClass}>
                   마이페이지
                 </NavLink>
               </li>
+              {isAdmin && (
+                <>
+                  <li className="nav-item">
+                    <NavLink to="/admin/items" className={linkClass}>
+                      물품관리
+                    </NavLink>
+                  </li>
+                  <li className="nav-item">
+                    <NavLink to="/admin/users" className={linkClass}>
+                      회원관리
+                    </NavLink>
+                  </li>
+                  <li className="nav-item">
+                    <NavLink to="/admin/stats" className={linkClass}>
+                      통계
+                    </NavLink>
+                  </li>
+                  <li className="nav-item">
+                    <NavLink to="/admin/inspect" className={linkClass}>
+                      검수하기
+                    </NavLink>
+                  </li>
+                </>
+              )}
             </ul>
 
             {!hideLoginButton && (
@@ -114,6 +138,7 @@ export default function Header() {
                         width: '45px',
                         height: '45px',
                       }}
+                      onClick={goToMyPage}
                     >
                       👤
                     </button>

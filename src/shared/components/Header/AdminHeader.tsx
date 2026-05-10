@@ -45,6 +45,21 @@ const AdminHeader: React.FC = () => {
             <ul className="navbar-nav d-flex flex-row ms-5 mb-0">
               <li className="nav-item">
                 <NavLink to="/admin/items" className={linkClass}>
+                  대여하기
+                </NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink to="/admin/items" className={linkClass}>
+                  반납하기
+                </NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink to="/admin/items" className={linkClass}>
+                  마이페이지
+                </NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink to="/admin/items" className={linkClass}>
                   물품 관리
                 </NavLink>
               </li>
@@ -54,13 +69,13 @@ const AdminHeader: React.FC = () => {
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink to="/admin/inspect" className={linkClass}>
-                  물품 검수
+                <NavLink to="/admin/stats" className={linkClass}>
+                  통계
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink to="/admin/stats" className={linkClass}>
-                  통계
+                <NavLink to="/admin/items" className={linkClass}>
+                  검수하기
                 </NavLink>
               </li>
             </ul>
