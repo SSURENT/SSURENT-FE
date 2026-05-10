@@ -1,4 +1,4 @@
-import { Navigate, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import logo from '../../assets/images/ssulogo.jpg';
 import '../../styles/App.css';
