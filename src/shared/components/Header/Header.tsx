@@ -5,6 +5,7 @@ import '../../styles/App.css';
 import './Header.css';
 import { useAuthStore } from '../../../features/auth/store/useAuthStore';
 import { useEffect, useRef, useState } from 'react';
+import AdminHeader from './AdminHeader';
 
 export default function Header() {
   const location = useLocation();
@@ -25,13 +26,7 @@ export default function Header() {
     phoneNum: string;
   } | null>(null);
 
-  const linkClass = ({ isActive }: { isActive: boolean }) =>
-    'nav-link px-3 link-dark fw-bold' + (isActive ? ' active' : '');
-
   const profileRef = useRef<HTMLDivElement>(null);
-
-  const toggleNavbar = () => setIsOpen(!isOpen);
-  const closeNavbar = () => setIsOpen(false);
 
   useEffect(() => {
     const storedUser = sessionStorage.getItem('user');
@@ -39,6 +34,17 @@ export default function Header() {
       setUser(JSON.parse(storedUser));
     }
   }, []);
+
+  // admin이면 AdminHeader를 대신 렌더링 (모든 hooks 이후에 위치해야 함)
+  if (isAdmin) {
+    return <AdminHeader />;
+  }
+
+  const linkClass = ({ isActive }: { isActive: boolean }) =>
+    'nav-link px-3 link-dark fw-bold' + (isActive ? ' active' : '');
+
+  const toggleNavbar = () => setIsOpen(!isOpen);
+  const closeNavbar = () => setIsOpen(false);
 
   return (
     <div className="container">
