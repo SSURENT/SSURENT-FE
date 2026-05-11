@@ -10,8 +10,9 @@ import {
   LineChart,
   Line,
 } from 'recharts';
-import { CategoryInfo } from '../../../types/Statistics';
 import { useGetStatics } from '../../../hooks/UseGetStatistics';
+import { adminCategoryApi } from '../../../api/endpoints/AdminCategory';
+import { AdminCategoryResponseDto } from '../../../api/dto/AdminCategory.dto';
 
 export const AdminStatistics: React.FC = () => {
   const [startDate, setStartDate] = useState('');
@@ -55,15 +56,20 @@ export const AdminStatistics: React.FC = () => {
     isError,
   } = useGetStatics();
 
-  // 카테고리 목록 (정적 리스트)
-  const categories: CategoryInfo[] = [
-    { categoryId: 1, categoryName: '우산', rentalCount: 0 },
-    { categoryId: 2, categoryName: '보조배터리', rentalCount: 0 },
-    { categoryId: 3, categoryName: '충전케이블', rentalCount: 0 },
-    { categoryId: 4, categoryName: '자', rentalCount: 0 },
-    { categoryId: 5, categoryName: '스테이플러', rentalCount: 0 },
-    { categoryId: 6, categoryName: 'CtoC', rentalCount: 0 },
-  ];
+  // 카테고리 목록 (API에서 동적 로딩)
+  const [categories, setCategories] = useState<AdminCategoryResponseDto[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await adminCategoryApi.getCategories();
+        setCategories(data);
+      } catch (err) {
+        console.error('카테고리 목록 조회 실패', err);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   // 드롭다운 바깥 클릭 시 닫기
   useEffect(() => {
@@ -142,7 +148,9 @@ export const AdminStatistics: React.FC = () => {
                     return;
                   }
                   handleSearch(
-                    selectedCategoryId.toString(),
+                    selectedCategoryId === 0
+                      ? 'ALL'
+                      : selectedCategoryId.toString(),
                     startDate,
                     endDate,
                   );

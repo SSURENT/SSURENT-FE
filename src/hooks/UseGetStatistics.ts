@@ -40,13 +40,6 @@ export const useGetStatics = () => {
       });
       setMonthRentalInfoData(monthItemRes.monthRentalInfo);
 
-      const categoryData: CategoryInfo[] = [];
-
-      const monthData: MonthRentalInfo[] = [];
-
-      // 검색 버튼을 누르는 시점에 상태를 업데이트하여 차트가 반응하도록 함
-      setCategoryInfoData(categoryData);
-      setMonthRentalInfoData(monthData);
       setIsLoading(false);
     } catch (error) {
       setIsError(true);

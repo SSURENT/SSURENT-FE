@@ -1,99 +1,164 @@
-import React, { useState } from 'react';
-
-interface Item {
-  id: number;
-  name: string;
-  code: string;
-  status: string;
-  condition?: string;
-}
+import React, { useState, useEffect } from 'react';
+import { adminCategoryApi } from '../../../api/endpoints/AdminCategory';
+import { adminItemApi } from '../../../api/endpoints/AdminItem';
+import { AdminCategoryResponseDto } from '../../../api/dto/AdminCategory.dto';
+import { AdminItemResponseDto } from '../../../api/dto/AdminItem.dto';
 
 const AdminItems: React.FC = () => {
   const [isItemModalOpen, setItemModalOpen] = useState(false);
   const [isCategoryModalOpen, setCategoryModalOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('전체');
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
+    null,
+  );
 
-  const [items, setItems] = useState<Item[]>([
-    { id: 1, name: '우산', code: '101', status: '보관중', condition: 'normal' },
-    { id: 2, name: '우산', code: '102', status: '대여중', condition: 'normal' },
-    {
-      id: 3,
-      name: '보조배터리',
-      code: '201',
-      status: '보관중',
-      condition: 'normal',
-    },
-    {
-      id: 4,
-      name: '충전케이블',
-      code: '301',
-      status: '대여중',
-      condition: 'damaged',
-    },
-    { id: 5, name: '자', code: '401', status: '보관중', condition: 'lost' },
-  ]);
+  const [items, setItems] = useState<AdminItemResponseDto[]>([]);
+  const [categories, setCategories] = useState<AdminCategoryResponseDto[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const [searchCode, setSearchCode] = useState('');
-  const [isSaving, setIsSaving] = useState(false);
 
-  const [categories, setCategories] = useState([
-    '자',
-    '우산',
-    '보조배터리',
-    '충전케이블',
-    '스테이플러',
-    'CtoC',
-  ]);
-
-  const [newItemName, setNewItemName] = useState('');
+  const [newItemCategory, setNewItemCategory] = useState('');
   const [newItemCode, setNewItemCode] = useState('');
   const [newCategory, setNewCategory] = useState('');
 
-  const handleDeleteItem = (id: number) => {
-    setItems(items.filter((item) => item.id !== id));
+  // 카테고리 목록 조회
+  const fetchCategories = async () => {
+    try {
+      const data = await adminCategoryApi.getCategories();
+      setCategories(data);
+    } catch (err) {
+      console.error('카테고리 목록 조회 실패', err);
+    }
   };
 
-  const handleAddItem = () => {
-    if (!newItemName || !newItemCode) return;
-    setItems([
-      ...items,
-      {
-        id: Date.now(),
-        name: newItemName,
-        code: newItemCode,
-        status: '보관중',
-        condition: 'normal',
-      },
-    ]);
-    setNewItemName('');
-    setNewItemCode('');
-    setItemModalOpen(false);
+  // 물품 목록 조회
+  const fetchItems = async (categoryId?: number) => {
+    try {
+      setLoading(true);
+      const data = await adminItemApi.getItems(categoryId);
+      console.log(
+        '📦 AdminItems API 응답:',
+        JSON.stringify(data?.[0], null, 2),
+      );
+      setItems(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error('물품 목록 조회 실패', err);
+      setItems([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleAddCategory = () => {
-    if (!newCategory || categories.includes(newCategory)) return;
-    setCategories([...categories, newCategory]);
-    setNewCategory('');
+  useEffect(() => {
+    fetchCategories();
+    fetchItems();
+  }, []);
+
+  // 카테고리 변경 시 물품 재조회
+  const handleCategoryChange = (value: string) => {
+    if (value === '전체') {
+      setSelectedCategoryId(null);
+      fetchItems();
+    } else {
+      const catId = Number(value);
+      setSelectedCategoryId(catId);
+      fetchItems(catId);
+    }
   };
 
-  const handleDeleteCategory = (cat: string) => {
-    if (items.some((item) => item.name === cat)) {
-      alert('해당 카테고리에 속한 물품이 있어 삭제할 수 없습니다.');
+  // 물품 추가
+  const handleAddItem = async () => {
+    if (!newItemCategory || !newItemCode) return;
+    try {
+      await adminItemApi.createItem({
+        categoryName: newItemCategory,
+        itemNum: newItemCode,
+      });
+      setNewItemCategory('');
+      setNewItemCode('');
+      setItemModalOpen(false);
+      await fetchItems(selectedCategoryId ?? undefined);
+    } catch (err) {
+      console.error('물품 추가 실패', err);
+      alert('물품 추가에 실패했습니다.');
+    }
+  };
+
+  // 카테고리 추가
+  const handleAddCategory = async () => {
+    if (!newCategory) return;
+    if (categories.some((c) => c.categoryName === newCategory)) {
+      alert('이미 존재하는 카테고리입니다.');
       return;
     }
-    setCategories(categories.filter((c) => c !== cat));
+    try {
+      await adminCategoryApi.createCategory({ categoryName: newCategory });
+      setNewCategory('');
+      await fetchCategories();
+    } catch (err) {
+      console.error('카테고리 추가 실패', err);
+      alert('카테고리 추가에 실패했습니다.');
+    }
   };
 
-  const handleSaveSystemData = async () => {
-    setIsSaving(true);
+  // 카테고리 삭제
+  const handleDeleteCategory = async (cat: AdminCategoryResponseDto) => {
+    if (window.confirm(`"${cat.categoryName}" 카테고리를 삭제하시겠습니까?`)) {
+      try {
+        await adminCategoryApi.deleteCategory(cat.categoryId);
+        await fetchCategories();
+      } catch (err) {
+        console.error('카테고리 삭제 실패', err);
+        alert('카테고리 삭제에 실패했습니다.');
+      }
+    }
+  };
+
+  // 물품 상태 토글 (ACTIVE ↔ INACTIVE)
+  const handleToggleItemStatus = async (item: AdminItemResponseDto) => {
+    const newStatus = item.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
     try {
-      // TODO: Call real API endpoint (e.g., apiClient for sync)
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      alert('데이터가 성공적으로 동기화되었습니다.');
-    } catch (error) {
-      alert('데이터 동기화 중 오류가 발생했습니다.');
-    } finally {
-      setIsSaving(false);
+      await adminItemApi.updateItemStatus({
+        itemUpdates: [{ itemId: item.itemId, status: newStatus }],
+      });
+      await fetchItems(selectedCategoryId ?? undefined);
+    } catch (err) {
+      console.error('물품 상태 변경 실패', err);
+      alert('물품 상태 변경에 실패했습니다.');
+    }
+  };
+
+  // 검색
+  const filteredItems = items.filter((item) =>
+    searchCode.trim() === ''
+      ? true
+      : item.itemName.includes(searchCode.trim()) ||
+        item.itemDescription?.includes(searchCode.trim()),
+  );
+
+  const getConditionLabel = (condition: string) => {
+    switch (condition) {
+      case 'KEEP':
+        return '보관중';
+      case 'RENT':
+        return '대여중';
+      case 'OVERDUE':
+        return '연체';
+      default:
+        return condition;
+    }
+  };
+
+  const getConditionStyle = (condition: string) => {
+    switch (condition) {
+      case 'RENT':
+        return 'bg-orange-50 text-orange-500';
+      case 'KEEP':
+        return 'bg-blue-50 text-blue-500';
+      case 'OVERDUE':
+        return 'bg-red-50 text-red-500';
+      default:
+        return 'bg-gray-50 text-gray-500';
     }
   };
 
@@ -112,19 +177,19 @@ const AdminItems: React.FC = () => {
             <div className="flex gap-4">
               <select
                 className="border border-gray-300 rounded-lg px-4 py-2 text-sm font-bold bg-white cursor-pointer hover:bg-gray-50 outline-none focus:ring-2 focus:ring-indigo-100 transition"
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
+                value={selectedCategoryId ?? '전체'}
+                onChange={(e) => handleCategoryChange(e.target.value)}
               >
                 <option value="전체">전체</option>
                 {categories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
+                  <option key={cat.categoryId} value={cat.categoryId}>
+                    {cat.categoryName}
                   </option>
                 ))}
               </select>
               <input
                 type="text"
-                placeholder="물품 코드를 입력하세요"
+                placeholder="물품명을 입력하세요"
                 className="border border-gray-200 rounded-full px-6 py-2 w-80 outline-none focus:ring-2 focus:ring-indigo-100 text-sm bg-[#fcfcfc]"
                 value={searchCode}
                 onChange={(e) => setSearchCode(e.target.value)}
@@ -146,64 +211,66 @@ const AdminItems: React.FC = () => {
             </div>
           </div>
 
-          {/* 물품 그리드: MemberList와 통일된 레이아웃 */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6 flex-1">
-            {items
-              .filter(
-                (item) =>
-                  selectedCategory === '전체' || item.name === selectedCategory,
-              )
-              .filter((item) => item.code.includes(searchCode.trim()))
-              .map((item) => (
+          {/* 물품 그리드 */}
+          {loading ? (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#6c5ce7]"></div>
+              <span className="ml-3 text-gray-500 text-sm">로딩 중...</span>
+            </div>
+          ) : filteredItems.length === 0 ? (
+            <div className="flex-1 flex items-center justify-center text-gray-400 text-sm">
+              물품이 없습니다.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6 flex-1">
+              {filteredItems.map((item) => (
                 <div
-                  key={item.id}
-                  className="h-44 border border-[#f0f0f0] rounded-2xl p-6 flex flex-col justify-between hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer bg-white group shadow-sm"
+                  key={item.itemId}
+                  className={`h-44 border rounded-2xl p-6 flex flex-col justify-between hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer group shadow-sm ${
+                    item.status === 'INACTIVE'
+                      ? 'border-gray-300 bg-gray-50 opacity-60'
+                      : 'border-[#f0f0f0] bg-white'
+                  }`}
                 >
                   <div className="flex justify-between items-start">
                     <span className="text-lg font-bold text-gray-800 group-hover:text-[#6c5ce7] transition-colors">
-                      {item.name}({item.code})
+                      {item.itemName}
                     </span>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleDeleteItem(item.id);
+                        handleToggleItemStatus(item);
                       }}
-                      className="text-gray-300 hover:text-red-500 text-xl transition-colors font-bold leading-none select-none"
-                      title="물품 삭제"
+                      className={`text-xs font-bold px-2 py-0.5 rounded transition-colors ${
+                        item.status === 'ACTIVE'
+                          ? 'text-red-400 hover:text-red-600 hover:bg-red-50'
+                          : 'text-green-400 hover:text-green-600 hover:bg-green-50'
+                      }`}
+                      title={item.status === 'ACTIVE' ? '비활성화' : '활성화'}
                     >
-                      ✕
+                      {item.status === 'ACTIVE' ? '비활성화' : '활성화'}
                     </button>
                   </div>
                   <div className="flex justify-between items-center">
                     <span
-                      className={`text-[11px] font-bold px-3 py-1 rounded-full ${item.status === '대여중' ? 'bg-orange-50 text-orange-500' : 'bg-blue-50 text-blue-500'}`}
+                      className={`text-[11px] font-bold px-3 py-1 rounded-full ${getConditionStyle(item.condition)}`}
                     >
-                      {item.status}
+                      {getConditionLabel(item.condition)}
                     </span>
-                    <span className="text-[10px] bg-slate-100 px-3 py-1 rounded-full font-bold text-slate-500">
-                      {item.condition === 'normal'
-                        ? '정상'
-                        : item.condition === 'damaged'
-                          ? '파손'
-                          : item.condition === 'lost'
-                            ? '분실'
-                            : '기타'}
+                    <span
+                      className={`text-[10px] px-3 py-1 rounded-full font-bold ${
+                        item.status === 'ACTIVE'
+                          ? 'bg-emerald-50 text-emerald-500'
+                          : 'bg-slate-100 text-slate-400'
+                      }`}
+                    >
+                      {item.status === 'ACTIVE' ? '활성' : '비활성'}
                     </span>
                   </div>
                 </div>
               ))}
-          </div>
-
-          {/* 하단 저장 버튼 */}
-          <div className="mt-10 pt-8 border-t border-gray-100 flex justify-end">
-            <button
-              onClick={handleSaveSystemData}
-              disabled={isSaving}
-              className="bg-[#6c5ce7] text-white px-10 py-3 rounded-xl text-sm font-bold shadow-lg hover:bg-[#5a4ccb] active:scale-95 transition-all disabled:bg-gray-400"
-            >
-              {isSaving ? '동기화 중...' : '시스템 데이터 동기화 및 저장'}
-            </button>
-          </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -232,16 +299,16 @@ const AdminItems: React.FC = () => {
             <div className="space-y-4">
               <select
                 className="w-full border border-gray-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-indigo-100 cursor-pointer bg-white"
-                value={newItemName}
-                onChange={(e) => setNewItemName(e.target.value)}
+                value={newItemCategory}
+                onChange={(e) => setNewItemCategory(e.target.value)}
                 autoFocus
               >
                 <option value="" disabled>
                   카테고리 선택 (물품명)
                 </option>
                 {categories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
+                  <option key={cat.categoryId} value={cat.categoryName}>
+                    {cat.categoryName}
                   </option>
                 ))}
               </select>
@@ -288,11 +355,11 @@ const AdminItems: React.FC = () => {
             <div className="space-y-2 mb-6 max-h-40 overflow-y-auto pr-2">
               {categories.map((cat) => (
                 <div
-                  key={cat}
+                  key={cat.categoryId}
                   className="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
                 >
                   <span className="text-sm font-medium text-gray-700">
-                    {cat}
+                    {cat.categoryName}
                   </span>
                   <button
                     onClick={() => handleDeleteCategory(cat)}
@@ -324,7 +391,7 @@ const AdminItems: React.FC = () => {
                 onClick={() => setCategoryModalOpen(false)}
                 className="px-5 py-2.5 bg-[#6c5ce7] text-white rounded-xl font-bold hover:bg-[#5a4ccb] transition shadow-md"
               >
-                저장 및 닫기
+                닫기
               </button>
             </div>
           </div>

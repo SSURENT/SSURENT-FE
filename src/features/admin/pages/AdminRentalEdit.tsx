@@ -1,53 +1,57 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-interface Rental {
-  id: number;
-  item: string;
-  rentDate: string;
-  dueDate: string;
-}
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { adminRentalApi } from '../../../api/endpoints/AdminRental';
+import { UserRentalHistoryDto } from '../../../api/dto/AdminRental.dto';
 
 const AdminRentalEdit: React.FC = () => {
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const userId = Number(id);
 
-  const [entries, setEntries] = useState<Rental[]>([
-    { id: 1, item: '우산(101)', rentDate: '2026.01.25', dueDate: '2026.01.28' },
-  ]);
-  const [selectedEntry, setSelectedEntry] = useState<Rental | null>(
-    entries[0] || null,
-  );
-  const [editForm, setEditForm] = useState<Rental | null>(entries[0] || null);
+  const [entries, setEntries] = useState<UserRentalHistoryDto[]>([]);
+  const [selectedEntry, setSelectedEntry] =
+    useState<UserRentalHistoryDto | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const handleSelect = (r: Rental) => {
-    setSelectedEntry(r);
-    setEditForm(r);
+  const fetchRentals = async () => {
+    try {
+      setLoading(true);
+      const data = await adminRentalApi.getUserRentalHistory({ userId });
+      setEntries(data);
+      if (data.length > 0) setSelectedEntry(data[0]);
+    } catch (err) {
+      console.error('대여 내역 조회 실패', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleAddEntry = () => {
-    const newEntry: Rental = {
-      id: Date.now(),
-      item: '',
-      rentDate: '',
-      dueDate: '',
-    };
-    setEntries([...entries, newEntry]);
-    handleSelect(newEntry);
-  };
+  useEffect(() => {
+    if (userId) fetchRentals();
+  }, [userId]);
 
-  const onSaveEdit = () => {
-    if (!editForm) return;
-    setEntries(entries.map((e) => (e.id === editForm.id ? editForm : e)));
-    setSelectedEntry(editForm);
-    alert('저장되었습니다.');
-  };
-
-  const onDeleteRecord = () => {
+  const handleForceReturn = async () => {
     if (!selectedEntry) return;
-    setEntries(entries.filter((e) => e.id !== selectedEntry.id));
-    setSelectedEntry(null);
-    setEditForm(null);
+    if (window.confirm('해당 대여를 강제 반납 처리하시겠습니까?')) {
+      try {
+        await adminRentalApi.forceReturn({ rentalId: selectedEntry.rentalId });
+        alert('강제 반납이 완료되었습니다.');
+        setSelectedEntry(null);
+        await fetchRentals();
+      } catch (err) {
+        console.error('강제 반납 실패', err);
+        alert('강제 반납에 실패했습니다.');
+      }
+    }
   };
+
+  if (loading)
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#6c5ce7]"></div>
+        <span className="ml-3 text-gray-500 text-sm">로딩 중...</span>
+      </div>
+    );
 
   return (
     <div className="pt-2 pb-10 w-full mx-auto text-left">
@@ -63,21 +67,13 @@ const AdminRentalEdit: React.FC = () => {
             ← 뒤로가기
           </button>
         </div>
-
         <div className="bg-white border border-gray-200 rounded-[15px] p-[50px] min-h-[850px] shadow-sm flex flex-col w-full h-full">
           <div className="flex gap-12">
-            {/* 왼쪽: 리스트 */}
             <div className="flex-[2.5]">
               <div className="flex justify-between items-center mb-4">
                 <span className="text-xs text-gray-400 italic font-medium">
-                  대여 기록 리스트를 선택하여 수정하세요.
+                  대여 기록 리스트를 선택하여 관리하세요.
                 </span>
-                <button
-                  onClick={handleAddEntry}
-                  className="text-[#6c5ce7] border border-[#6c5ce7] px-3 py-1 rounded-md text-xs font-bold hover:bg-indigo-50"
-                >
-                  내역 추가
-                </button>
               </div>
               <table className="w-full border-collapse">
                 <thead className="bg-slate-50 border-y border-gray-100">
@@ -85,89 +81,102 @@ const AdminRentalEdit: React.FC = () => {
                     <th className="p-4 text-left">물품명</th>
                     <th className="p-4 text-left">대여일</th>
                     <th className="p-4 text-left">반납기한</th>
+                    <th className="p-4 text-left">반납일</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
-                  {entries.map((r) => (
-                    <tr
-                      key={r.id}
-                      onClick={() => handleSelect(r)}
-                      className={`cursor-pointer transition-colors ${
-                        selectedEntry?.id === r.id
-                          ? 'bg-indigo-50/50'
-                          : 'hover:bg-gray-50'
-                      }`}
-                    >
-                      <td className="p-4 text-sm font-bold text-gray-700">
-                        {r.item || '(없음)'}
-                      </td>
-                      <td className="p-4 text-sm text-gray-500 font-medium">
-                        {r.rentDate}
-                      </td>
-                      <td className="p-4 text-sm text-red-500 font-bold">
-                        {r.dueDate}
+                  {entries.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={4}
+                        className="p-8 text-center text-gray-400 text-sm"
+                      >
+                        대여 내역이 없습니다.
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    entries.map((r) => (
+                      <tr
+                        key={r.rentalId}
+                        onClick={() => setSelectedEntry(r)}
+                        className={`cursor-pointer transition-colors ${selectedEntry?.rentalId === r.rentalId ? 'bg-indigo-50/50' : 'hover:bg-gray-50'}`}
+                      >
+                        <td className="p-4 text-sm font-bold text-gray-700">
+                          {r.itemName}
+                        </td>
+                        <td className="p-4 text-sm text-gray-500 font-medium">
+                          {r.rentDate?.substring(0, 10)}
+                        </td>
+                        <td className="p-4 text-sm text-red-500 font-bold">
+                          {r.dueDate?.substring(0, 10)}
+                        </td>
+                        <td className="p-4 text-sm text-gray-500">
+                          {r.returnDate ? (
+                            r.returnDate.substring(0, 10)
+                          ) : (
+                            <span className="text-orange-500 font-bold">
+                              미반납
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
-
-            {/* 오른쪽: 수정 폼 */}
             <div className="flex-1 border-l border-gray-100 pl-10">
               <h4 className="text-xs font-bold text-gray-400 mb-6 uppercase tracking-wider">
-                기록 수정
+                대여 상세
               </h4>
-              {selectedEntry && editForm ? (
+              {selectedEntry ? (
                 <div className="space-y-6">
-                  {[
-                    {
-                      label: '물품명',
-                      field: 'item' as keyof Rental,
-                      value: editForm.item,
-                    },
-                    {
-                      label: '대여일',
-                      field: 'rentDate' as keyof Rental,
-                      value: editForm.rentDate,
-                    },
-                    {
-                      label: '반납기한',
-                      field: 'dueDate' as keyof Rental,
-                      value: editForm.dueDate,
-                    },
-                  ].map((fieldObj, idx) => (
-                    <div key={idx} className="flex flex-col gap-2">
-                      <label className="text-xs font-bold text-gray-500 ml-1">
-                        {fieldObj.label}
-                      </label>
-                      <input
-                        type="text"
-                        value={fieldObj.value}
-                        onChange={(e) =>
-                          setEditForm({
-                            ...editForm,
-                            [fieldObj.field]: e.target.value,
-                          })
-                        }
-                        className="w-full p-3 bg-slate-50 border border-gray-100 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-100"
-                      />
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-bold text-gray-500 ml-1">
+                      물품명
+                    </label>
+                    <div className="w-full p-3 bg-slate-50 border border-gray-100 rounded-xl text-sm font-medium">
+                      {selectedEntry.itemName}
                     </div>
-                  ))}
-                  <div className="flex gap-2 justify-end pt-4">
-                    <button
-                      onClick={onSaveEdit}
-                      className="bg-[#6c5ce7] text-white px-6 py-2 rounded-lg font-bold text-xs shadow-md hover:bg-[#5a4ccb] transition"
-                    >
-                      수정 완료
-                    </button>
-                    <button
-                      onClick={onDeleteRecord}
-                      className="border border-red-400 text-red-500 px-6 py-2 rounded-lg font-bold text-xs hover:bg-red-50 transition"
-                    >
-                      기록 삭제
-                    </button>
                   </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-bold text-gray-500 ml-1">
+                      대여일
+                    </label>
+                    <div className="w-full p-3 bg-slate-50 border border-gray-100 rounded-xl text-sm font-medium">
+                      {selectedEntry.rentDate?.substring(0, 10)}
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-bold text-gray-500 ml-1">
+                      반납기한
+                    </label>
+                    <div className="w-full p-3 bg-slate-50 border border-gray-100 rounded-xl text-sm font-medium">
+                      {selectedEntry.dueDate?.substring(0, 10)}
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-bold text-gray-500 ml-1">
+                      상태
+                    </label>
+                    <div className="w-full p-3 bg-slate-50 border border-gray-100 rounded-xl text-sm font-medium">
+                      {selectedEntry.returnDate
+                        ? '반납 완료'
+                        : selectedEntry.overdue
+                          ? '연체 중'
+                          : '대여 중'}
+                    </div>
+                  </div>
+                  {!selectedEntry.returnDate && (
+                    <div className="flex gap-2 justify-end pt-4">
+                      <button
+                        onClick={handleForceReturn}
+                        className="bg-[#e53e3e] text-white px-6 py-2 rounded-lg font-bold text-xs shadow-md hover:bg-red-700 transition"
+                      >
+                        강제 반납
+                      </button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="h-64 flex items-center justify-center text-gray-300 italic text-sm text-center">
