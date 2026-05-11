@@ -306,7 +306,7 @@ const AdminItems: React.FC = () => {
                 >
                   {/* 상단: 물품명 + 상태 뱃지 */}
                   <div className="mb-3">
-                    <p className="text-sm font-bold text-gray-800 group-hover:text-[#6c5ce7] transition-colors leading-snug break-words">
+                    <p className="text-lg font-bold text-gray-800 group-hover:text-[#6c5ce7] transition-colors leading-snug break-words">
                       {item.name}
                     </p>
                     <div className="flex gap-1.5 mt-2">
@@ -322,11 +322,8 @@ const AdminItems: React.FC = () => {
                       </span>
                     </div>
                   </div>
-                  {/* 하단: ID + 활성화/비활성화 버튼 */}
-                  <div className="flex justify-between items-center">
-                    <span className="text-[11px] text-gray-400">
-                      #{item.id}
-                    </span>
+                  {/* 하단: 활성화/비활성화 버튼 */}
+                  <div className="flex justify-end items-center mt-2">
                     <button
                       onClick={() => handleToggleItemStatus(item)}
                       disabled={isSubmitting}
