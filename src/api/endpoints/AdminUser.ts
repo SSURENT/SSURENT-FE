@@ -8,11 +8,9 @@ import {
 } from '../dto/AdminUser.dto';
 
 export const adminUserApi = {
-  /** 사용자 목록 조회 (status: ACTIVE, BANNED, ADMIN 등) */
-  getUsers: async (status?: string): Promise<AdminUserListResponseDto[]> => {
-    const url = status
-      ? `/v1/admin/users?status=${encodeURIComponent(status)}`
-      : '/v1/admin/users';
+  /** 사용자 목록 조회 (status: 전체회원, 정지회원, 관리자) */
+  getUsers: async (status: string): Promise<AdminUserListResponseDto[]> => {
+    const url = `/v1/admin/users?status=${encodeURIComponent(status)}`;
     const res = await apiClient<unknown>(url);
     return unwrapResponse<AdminUserListResponseDto[]>(res) ?? [];
   },

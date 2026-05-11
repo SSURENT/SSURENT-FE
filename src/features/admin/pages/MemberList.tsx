@@ -8,7 +8,7 @@ const MemberList: React.FC = () => {
   const [members, setMembers] = useState<AdminUserListResponseDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchValue, setSearchValue] = useState('');
-  const [selectedFilter, setSelectedFilter] = useState('');
+  const [selectedFilter, setSelectedFilter] = useState('전체회원');
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -16,7 +16,7 @@ const MemberList: React.FC = () => {
   const fetchMembers = async (status: string) => {
     try {
       setLoading(true);
-      const data = await adminUserApi.getUsers(status || undefined);
+      const data = await adminUserApi.getUsers(status);
       setMembers(data);
     } catch (err) {
       console.error('사용자 목록 조회 실패', err);
@@ -43,10 +43,9 @@ const MemberList: React.FC = () => {
   }, []);
 
   const filterOptions = [
-    { label: '전체회원', value: '' },
-    { label: '이용가능', value: 'ACTIVE' },
-    { label: '정지됨', value: 'BANNED' },
-    { label: '관리자', value: 'ADMIN' },
+    { label: '전체회원', value: '전체회원' },
+    { label: '정지회원', value: '정지회원' },
+    { label: '관리자', value: '관리자' },
   ];
   const currentLabel =
     filterOptions.find((o) => o.value === selectedFilter)?.label || '전체회원';
