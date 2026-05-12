@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import * as XLSX from 'xlsx';
 import { useMemberContext, Member } from '../context/MemberContext';
+import { adminUserApi } from '../../../api/endpoints/AdminUser';
+import { RenewUserRequestDto } from '../../../api/dto/AdminUser.dto';
 
 const AdminMemberUpload: React.FC = () => {
   const { setMembers } = useMemberContext();
@@ -49,20 +51,34 @@ const AdminMemberUpload: React.FC = () => {
     setPreviewData([]);
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     if (previewData.length === 0) return;
     if (window.confirm('전체 회원 정보를 갱신하시겠습니까?')) {
-      const newMembers: Member[] = previewData.map((item, index) => ({
-        id: String(Date.now() + index),
-        name: item['이름'] || '',
-        studentId: String(item['학번'] || ''),
-        phone: item['전화번호'] || '',
-        role: '일반학우',
-        status: 'active',
-      }));
-      setMembers(newMembers);
-      alert('회원 정보가 성공적으로 갱신되었습니다.');
-      handleClear();
+      try {
+        // API로 일괄 최신화 요청
+        const renewData: RenewUserRequestDto[] = previewData.map((item) => ({
+          studentNum: String(item['학번'] || ''),
+          name: item['이름'] || '',
+          phoneNum: item['전화번호'] || '',
+        }));
+        await adminUserApi.renewUsers(renewData);
+
+        // 로컬 상태도 업데이트
+        const newMembers: Member[] = previewData.map((item, index) => ({
+          id: String(Date.now() + index),
+          name: item['이름'] || '',
+          studentId: String(item['학번'] || ''),
+          phone: item['전화번호'] || '',
+          role: '일반학우',
+          status: 'active' as const,
+        }));
+        setMembers(newMembers);
+        alert('회원 정보가 성공적으로 갱신되었습니다.');
+        handleClear();
+      } catch (err) {
+        console.error('회원 갱신 실패', err);
+        alert('회원 정보 갱신에 실패했습니다.');
+      }
     }
   };
 
