@@ -1,8 +1,10 @@
 import React from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Header from './shared/components/Header/Header';
+import AdminHeader from './shared/components/Header/AdminHeader';
 import BottomBar from './shared/components/BottomBar/BottomBar';
 import AdminLayout from './shared/components/Layout/AdminLayout';
+import { useAuthStore } from './features/auth/store/useAuthStore';
 import Home from './features/home/pages/Home';
 import Rent from './features/rent/pages/Rent';
 import Return from './features/return/pages/Return';
@@ -70,32 +72,37 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 // ============================================================
 // 유저 레이아웃 (공통 헤더/푸터)
 // ============================================================
-const UserLayout: React.FC = () => (
-  <div className="flex min-h-screen flex-col">
-    <Header />
-    <main className="main-content mx-auto w-full max-w-[1200px] flex-1 px-4">
-      <Routes>
-        <Route index element={<Home />} />
-        <Route path="rent" element={<Rent />} />
-        <Route path="return" element={<Return />} />
-        <Route
-          path="mypage"
-          element={
-            <ProtectedRoute>
-              <MyPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="penalty" element={<Penalty />} />
-        <Route path="login" element={<Login />} />
-        <Route path="send-sms-code" element={<SendSmsCode />} />
-        <Route path="verify-code" element={<VerifyCode />} />
-        <Route path="reset-pw" element={<ResetPW />} />
-      </Routes>
-    </main>
-    <BottomBar />
-  </div>
-);
+const UserLayout: React.FC = () => {
+  const role = useAuthStore((state) => state.role);
+  const isAdmin = role === 'admin' || role === 'super_admin';
+
+  return (
+    <div className="flex min-h-screen flex-col">
+      {isAdmin ? <AdminHeader /> : <Header />}
+      <main className="main-content mx-auto w-full max-w-[1200px] flex-1 px-4">
+        <Routes>
+          <Route index element={<Home />} />
+          <Route path="rent" element={<Rent />} />
+          <Route path="return" element={<Return />} />
+          <Route
+            path="mypage"
+            element={
+              <ProtectedRoute>
+                <MyPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="penalty" element={<Penalty />} />
+          <Route path="login" element={<Login />} />
+          <Route path="send-sms-code" element={<SendSmsCode />} />
+          <Route path="verify-code" element={<VerifyCode />} />
+          <Route path="reset-pw" element={<ResetPW />} />
+        </Routes>
+      </main>
+      <BottomBar />
+    </div>
+  );
+};
 
 // ============================================================
 // 메인 App 컴포넌트
