@@ -4,7 +4,8 @@ import logo from '../../assets/images/ssulogo.jpg';
 import '../../styles/App.css';
 import './Header.css';
 import { useAuthStore } from '../../../features/auth/store/useAuthStore';
-import { useEffect, useRef, useState } from 'react';
+import { useUserInfo } from '../../../store/userStore';
+import { useRef, useState } from 'react';
 
 export default function Header() {
   const location = useLocation();
@@ -19,11 +20,8 @@ export default function Header() {
   const navigate = useNavigate();
   const goToMyPage = () => navigate('/mypage');
 
-  const [user, setUser] = useState<{
-    studentNum: string;
-    name: string;
-    phoneNum: string;
-  } | null>(null);
+  const studentNum = useUserInfo((state) => state.studentNum);
+  const name = useUserInfo((state) => state.name);
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     'nav-link px-3 link-dark fw-bold' + (isActive ? ' active' : '');
@@ -32,13 +30,6 @@ export default function Header() {
 
   const toggleNavbar = () => setIsOpen(!isOpen);
   const closeNavbar = () => setIsOpen(false);
-
-  useEffect(() => {
-    const storedUser = sessionStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
 
   return (
     <div className="container">
@@ -161,10 +152,10 @@ export default function Header() {
                           <div className="custom-profile-box">
                             <div className="custom-profile-user">
                               <div className="custom-profile-id">
-                                {user?.studentNum}
+                                {studentNum}
                               </div>
                               <div className="custom-profile-name">
-                                {user?.name}님
+                                {name}님
                               </div>
                               <div className="custom-profile-penalty">
                                 현재 연체 횟수 : 0번
