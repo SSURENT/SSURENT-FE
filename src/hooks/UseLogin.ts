@@ -7,6 +7,7 @@ export const useLogin = () => {
   const setUserRoleType = useUserInfo((state) => state.setUserRoleType);
   const setUserId = useUserInfo((state) => state.setUserId);
   const setTokens = useUserInfo((state) => state.setTokens);
+  const setUserInfo = useUserInfo((state) => state.setUserInfo);
 
   const navigate = useNavigate();
 
@@ -24,14 +25,21 @@ export const useLogin = () => {
         return;
       }
 
+      setTokens(res.accessToken, res.refreshToken);
       setUserId(studentNum);
       setUserRoleType(res.role);
-      setTokens(res.accessToken, res.refreshToken);
 
       sessionStorage.setItem('accessToken', res.accessToken);
       sessionStorage.setItem('refreshToken', res.refreshToken);
       try {
-        await fetchUserInfoApi();
+        const user = await fetchUserInfoApi();
+        setUserInfo(
+          user.studentNum,
+          user.name,
+          user.role,
+          user.status,
+          user.phoneNum,
+        );
       } catch (err) {
         console.error(err);
         alert('사용자 정보 불러오기 실패');

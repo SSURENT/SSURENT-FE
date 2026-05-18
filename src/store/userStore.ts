@@ -13,8 +13,8 @@ interface UserInfo {
   setUserInfo: (
     id: string,
     name: string,
-    role: UserRoleType,
-    status: UserStatusType,
+    role: string,
+    status: string,
     phoneNum: string,
   ) => void;
   setTokens: (accessToken: string, refreshToken: string) => void;

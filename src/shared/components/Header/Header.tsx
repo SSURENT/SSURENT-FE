@@ -1,39 +1,37 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import { createPortal } from 'react-dom';
+import { useRef, useState } from 'react';
+
 import logo from '../../assets/images/ssulogo.jpg';
+
 import '../../styles/App.css';
 import './Header.css';
 
-import { useEffect, useRef, useState } from 'react';
+import { useUserInfo } from '../../../store/userStore';
 
 export default function Header() {
   const location = useLocation();
+
   const hideLoginButton =
     location.pathname === '/login' || location.pathname === '/changePW';
-  const isLoggedIn = !!sessionStorage.getItem('accessToken');
+
+  // zustand 상태 사용
+  const studentNum = useUserInfo((state) => state.studentNum);
+  const name = useUserInfo((state) => state.name);
+
+  const isLoggedIn = !!studentNum;
+
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  const [user, setUser] = useState<{
-    studentNum: string;
-    name: string;
-    phoneNum: string;
-  } | null>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     'nav-link px-3 link-dark fw-bold' + (isActive ? ' active' : '');
 
-  const profileRef = useRef<HTMLDivElement>(null);
-
   const toggleNavbar = () => setIsOpen(!isOpen);
-  const closeNavbar = () => setIsOpen(false);
 
-  useEffect(() => {
-    const storedUser = sessionStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
+  const closeNavbar = () => setIsOpen(false);
 
   return (
     <div className="container">
@@ -50,6 +48,7 @@ export default function Header() {
               style={{ width: '90px' }}
               className="img-fluid me-2"
             />
+
             <span className="fs-4">SSURENT</span>
           </NavLink>
 
@@ -72,16 +71,19 @@ export default function Header() {
                   대여하기
                 </NavLink>
               </li>
+
               <li className="nav-item">
                 <NavLink to="/return" className={linkClass}>
                   반납하기
                 </NavLink>
               </li>
+
               <li className="nav-item">
                 <NavLink to="/info" className={linkClass}>
                   정보
                 </NavLink>
               </li>
+
               <li className="nav-item">
                 <NavLink to="/mypage" className={linkClass}>
                   마이페이지
@@ -127,6 +129,7 @@ export default function Header() {
                             top:
                               profileRef.current?.getBoundingClientRect()
                                 .bottom ?? 0,
+
                             right:
                               window.innerWidth -
                               (profileRef.current?.getBoundingClientRect()
@@ -136,11 +139,13 @@ export default function Header() {
                           <div className="custom-profile-box">
                             <div className="custom-profile-user">
                               <div className="custom-profile-id">
-                                {user?.studentNum}
+                                {studentNum}
                               </div>
+
                               <div className="custom-profile-name">
-                                {user?.name}님
+                                {name}님
                               </div>
+
                               <div className="custom-profile-penalty">
                                 현재 연체 횟수 : 0번
                               </div>
