@@ -382,6 +382,9 @@ const AdminItems: React.FC = () => {
                   </option>
                 ))}
               </select>
+
+              <div className="mt-3" />
+
               <input
                 type="text"
                 placeholder="고유코드 (예: 101)"
