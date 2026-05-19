@@ -105,7 +105,7 @@ const AdminRentalEdit: React.FC = () => {
                           {r.itemName}
                         </td>
                         <td className="p-4 text-sm text-gray-500 font-medium">
-                          {r.rentDate?.substring(0, 10)}
+                          {r.rentalDate?.substring(0, 10)}
                         </td>
                         <td className="p-4 text-sm text-red-500 font-bold">
                           {r.dueDate?.substring(0, 10)}
@@ -144,7 +144,7 @@ const AdminRentalEdit: React.FC = () => {
                       대여일
                     </label>
                     <div className="w-full p-3 bg-slate-50 border border-gray-100 rounded-xl text-sm font-medium">
-                      {selectedEntry.rentDate?.substring(0, 10)}
+                      {selectedEntry.rentalDate?.substring(0, 10)}
                     </div>
                   </div>
                   <div className="flex flex-col gap-2">
@@ -162,7 +162,7 @@ const AdminRentalEdit: React.FC = () => {
                     <div className="w-full p-3 bg-slate-50 border border-gray-100 rounded-xl text-sm font-medium">
                       {selectedEntry.returnDate
                         ? '반납 완료'
-                        : selectedEntry.overdue
+                        : selectedEntry.isOverdue
                           ? '연체 중'
                           : '대여 중'}
                     </div>
