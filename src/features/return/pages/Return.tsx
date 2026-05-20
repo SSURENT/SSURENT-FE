@@ -74,8 +74,11 @@ export default function Return() {
       {isError && <p>에러가 발생했습니다.</p>}
 
       <div
-        className="border rounded p-4"
-        style={{ maxHeight: 420, overflowY: 'auto' }}
+        className="border rounded p-2 p-sm-4"
+        style={{
+          maxHeight: 'none',
+          overflowY: 'visible',
+        }}
       >
         <div className="item-grid">
           {items.map((item) => (
