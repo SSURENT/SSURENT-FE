@@ -25,7 +25,7 @@ export const fetchUserInfoApi = async (): Promise<StoredUser> => {
   const user: StoredUser = { studentNum, name, role, status, phoneNum };
 
   // sessionStorage에 저장
-  // sessionStorage.setItem('user', JSON.stringify(user));
+  sessionStorage.setItem('user', JSON.stringify(user));
 
   return user;
 };

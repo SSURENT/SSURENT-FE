@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Category } from '../../../types/Category.ts';
 import { useGetCategories } from '../../../hooks/UseGetCategory.ts';
+import { useSubmitPhoneNum } from '../../../hooks/UseSubmitPhoneNum.ts';
 
 type Props = {
   onNext: (categoryId: number) => void;
@@ -12,6 +13,7 @@ export default function SelectCategory({ onNext }: Props) {
   const [category, setCategory] = useState('');
   const [phone, setPhone] = useState('');
   const [phoneError, setPhoneError] = useState('');
+  const { handleSubmitPhoneNum, isSubmitPhoneNumError } = useSubmitPhoneNum();
 
   // 🔹 로딩 UI
   if (isLoading) {
@@ -57,6 +59,34 @@ export default function SelectCategory({ onNext }: Props) {
     if (!validatePhone(phone)) {
       setPhoneError('유효하지 않은 입력입니다.');
       return;
+    }
+
+    // sessionStorage에서 user 가져오기
+    const userString = sessionStorage.getItem('user');
+
+    if (userString) {
+      const user = JSON.parse(userString);
+
+      // 저장된 전화번호와 입력한 번호가 다르면 확인창 표시
+      if (user.phoneNum !== phone) {
+        const confirmed = window.confirm(
+          `현재 등록된 전화번호는 ${user.phoneNum} 입니다.\n전화번호를 ${phone}으로 변경하시겠습니까?`,
+        );
+
+        // 취소 누르면 진행 중단
+        if (!confirmed) {
+          return;
+        }
+        handleSubmitPhoneNum(phone);
+        if (isSubmitPhoneNumError) {
+          setPhoneError('전화번호 변경에 실패하였습니다.');
+        } else {
+          // 원하면 sessionStorage도 업데이트 가능
+          user.phoneNum = phone;
+          sessionStorage.setItem('user', JSON.stringify(user));
+        }
+        return;
+      }
     }
 
     setPhoneError('');

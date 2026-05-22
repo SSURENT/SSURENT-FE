@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useUserInfo } from '../store/userStore';
 import { requestLogin } from '../api/endpoints/Login';
 import { fetchUserInfoApi } from './UseGetUserInfoApi.ts';
+import { UserRoleType, UserStatusType } from '../types/Types.ts';
 
 export const useLogin = () => {
   const setUserRoleType = useUserInfo((state) => state.setUserRoleType);
@@ -36,8 +37,8 @@ export const useLogin = () => {
         setUserInfo(
           user.studentNum,
           user.name,
-          user.role,
-          user.status,
+          user.role as UserRoleType,
+          user.status as UserStatusType,
           user.phoneNum,
         );
       } catch (err) {
