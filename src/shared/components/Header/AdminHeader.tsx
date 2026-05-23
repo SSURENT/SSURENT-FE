@@ -45,21 +45,6 @@ const AdminHeader: React.FC = () => {
             <ul className="navbar-nav d-flex flex-row ms-5 mb-0">
               <li className="nav-item">
                 <NavLink to="/admin/items" className={linkClass}>
-                  대여하기
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink to="/admin/items" className={linkClass}>
-                  반납하기
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink to="/admin/items" className={linkClass}>
-                  마이페이지
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink to="/admin/items" className={linkClass}>
                   물품 관리
                 </NavLink>
               </li>

@@ -10,6 +10,7 @@ const AdminMemberUpload: React.FC = () => {
   const [fileSize, setFileSize] = useState<string>('');
   const [previewData, setPreviewData] = useState<any[]>([]);
   const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   // 엑셀 파싱 로직
   const parseExcelFile = (file: File) => {
@@ -52,23 +53,36 @@ const AdminMemberUpload: React.FC = () => {
   };
 
   const handleUpdate = async () => {
-    if (previewData.length === 0) return;
+    if (previewData.length === 0 || isSubmitting) return;
+
+    // 필수 컬럼 유효성 검증
+    const invalidRows = previewData.filter(
+      (item) => !item['학번'] || !item['이름'] || !item['전화번호'],
+    );
+    if (invalidRows.length > 0) {
+      alert(
+        `학번, 이름, 전화번호가 누락된 행이 ${invalidRows.length}개 있습니다.\n파일을 수정하고 다시 시도해주세요.`,
+      );
+      return;
+    }
+
     if (window.confirm('전체 회원 정보를 갱신하시겠습니까?')) {
+      setIsSubmitting(true);
       try {
         // API로 일괄 최신화 요청
         const renewData: RenewUserRequestDto[] = previewData.map((item) => ({
-          studentNum: String(item['학번'] || ''),
-          name: item['이름'] || '',
-          phoneNum: item['전화번호'] || '',
+          studentNum: String(item['학번']),
+          name: item['이름'],
+          phoneNum: String(item['전화번호']),
         }));
         await adminUserApi.renewUsers(renewData);
 
         // 로컬 상태도 업데이트
         const newMembers: Member[] = previewData.map((item, index) => ({
           id: String(Date.now() + index),
-          name: item['이름'] || '',
-          studentId: String(item['학번'] || ''),
-          phone: item['전화번호'] || '',
+          name: item['이름'],
+          studentId: String(item['학번']),
+          phone: String(item['전화번호']),
           role: '일반학우',
           status: 'active' as const,
         }));
@@ -78,6 +92,8 @@ const AdminMemberUpload: React.FC = () => {
       } catch (err) {
         console.error('회원 갱신 실패', err);
         alert('회원 정보 갱신에 실패했습니다.');
+      } finally {
+        setIsSubmitting(false);
       }
     }
   };
@@ -231,17 +247,19 @@ const AdminMemberUpload: React.FC = () => {
       <div className="flex justify-end pt-4">
         <button
           onClick={handleUpdate}
-          disabled={previewData.length === 0}
+          disabled={previewData.length === 0 || isSubmitting}
           className={`px-8 py-3 rounded-xl font-bold transition-all shadow-lg
             ${
-              previewData.length > 0
+              previewData.length > 0 && !isSubmitting
                 ? 'bg-red-600 text-white hover:bg-red-700 hover:shadow-red-200 active:scale-95'
                 : 'bg-slate-200 text-slate-400 cursor-not-allowed'
             }`}
         >
-          {previewData.length > 0
-            ? '전체 회원 데이터 갱신하기'
-            : '데이터를 먼저 업로드하세요'}
+          {isSubmitting
+            ? '갱신 중...'
+            : previewData.length > 0
+              ? '전체 회원 데이터 갱신하기'
+              : '데이터를 먼저 업로드하세요'}
         </button>
       </div>
     </div>
