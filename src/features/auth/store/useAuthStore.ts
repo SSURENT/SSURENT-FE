@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 
 interface AuthState {
-  role: 'admin' | 'user' | null;
-  setRole: (role: 'admin' | 'user') => void;
+  role: 'admin' | 'super_admin' | 'user' | null;
+  setRole: (role: 'admin' | 'super_admin' | 'user') => void;
   logout: () => void;
 }
 

@@ -1,17 +1,11 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import logo from '../../assets/images/ssulogo.jpg';
-import { useAuthStore } from '../../../features/auth/store/useAuthStore';
+import { useLogout } from '../../../hooks/UseLogout';
 import '../../styles/App.css';
 
 const AdminHeader: React.FC = () => {
-  const logout = useAuthStore((state) => state.logout);
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
+  const { handleLogout } = useLogout();
 
   // 활성화된 메뉴 강조 스타일
   const linkClass = ({ isActive }: { isActive: boolean }) =>

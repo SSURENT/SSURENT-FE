@@ -4,8 +4,8 @@ import logo from '../../assets/images/ssulogo.jpg';
 import '../../styles/App.css';
 import './Header.css';
 import { useAuthStore } from '../../../features/auth/store/useAuthStore';
-import { useEffect, useRef, useState } from 'react';
-import AdminHeader from './AdminHeader';
+import { useUserInfo } from '../../../store/userStore';
+import { useRef, useState } from 'react';
 
 export default function Header() {
   const location = useLocation();
@@ -20,28 +20,13 @@ export default function Header() {
   const navigate = useNavigate();
   const goToMyPage = () => navigate('/mypage');
 
-  const [user, setUser] = useState<{
-    studentNum: string;
-    name: string;
-    phoneNum: string;
-  } | null>(null);
-
-  const profileRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const storedUser = sessionStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
-
-  // admin이면 AdminHeader를 대신 렌더링 (모든 hooks 이후에 위치해야 함)
-  if (isAdmin) {
-    return <AdminHeader />;
-  }
+  const studentNum = useUserInfo((state) => state.studentNum);
+  const name = useUserInfo((state) => state.name);
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     'nav-link px-3 link-dark fw-bold' + (isActive ? ' active' : '');
+
+  const profileRef = useRef<HTMLDivElement>(null);
 
   const toggleNavbar = () => setIsOpen(!isOpen);
   const closeNavbar = () => setIsOpen(false);
@@ -167,10 +152,10 @@ export default function Header() {
                           <div className="custom-profile-box">
                             <div className="custom-profile-user">
                               <div className="custom-profile-id">
-                                {user?.studentNum}
+                                {studentNum}
                               </div>
                               <div className="custom-profile-name">
-                                {user?.name}님
+                                {name}님
                               </div>
                               <div className="custom-profile-penalty">
                                 현재 연체 횟수 : 0번

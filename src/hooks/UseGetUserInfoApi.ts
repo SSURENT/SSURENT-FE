@@ -1,6 +1,7 @@
 import { UserInfoResponseDto } from '../api/dto/UserInfo.dto.ts';
 import { apiClient } from '../api/Client.ts';
 import { BaseResponseDto } from '../api/dto/BaseResponse.dto.ts';
+import { useUserInfo } from '../store/userStore.ts';
 
 export type StoredUser = {
   studentNum: string;
@@ -24,8 +25,8 @@ export const fetchUserInfoApi = async (): Promise<StoredUser> => {
 
   const user: StoredUser = { studentNum, name, role, status, phoneNum };
 
-  // sessionStorage에 저장
   sessionStorage.setItem('user', JSON.stringify(user));
+  useUserInfo.getState().setUserInfo(studentNum, name, role, status, phoneNum);
 
   return user;
 };
