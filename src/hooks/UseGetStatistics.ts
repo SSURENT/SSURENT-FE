@@ -5,7 +5,7 @@ import {
 } from '../../src/api/endpoints/Statics';
 import { CategoryInfo, MonthRentalInfo } from '../../src/types/Statistics';
 export const useGetStatics = () => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
   // 실제 차트에 그려질 데이터들
@@ -26,6 +26,7 @@ export const useGetStatics = () => {
     }
 
     try {
+      setIsLoading(true);
       const itemRes = await getRentalCountsByPeriod({
         categoryId,
         startDate,
