@@ -27,22 +27,24 @@ export const useGetStatics = () => {
 
     try {
       setIsLoading(true);
+      setIsError(false);
       const itemRes = await getRentalCountsByPeriod({
         categoryId,
         startDate,
         endDate,
       });
-      setCategoryInfoData(itemRes.categoryInfo);
+      setCategoryInfoData(itemRes.categoryInfo ?? []);
 
       const monthItemRes = await getMonthlyRentalCounts({
         categoryId,
         startDate,
         endDate,
       });
-      setMonthRentalInfoData(monthItemRes.monthRentalInfo);
+      setMonthRentalInfoData(monthItemRes.monthRentalInfo ?? []);
 
       setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       setIsError(true);
       console.error('통계 조회 실패', error);
     }
