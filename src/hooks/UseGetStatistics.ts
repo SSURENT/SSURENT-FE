@@ -2,8 +2,8 @@ import { useState } from 'react';
 import {
   getRentalCountsByPeriod,
   getMonthlyRentalCounts,
-} from '../../src/api/endpoints/Statics';
-import { CategoryInfo, MonthRentalInfo } from '../../src/types/Statistics';
+} from '../api/endpoints/Statics';
+import { CategoryInfo, MonthRentalInfo } from '../types/Statistics';
 export const useGetStatics = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
