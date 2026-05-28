@@ -2,10 +2,10 @@ import { useState } from 'react';
 import {
   getRentalCountsByPeriod,
   getMonthlyRentalCounts,
-} from '../../src/api/endpoints/Statics';
-import { CategoryInfo, MonthRentalInfo } from '../../src/types/Statistics';
+} from '../api/endpoints/Statics';
+import { CategoryInfo, MonthRentalInfo } from '../types/Statistics';
 export const useGetStatics = () => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
   // 실제 차트에 그려질 데이터들
@@ -26,22 +26,25 @@ export const useGetStatics = () => {
     }
 
     try {
+      setIsLoading(true);
+      setIsError(false);
       const itemRes = await getRentalCountsByPeriod({
         categoryId,
         startDate,
         endDate,
       });
-      setCategoryInfoData(itemRes.categoryInfo);
+      setCategoryInfoData(itemRes.categoryInfo ?? []);
 
       const monthItemRes = await getMonthlyRentalCounts({
         categoryId,
         startDate,
         endDate,
       });
-      setMonthRentalInfoData(monthItemRes.monthRentalInfo);
+      setMonthRentalInfoData(monthItemRes.monthRentalInfo ?? []);
 
       setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       setIsError(true);
       console.error('통계 조회 실패', error);
     }

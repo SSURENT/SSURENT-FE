@@ -120,8 +120,9 @@ const AdminPenaltyEdit: React.FC = () => {
                       placeholder="물품명"
                       value={newItemName}
                       onChange={(e) => setNewItemName(e.target.value)}
-                      className="w-full p-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-100"
+                      className="w-full p-2.5 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-100 bg-white"
                     />
+                    <div className="mt-3" />
                     <select
                       value={newPenaltyType}
                       onChange={(e) => setNewPenaltyType(e.target.value as any)}
@@ -130,6 +131,7 @@ const AdminPenaltyEdit: React.FC = () => {
                       <option value="OVERDUE">반납기한 초과</option>
                       <option value="UNAUTHORIZED_USE">무단 사용</option>
                     </select>
+                    <div className="mt-3" />
                     <div className="flex gap-2 justify-end">
                       <button
                         onClick={handleAdd}

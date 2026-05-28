@@ -36,17 +36,23 @@ export default function SelectItem({ categoryId, onPrev, onNext }: Props) {
         className="border rounded p-4 mb-4"
         style={{ maxHeight: '420px', overflowY: 'auto' }}
       >
-        <div className="row g-4">
-          {items.map((item) => (
-            <div key={item.id} className="col-12 col-md-4">
-              <ItemCard
-                item={item}
-                selected={selectedItemId === item.id}
-                onSelect={(selected) => setSelectedItemId(selected.id)}
-              />
-            </div>
-          ))}
-        </div>
+        {items.length === 0 ? (
+          <div className="text-center text-muted py-5">
+            대여 가능한 물품이 없습니다.
+          </div>
+        ) : (
+          <div className="row g-4">
+            {items.map((item) => (
+              <div key={item.id} className="col-12 col-md-4">
+                <ItemCard
+                  item={item}
+                  selected={selectedItemId === item.id}
+                  onSelect={(selected) => setSelectedItemId(selected.id)}
+                />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="d-flex justify-content-end gap-2">
