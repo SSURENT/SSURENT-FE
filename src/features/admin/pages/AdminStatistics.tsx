@@ -316,8 +316,9 @@ export const AdminStatistics: React.FC = () => {
                       <YAxis fontSize={12} tickLine={false} axisLine={false} />
                       <Tooltip
                         formatter={(value) => [value, '횟수']}
-                        labelFormatter={(label: string) => {
-                          const [year, month] = label.split('-');
+                        labelFormatter={(label) => {
+                          const str = String(label);
+                          const [year, month] = str.split('-');
                           return `${year}년 ${month}월`;
                         }}
                       />
