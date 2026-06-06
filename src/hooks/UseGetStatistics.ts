@@ -33,14 +33,14 @@ export const useGetStatics = () => {
         startDate,
         endDate,
       });
-      setCategoryInfoData(itemRes.categoryInfo ?? []);
+      setCategoryInfoData(itemRes ?? []);
 
       const monthItemRes = await getMonthlyRentalCounts({
         categoryId,
         startDate,
         endDate,
       });
-      setMonthRentalInfoData(monthItemRes.monthRentalInfo ?? []);
+      setMonthRentalInfoData(monthItemRes ?? []);
 
       setIsLoading(false);
     } catch (error) {
