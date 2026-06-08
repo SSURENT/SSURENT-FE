@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { useRef, useState } from 'react';
 
@@ -6,8 +6,9 @@ import logo from '../../assets/images/ssulogo.jpg';
 
 import '../../styles/App.css';
 import './Header.css';
-
+import { useAuthStore } from '../../../features/auth/store/useAuthStore';
 import { useUserInfo } from '../../../store/userStore';
+import { useRef, useState } from 'react';
 
 export default function Header() {
   const location = useLocation();
@@ -23,15 +24,20 @@ export default function Header() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const role = useAuthStore((state) => state.role);
+  const isAdmin = role === 'admin' || role === 'super_admin';
+  console.log(`Header.tsx__role: ${role}`);
+  const navigate = useNavigate();
+  const goToMyPage = () => navigate('/mypage');
 
-  const profileRef = useRef<HTMLDivElement>(null);
+
+  const studentNum = useUserInfo((state) => state.studentNum);
+  const name = useUserInfo((state) => state.name);
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     'nav-link px-3 link-dark fw-bold' + (isActive ? ' active' : '');
 
   const toggleNavbar = () => setIsOpen(!isOpen);
-
-  const closeNavbar = () => setIsOpen(false);
 
   return (
     <div className="container">
@@ -79,16 +85,34 @@ export default function Header() {
               </li>
 
               <li className="nav-item">
-                <NavLink to="/info" className={linkClass}>
-                  정보
-                </NavLink>
-              </li>
-
-              <li className="nav-item">
                 <NavLink to="/mypage" className={linkClass}>
                   마이페이지
                 </NavLink>
               </li>
+              {isAdmin && (
+                <>
+                  <li className="nav-item">
+                    <NavLink to="/admin/items" className={linkClass}>
+                      물품관리
+                    </NavLink>
+                  </li>
+                  <li className="nav-item">
+                    <NavLink to="/admin/users" className={linkClass}>
+                      회원관리
+                    </NavLink>
+                  </li>
+                  <li className="nav-item">
+                    <NavLink to="/admin/stats" className={linkClass}>
+                      통계
+                    </NavLink>
+                  </li>
+                  <li className="nav-item">
+                    <NavLink to="/admin/inspect" className={linkClass}>
+                      검수하기
+                    </NavLink>
+                  </li>
+                </>
+              )}
             </ul>
 
             {!hideLoginButton && (
@@ -116,6 +140,7 @@ export default function Header() {
                         width: '45px',
                         height: '45px',
                       }}
+                      onClick={goToMyPage}
                     >
                       👤
                     </button>

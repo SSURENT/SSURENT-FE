@@ -2,13 +2,16 @@ import { useNavigate } from 'react-router-dom';
 import { useUserInfo } from '../store/userStore';
 import { requestLogin } from '../api/endpoints/Login';
 import { fetchUserInfoApi } from './UseGetUserInfoApi.ts';
-import { UserRoleType, UserStatusType } from '../types/Types.ts';
+
+import { useAuthStore } from '../features/auth/store/useAuthStore.ts';
+
 
 export const useLogin = () => {
   const setUserRoleType = useUserInfo((state) => state.setUserRoleType);
   const setUserId = useUserInfo((state) => state.setUserId);
   const setTokens = useUserInfo((state) => state.setTokens);
-  const setUserInfo = useUserInfo((state) => state.setUserInfo);
+
+  const { setRole } = useAuthStore();
 
   const navigate = useNavigate();
 
@@ -45,7 +48,15 @@ export const useLogin = () => {
         console.error(err);
         alert('사용자 정보 불러오기 실패');
       }
-      navigate('/');
+      if (res.role === 'ADMIN' || res.role === 'SUPERADMIN') {
+        navigate('/admin');
+        setRole('admin');
+        console.log('UseLogin__admin으로 바로 이동');
+      } else {
+        navigate('/');
+        console.log('UseLogin__걍 일반 유저');
+        setRole('user');
+      }
     } catch (error) {
       alert('로그인에 실패했습니다.');
     }

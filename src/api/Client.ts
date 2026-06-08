@@ -1,5 +1,16 @@
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+/**
+ * 서버 응답에서 실제 데이터를 추출하는 헬퍼.
+ * 서버가 { code, message, data } 래퍼를 사용할 수도 있고 직접 데이터를 반환할 수도 있음.
+ */
+export const unwrapResponse = <T>(response: unknown): T => {
+  if (response && typeof response === 'object' && 'data' in response) {
+    return (response as Record<string, unknown>).data as T;
+  }
+  return response as T;
+};
+
 export const apiClient = async <T>(
   url: string,
   options: RequestInit = {},

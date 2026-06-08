@@ -1,5 +1,4 @@
-import { apiClient } from '../Client';
-import { BaseResponseDto } from '../dto/BaseResponse.dto';
+import { apiClient, unwrapResponse } from '../Client';
 import {
   ItemRentalStatsRequestDto,
   ItemRentalStatsResponseDto,
@@ -16,14 +15,14 @@ export const getRentalCountsByPeriod = async (
     endDate: data.endDate,
   }).toString();
 
-  const res = await apiClient<BaseResponseDto<ItemRentalStatsResponseDto>>(
+  const res = await apiClient<unknown>(
     `/v1/admin/rentals/item-statistics?${queryParams}`,
     {
       method: 'GET',
     },
   );
 
-  return res.data;
+  return unwrapResponse<ItemRentalStatsResponseDto>(res);
 };
 
 export const getMonthlyRentalCounts = async (
@@ -35,12 +34,9 @@ export const getMonthlyRentalCounts = async (
     endDate: data.endDate,
   }).toString();
 
-  const res = await apiClient<BaseResponseDto<MonthlyRentalStatsResponseDto>>(
-    `/v1/admin/rentals/rental-statistics?${queryParams}`,
-    {
-      body: JSON.stringify(data),
-    },
+  const res = await apiClient<unknown>(
+    `/v1/admin/rentals/period-statistics?${queryParams}`,
   );
 
-  return res.data;
+  return unwrapResponse<MonthlyRentalStatsResponseDto>(res);
 };

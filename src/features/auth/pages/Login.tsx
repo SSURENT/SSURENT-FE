@@ -12,7 +12,13 @@ export default function Login() {
     <div className="flex flex-col items-center mt-[50px]">
       <h1 className="text-center py-10 text-4xl font-bold">로그인</h1>
 
-      <div className="border border-gray-200 p-8 w-[400px] shadow-sm">
+      <form
+        className="border border-gray-200 p-8 w-[400px] shadow-sm"
+        onSubmit={(e) => {
+          e.preventDefault();
+          login(studentNum, password);
+        }}
+      >
         <div className="mb-6">
           <label className="block mb-2 text-sm font-medium text-gray-900">
             학번을 입력해주세요
@@ -46,13 +52,13 @@ export default function Login() {
 
         <div className="flex justify-center">
           <button
-            onClick={() => login(studentNum, password)}
+            type="submit"
             className="w-1/2 py-3 px-5 text-[#6610F2] border border-[#6610F2] rounded-lg hover:bg-blue-50 transition-colors font-semibold"
           >
             로그인
           </button>
         </div>
-      </div>
+      </form>
 
       <div className="text-center mt-6">
         <NavLink
