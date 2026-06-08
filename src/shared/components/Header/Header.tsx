@@ -105,7 +105,7 @@ export default function Header() {
                   </NavLink>
                 ) : (
                   <div
-                    className="position-relative"
+                    className={`position-relative ${isOpen ? 'd-none d-lg-block' : ''}`}
                     ref={profileRef}
                     onMouseEnter={() => setIsProfileOpen(true)}
                     onMouseLeave={() => setIsProfileOpen(false)}
