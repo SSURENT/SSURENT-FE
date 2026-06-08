@@ -26,13 +26,13 @@ interface UserInfo {
 }
 
 export const useUserInfo = create<UserInfo>((set) => ({
-  studentNum: '',
-  name: '',
-  role: 'NORMAL',
-  status: 'ACTIVE',
-  phoneNum: '',
-  accessToken: null,
-  refreshToken: null,
+  studentNum: sessionStorage.getItem('studentNum') ?? '',
+  name: sessionStorage.getItem('name') ?? '',
+  role: (sessionStorage.getItem('role') as UserRoleType) ?? 'NORMAL',
+  status: (sessionStorage.getItem('status') as UserStatusType) ?? 'ACTIVE',
+  phoneNum: sessionStorage.getItem('phoneNum') ?? '',
+  accessToken: sessionStorage.getItem('accessToken') ?? null,
+  refreshToken: sessionStorage.getItem('refreshToken') ?? null,
 
   setUserInfo: (
     studentNum: string,
@@ -40,14 +40,14 @@ export const useUserInfo = create<UserInfo>((set) => ({
     role: UserRoleType,
     status: UserStatusType,
     phoneNum: string,
-  ) =>
-    set({
-      studentNum: studentNum,
-      name: name,
-      role: role,
-      status: status,
-      phoneNum: phoneNum,
-    }),
+  ) => {
+    sessionStorage.setItem('studentNum', studentNum);
+    sessionStorage.setItem('name', name);
+    sessionStorage.setItem('role', role);
+    sessionStorage.setItem('status', status);
+    sessionStorage.setItem('phoneNum', phoneNum);
+    set({ studentNum, name, role, status, phoneNum });
+  },
   setTokens: (accessToken, refreshToken) => {
     sessionStorage.setItem('accessToken', accessToken);
     sessionStorage.setItem('refreshToken', refreshToken);
@@ -61,7 +61,12 @@ export const useUserInfo = create<UserInfo>((set) => ({
   setUserId: (studentNum: string) => set({ studentNum: studentNum }),
   setPhoneNum: (phoneNum: string) => set({ phoneNum: phoneNum }),
   setUserRoleType: (role: UserRoleType) => set({ role: role }),
-  clearUserInfo: () =>
+  clearUserInfo: () => {
+    sessionStorage.removeItem('studentNum');
+    sessionStorage.removeItem('name');
+    sessionStorage.removeItem('role');
+    sessionStorage.removeItem('status');
+    sessionStorage.removeItem('phoneNum');
     set({
       studentNum: '',
       name: '',
@@ -70,7 +75,8 @@ export const useUserInfo = create<UserInfo>((set) => ({
       phoneNum: '',
       accessToken: null,
       refreshToken: null,
-    }),
+    });
+  },
 }));
 
 // 이름: @@@
