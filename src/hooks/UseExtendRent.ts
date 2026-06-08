@@ -7,14 +7,14 @@ export const useExtendItem = () => {
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const extend = async ({ rentalHistoryId }: ExtendRentRequestDto) => {
+  const extend = async ({ rentalId }: ExtendRentRequestDto) => {
     setIsLoading(true);
     setIsError(false);
     setIsSuccess(false);
 
     try {
       // 🔥 응답값은 사용하지 않음
-      await extendRent.extendRents({ rentalHistoryId });
+      await extendRent.extendRents({ rentalId });
 
       setIsSuccess(true);
     } catch (error) {

@@ -12,7 +12,7 @@ export const extendRent = {
     const response = await apiClient<BaseResponseDto<ExtendRentResponseDto>>(
       '/v1/api/rentals/extend',
       {
-        method: 'POST',
+        method: 'PATCH',
         body: JSON.stringify(data),
       },
     );
