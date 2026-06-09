@@ -15,9 +15,9 @@ export interface ForceReturnRequestDto {
 export interface UserRentalHistoryDto {
   rentalId: number;
   itemName: string;
-  rentDate: string;
+  rentalDate: string;
   dueDate: string;
   returnDate: string | null;
-  isPostponed: boolean;
-  overdue: boolean;
+  status: string;
+  isOverdue: boolean;
 }

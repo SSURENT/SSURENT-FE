@@ -6,9 +6,7 @@ export interface ItemRentalStatsRequestDto {
   endDate: string;
 }
 
-export interface ItemRentalStatsResponseDto {
-  categoryInfo: CategoryInfo[];
-}
+export type ItemRentalStatsResponseDto = CategoryInfo[];
 
 export interface MonthlyRentalStatsRequestDto {
   categoryId: string;
@@ -16,6 +14,4 @@ export interface MonthlyRentalStatsRequestDto {
   endDate: string;
 }
 
-export interface MonthlyRentalStatsResponseDto {
-  monthRentalInfo: MonthRentalInfo[];
-}
+export type MonthlyRentalStatsResponseDto = MonthRentalInfo[];

@@ -53,7 +53,7 @@ const AdminHeader: React.FC = () => {
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink to="/admin/items" className={linkClass}>
+                <NavLink to="/admin/inspect" className={linkClass}>
                   검수하기
                 </NavLink>
               </li>

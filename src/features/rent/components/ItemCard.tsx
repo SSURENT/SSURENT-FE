@@ -9,11 +9,8 @@ type Props = {
 export default function ItemCard({ item, selected, onSelect }: Props) {
   return (
     <div
-      className={`card item-card h-100 ${selected ? 'border-primary' : ''}`}
-      style={{
-        cursor: 'pointer',
-        opacity: 1,
-      }}
+      className={`card item-card h-100 ${selected ? 'border-primary border-2 bg-primary bg-opacity-10' : ''}`}
+      style={{ cursor: 'pointer' }}
       onClick={() => onSelect(item)}
     >
       <div className="card-body d-flex flex-column justify-content-between">
@@ -23,7 +20,11 @@ export default function ItemCard({ item, selected, onSelect }: Props) {
         </div>
 
         <div className="mt-2">
-          <button className="btn btn-primary btn-sm">대여하기</button>
+          <button
+            className={`btn btn-sm w-100 ${selected ? 'btn-primary' : 'btn-outline-primary'}`}
+          >
+            {selected ? '선택됨' : '대여하기'}
+          </button>
         </div>
       </div>
     </div>

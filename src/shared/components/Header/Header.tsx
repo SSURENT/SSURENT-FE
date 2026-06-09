@@ -15,7 +15,7 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const role = useAuthStore((state) => state.role);
-  const isAdmin = role === 'admin';
+  const isAdmin = role === 'admin' || role === 'super_admin';
   console.log(`Header.tsx__role: ${role}`);
   const navigate = useNavigate();
   const goToMyPage = () => navigate('/mypage');

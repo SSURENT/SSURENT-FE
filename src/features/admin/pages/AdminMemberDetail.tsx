@@ -273,7 +273,7 @@ const AdminMemberDetail: React.FC = () => {
                           {r.itemName}
                         </td>
                         <td className="py-4 px-2">
-                          {r.rentDate?.substring(0, 10) || '-'}
+                          {r.rentalDate?.substring(0, 10) || '-'}
                         </td>
                         <td className="py-4 px-2 font-bold text-red-500">
                           {r.dueDate?.substring(0, 10) || '-'}
