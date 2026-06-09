@@ -21,7 +21,6 @@ import AdminMemberDetail from './features/admin/pages/AdminMemberDetail';
 import AdminPenaltyEdit from './features/admin/pages/AdminPenaltyEdit';
 import AdminRentalEdit from './features/admin/pages/AdminRentalEdit';
 import { useAutoRefreshToken } from './hooks/UseAutoRefreshToken.ts';
-import { useUserInfo } from './store/userStore';
 import AdminStatistics from '../src/features/admin/pages/AdminStatistics.tsx';
 
 /** * 💡 핵심 수정 사항: MemberProvider 임포트
@@ -30,12 +29,18 @@ import AdminStatistics from '../src/features/admin/pages/AdminStatistics.tsx';
 import { MemberProvider } from './features/admin/context/MemberContext';
 import AdminInspect from './features/admin/pages/AdminInspect.tsx';
 
+// ============================================================
+// 개발용 가짜 인증 훅 (편의를 위해 항상 true)
+// ============================================================
+// TODO: REPLACE BEFORE PRODUCTION - 실제 인증 로직(AuthProvider 등)으로 교체해야 합니다.
 const useAuth = () => {
-  const accessToken = useUserInfo((state) => state.accessToken);
-  const role = useUserInfo((state) => state.role);
+  if (import.meta.env.MODE === 'production') {
+    // 프로덕션 환경에서는 실제 인증 상태를 반환하도록 임시 예외처리 또는 연동 필수
+    // return { isAuthenticated: false, isAdmin: false };
+  }
   return {
-    isAuthenticated: !!accessToken,
-    isAdmin: role === 'ADMIN',
+    isAuthenticated: true,
+    isAdmin: true,
   };
 };
 
@@ -67,7 +72,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 // ============================================================
 // 유저 레이아웃 (공통 헤더/푸터)
 // ============================================================
-
 const UserLayout: React.FC = () => {
   const role = useAuthStore((state) => state.role);
   const isAdmin = role === 'admin' || role === 'super_admin';

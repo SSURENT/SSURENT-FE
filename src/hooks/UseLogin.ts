@@ -34,14 +34,7 @@ export const useLogin = () => {
       sessionStorage.setItem('accessToken', res.accessToken);
       sessionStorage.setItem('refreshToken', res.refreshToken);
       try {
-        const user = await fetchUserInfoApi();
-        setUserInfo(
-          user.studentNum,
-          user.name,
-          user.role as UserRoleType,
-          user.status as UserStatusType,
-          user.phoneNum,
-        );
+        await fetchUserInfoApi();
       } catch (err) {
         console.error(err);
         alert('사용자 정보 불러오기 실패');

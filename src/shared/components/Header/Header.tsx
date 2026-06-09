@@ -9,7 +9,6 @@ import './Header.css';
 
 import { useAuthStore } from '../../../features/auth/store/useAuthStore';
 import { useUserInfo } from '../../../store/userStore';
-import { useRef, useState } from 'react';
 
 export default function Header() {
   const location = useLocation();
@@ -31,10 +30,7 @@ export default function Header() {
   const navigate = useNavigate();
   const goToMyPage = () => navigate('/mypage');
 
-
   const profileRef = useRef<HTMLDivElement>(null);
-  const studentNum = useUserInfo((state) => state.studentNum);
-  const name = useUserInfo((state) => state.name);
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     'nav-link px-3 link-dark fw-bold' + (isActive ? ' active' : '');
