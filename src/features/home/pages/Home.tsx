@@ -96,9 +96,14 @@ function Home() {
         </h4>
         <div className="d-flex justify-content-between align-items-center">
           <h2>대여사업 관리자에게 직접 문의해보세요</h2>
-          <Link to="/" className="contact-link">
+          <a
+            href="https://open.kakao.com/o/sUEKB4oi"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="contact-link"
+          >
             문의하러가기
-          </Link>
+          </a>
         </div>
       </div>
     </main>

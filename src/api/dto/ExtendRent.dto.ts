@@ -3,5 +3,5 @@ export interface ExtendRentResponseDto {
   assistName: string;
 }
 export interface ExtendRentRequestDto {
-  rentalHistoryId: number;
+  rentalId: number;
 }

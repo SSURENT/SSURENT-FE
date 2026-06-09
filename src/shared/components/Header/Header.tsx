@@ -1,17 +1,27 @@
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
+import { useRef, useState } from 'react';
+
 import logo from '../../assets/images/ssulogo.jpg';
+
 import '../../styles/App.css';
 import './Header.css';
+
 import { useAuthStore } from '../../../features/auth/store/useAuthStore';
 import { useUserInfo } from '../../../store/userStore';
-import { useRef, useState } from 'react';
 
 export default function Header() {
   const location = useLocation();
+
   const hideLoginButton =
     location.pathname === '/login' || location.pathname === '/changePW';
-  const isLoggedIn = !!sessionStorage.getItem('accessToken');
+
+  // zustand 상태 사용
+  const studentNum = useUserInfo((state) => state.studentNum);
+  const name = useUserInfo((state) => state.name);
+
+  const isLoggedIn = !!studentNum;
+
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const role = useAuthStore((state) => state.role);
@@ -20,17 +30,14 @@ export default function Header() {
   const navigate = useNavigate();
   const goToMyPage = () => navigate('/mypage');
 
-  const studentNum = useUserInfo((state) => state.studentNum);
-  const name = useUserInfo((state) => state.name);
+  const profileRef = useRef<HTMLDivElement>(null);
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     'nav-link px-3 link-dark fw-bold' + (isActive ? ' active' : '');
 
-  const profileRef = useRef<HTMLDivElement>(null);
-
   const toggleNavbar = () => setIsOpen(!isOpen);
-  const closeNavbar = () => setIsOpen(false);
 
+  const closeNavbar = () => setIsOpen(false);
   return (
     <div className="container">
       <nav className="navbar navbar-expand-lg py-3 mb-4 border-bottom">
@@ -46,6 +53,7 @@ export default function Header() {
               style={{ width: '90px' }}
               className="img-fluid me-2"
             />
+
             <span className="fs-4">SSURENT</span>
           </NavLink>
 
@@ -68,11 +76,13 @@ export default function Header() {
                   대여하기
                 </NavLink>
               </li>
+
               <li className="nav-item">
                 <NavLink to="/return" className={linkClass}>
                   반납하기
                 </NavLink>
               </li>
+
               <li className="nav-item">
                 <NavLink to="/mypage" className={linkClass}>
                   마이페이지
@@ -118,7 +128,7 @@ export default function Header() {
                   </NavLink>
                 ) : (
                   <div
-                    className="position-relative"
+                    className={`position-relative ${isOpen ? 'd-none d-lg-block' : ''}`}
                     ref={profileRef}
                     onMouseEnter={() => setIsProfileOpen(true)}
                     onMouseLeave={() => setIsProfileOpen(false)}
@@ -143,6 +153,7 @@ export default function Header() {
                             top:
                               profileRef.current?.getBoundingClientRect()
                                 .bottom ?? 0,
+
                             right:
                               window.innerWidth -
                               (profileRef.current?.getBoundingClientRect()
@@ -154,9 +165,11 @@ export default function Header() {
                               <div className="custom-profile-id">
                                 {studentNum}
                               </div>
+
                               <div className="custom-profile-name">
                                 {name}님
                               </div>
+
                               <div className="custom-profile-penalty">
                                 현재 연체 횟수 : 0번
                               </div>

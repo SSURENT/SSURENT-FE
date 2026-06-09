@@ -2,12 +2,14 @@ import { useNavigate } from 'react-router-dom';
 import { useUserInfo } from '../store/userStore';
 import { requestLogin } from '../api/endpoints/Login';
 import { fetchUserInfoApi } from './UseGetUserInfoApi.ts';
+
 import { useAuthStore } from '../features/auth/store/useAuthStore.ts';
 
 export const useLogin = () => {
   const setUserRoleType = useUserInfo((state) => state.setUserRoleType);
   const setUserId = useUserInfo((state) => state.setUserId);
   const setTokens = useUserInfo((state) => state.setTokens);
+
   const { setRole } = useAuthStore();
   const navigate = useNavigate();
 
@@ -25,9 +27,9 @@ export const useLogin = () => {
         return;
       }
 
+      setTokens(res.accessToken, res.refreshToken);
       setUserId(studentNum);
       setUserRoleType(res.role);
-      setTokens(res.accessToken, res.refreshToken);
 
       sessionStorage.setItem('accessToken', res.accessToken);
       sessionStorage.setItem('refreshToken', res.refreshToken);

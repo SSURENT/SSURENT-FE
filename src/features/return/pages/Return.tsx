@@ -24,13 +24,17 @@ export default function Return() {
     try {
       setExtendingId(item.id);
 
-      await extend({ rentalHistoryId: item.id });
+      console.log('item.id : ', item.id);
+      console.log('item.rentalId : ', item.rentalId);
+      await extend({ rentalId: item.rentalId });
 
       setItems((prev) =>
         prev.map((i) => (i.id === item.id ? { ...i, isExtended: true } : i)),
       );
     } catch (error) {
-      alert('기한 연장에 실패했습니다.');
+      alert(
+        error instanceof Error ? error.message : '기한 연장에 실패했습니다.',
+      );
     } finally {
       setExtendingId(null);
     }
@@ -74,8 +78,11 @@ export default function Return() {
       {isError && <p>에러가 발생했습니다.</p>}
 
       <div
-        className="border rounded p-4"
-        style={{ maxHeight: 420, overflowY: 'auto' }}
+        className="border rounded p-2 p-sm-4"
+        style={{
+          maxHeight: 'none',
+          overflowY: 'visible',
+        }}
       >
         <div className="item-grid">
           {items.map((item) => (

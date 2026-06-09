@@ -27,46 +27,45 @@ export default function ReturnItemCard({
   const isButtonDisabled = item.isExtended || isExtendLoading;
 
   return (
-    <div className="card item-card h-100 position-relative">
+    <div className="card item-card position-relative">
+      {/* 연체 표시 */}
       {item.isOverdue && (
-        <span
-          className="position-absolute end-0 overdue-ribbon"
-          aria-label="연체됨"
-        >
+        <span className="overdue-ribbon" aria-label="연체됨">
           ×
         </span>
       )}
 
-      <div className="card-body d-flex flex-column justify-content-between">
-        <div>
-          <h6 className="fw-bold">{item.name}</h6>
+      <div className="card-body d-flex flex-column gap-3">
+        {/* 제목 */}
+        <h5 className="fw-bold item-title mb-0">{item.name}</h5>
 
-          <div className="d-flex flex-wrap align-items-center mb-2 gap-2">
-            <p className={`small mb-0 ${item.isOverdue ? 'text-danger' : ''}`}>
-              반납기한 : {item.dueDate}
-            </p>
+        {/* 반납기한 + 연장버튼 */}
+        <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2">
+          <p className={`small ${item.isOverdue ? 'text-danger' : ''}`}>
+            반납기한 : {item.dueDate}
+          </p>
 
-            <button
-              className="btn btn-outline-primary btn-sm"
-              onClick={onExtend}
-              disabled={isButtonDisabled}
-            >
-              {isExtendLoading
-                ? '연장 중...'
-                : item.isExtended
-                  ? '연장 완료'
-                  : '기한연장'}
-            </button>
-          </div>
+          <button
+            className="btn btn-outline-primary btn-sm"
+            onClick={onExtend}
+            disabled={isButtonDisabled}
+          >
+            {isExtendLoading
+              ? '연장 중...'
+              : item.isExtended
+                ? '연장 완료'
+                : '기한연장'}
+          </button>
         </div>
 
-        <div className="d-flex justify-content-between">
-          <button className="btn btn-danger btn-sm" onClick={onReport}>
+        {/* 버튼 영역 */}
+        <div className="d-flex flex-column flex-sm-row gap-2">
+          <button className="btn btn-danger btn-sm w-100" onClick={onReport}>
             문제신고
           </button>
 
           <button
-            className={`btn btn-sm ${
+            className={`btn btn-sm w-100 ${
               item.isOverdue ? 'btn-outline-danger' : 'btn-outline-primary'
             }`}
             onClick={onReturn}
