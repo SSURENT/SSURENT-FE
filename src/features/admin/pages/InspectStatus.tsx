@@ -1,80 +1,83 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
+import { adminItemApi } from '../../../api/endpoints/AdminItem';
+import { AdminItemResponseDto } from '../../../api/dto/AdminItem.dto';
 
-// 물품 상태 타입
 type StatusType = 'rented' | 'returned' | 'overdue' | 'disabled';
 
 interface ItemUnit {
-  id: string;
-  status: StatusType;
-}
-
-interface ItemRow {
-  no: number;
+  id: number;
   name: string;
-  units: ItemUnit[];
+  status: StatusType;
 }
 
 interface InspectStatusProps {
   searchRange?: { start: string; end: string };
 }
 
-const InspectStatus: React.FC<InspectStatusProps> = () => {
-  // 실제 API 연동 시 이 상태를 업데이트하면 표와 엑셀 다운로드에 자동 반영됩니다.
-  const [fetchedItems] = useState<ItemRow[]>([
-    {
-      no: 1,
-      name: '우산',
-      units: [
-        { id: '101', status: 'returned' },
-        { id: '102', status: 'overdue' },
-        { id: '103', status: 'returned' },
-        { id: '104', status: 'rented' },
-        { id: '105', status: 'returned' },
-        { id: '106', status: 'returned' },
-        { id: '107', status: 'returned' },
-        { id: '108', status: 'returned' },
-        { id: '109', status: 'returned' },
-        { id: '110', status: 'returned' },
-      ],
-    },
-    {
-      no: 2,
-      name: '핸드폰 충전기 케이블 (USB to 5핀)',
-      units: [
-        { id: '201', status: 'returned' },
-        { id: '202', status: 'returned' },
-        { id: '203', status: 'returned' },
-        { id: '204', status: 'returned' },
-        { id: '205', status: 'rented' },
-        { id: '206', status: 'returned' },
-        { id: '207', status: 'returned' },
-        { id: '208', status: 'returned' },
-      ],
-    },
-    {
-      no: 12,
-      name: '무소음 무선마우스',
-      units: [
-        { id: '1201', status: 'overdue' },
-        { id: '1202', status: 'returned' },
-        { id: '1203', status: 'disabled' },
-      ],
-    },
-  ]);
+const mapConditionToStatus = (item: AdminItemResponseDto): StatusType => {
+  if (item.status === 'INACTIVE') return 'disabled';
+  switch (item.condition) {
+    case 'RENT':
+      return 'rented';
+    case 'OVERDUE':
+      return 'overdue';
+    case 'KEEP':
+      return 'returned';
+    default:
+      return 'returned';
+  }
+};
 
-  // 상태별 색상 매핑 함수 (요청 사항 반영)
+const InspectStatus: React.FC<InspectStatusProps> = () => {
+  const [items, setItems] = useState<ItemUnit[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        setLoading(true);
+        const data = await adminItemApi.getItems();
+        const mapped: ItemUnit[] = data.map((item) => ({
+          id: item.itemId,
+          name: item.itemName,
+          status: mapConditionToStatus(item),
+        }));
+        setItems(mapped);
+      } catch (err) {
+        console.error('물품 현황 조회 실패', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchItems();
+  }, []);
+
+  // 물품명별로 그룹핑
+  const groupedItems = React.useMemo(() => {
+    const groups: Record<string, ItemUnit[]> = {};
+    items.forEach((item) => {
+      if (!groups[item.name]) groups[item.name] = [];
+      groups[item.name].push(item);
+    });
+    return Object.entries(groups).map(([name, units], idx) => ({
+      no: idx + 1,
+      name,
+      units,
+    }));
+  }, [items]);
+
   const getStatusColor = (status: StatusType) => {
     switch (status) {
       case 'rented':
-        return 'bg-slate-300 text-slate-700'; // 회색 - 대여 중
+        return 'bg-slate-300 text-slate-700';
       case 'returned':
-        return 'bg-green-500 text-white'; // 초록 - 반납 완료
+        return 'bg-green-500 text-white';
       case 'overdue':
-        return 'bg-red-600 text-white'; // 빨강 - 연체 중
+        return 'bg-red-600 text-white';
       case 'disabled':
-        return 'bg-black text-white'; // 검정 - 비활성화
+        return 'bg-black text-white';
       default:
         return 'bg-white';
     }
@@ -83,14 +86,12 @@ const InspectStatus: React.FC<InspectStatusProps> = () => {
   const handleExcelDownload = async () => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('물품현황');
-
     worksheet.columns = [
       { header: '식별번호', key: 'no', width: 10 },
       { header: '대여물품명', key: 'name', width: 35 },
       { header: '라벨 및 상태 (상세)', key: 'details', width: 60 },
     ];
-
-    fetchedItems.forEach((item) => {
+    groupedItems.forEach((item) => {
       const richText = item.units.map((u, i) => {
         const isLast = i === item.units.length - 1;
         let color = 'FF000000';
@@ -105,17 +106,14 @@ const InspectStatus: React.FC<InspectStatusProps> = () => {
           color = 'FFDC2626';
           statusStr = '연체';
         }
-
         return {
           text: `${u.id}(${statusStr})${isLast ? '' : ', '}`,
           font: { color: { argb: color }, bold: true },
         };
       });
-
       const row = worksheet.addRow({ no: item.no, name: item.name });
       row.getCell('details').value = { richText };
     });
-
     const buffer = await workbook.xlsx.writeBuffer();
     saveAs(
       new Blob([buffer]),
@@ -130,7 +128,6 @@ const InspectStatus: React.FC<InspectStatusProps> = () => {
           물품 현황
         </h3>
         <div className="flex items-center gap-4">
-          {/* 범례 표시 */}
           <div className="flex gap-3 text-[10px] font-bold text-slate-500">
             <span className="flex items-center gap-1">
               <div className="w-2.5 h-2.5 bg-slate-300 rounded-sm"></div> 대여중
@@ -154,46 +151,60 @@ const InspectStatus: React.FC<InspectStatusProps> = () => {
           </button>
         </div>
       </div>
-
-      <div className="overflow-x-auto rounded-xl border border-slate-200 shadow-sm">
-        <table className="w-full text-xs text-left border-collapse">
-          <thead className="bg-slate-100 text-slate-600 border-b border-slate-200 font-bold">
-            <tr>
-              <th className="p-3 border-r w-20 text-center">식별 번호</th>
-              <th className="p-3 border-r w-64 px-5">대여물품명</th>
-              <th className="p-3 px-5">라벨 넘버</th>
-            </tr>
-          </thead>
-          <tbody>
-            {fetchedItems.map((item) => (
-              <tr
-                key={item.no}
-                className="border-b border-slate-100 hover:bg-slate-50 transition-colors"
-              >
-                <td className="p-3 border-r text-center font-bold text-slate-400">
-                  {item.no}
-                </td>
-                <td className="p-3 border-r px-5 font-bold text-slate-700 bg-slate-50/30">
-                  {item.name}
-                </td>
-                <td className="p-3 px-5">
-                  <div className="flex flex-wrap gap-1.5 py-1">
-                    {item.units.map((unit) => (
-                      <div
-                        key={unit.id}
-                        className={`w-9 h-7 flex items-center justify-center rounded text-[10px] font-black shadow-sm transition-transform hover:scale-110 cursor-default ${getStatusColor(unit.status)}`}
-                        title={`${unit.id}: ${unit.status}`}
-                      >
-                        {unit.id}
-                      </div>
-                    ))}
-                  </div>
-                </td>
+      {loading ? (
+        <div className="flex items-center justify-center py-20">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#6c5ce7]"></div>
+          <span className="ml-3 text-gray-500 text-sm">로딩 중...</span>
+        </div>
+      ) : (
+        <div className="overflow-x-auto rounded-xl border border-slate-200 shadow-sm">
+          <table className="w-full text-xs text-left border-collapse">
+            <thead className="bg-slate-100 text-slate-600 border-b border-slate-200 font-bold">
+              <tr>
+                <th className="p-3 border-r w-20 text-center">식별 번호</th>
+                <th className="p-3 border-r w-64 px-5">대여물품명</th>
+                <th className="p-3 px-5">라벨 넘버</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {groupedItems.length === 0 ? (
+                <tr>
+                  <td colSpan={3} className="p-10 text-center text-slate-400">
+                    조회된 물품이 없습니다.
+                  </td>
+                </tr>
+              ) : (
+                groupedItems.map((item) => (
+                  <tr
+                    key={item.no}
+                    className="border-b border-slate-100 hover:bg-slate-50 transition-colors"
+                  >
+                    <td className="p-3 border-r text-center font-bold text-slate-400">
+                      {item.no}
+                    </td>
+                    <td className="p-3 border-r px-5 font-bold text-slate-700 bg-slate-50/30">
+                      {item.name}
+                    </td>
+                    <td className="p-3 px-5">
+                      <div className="flex flex-wrap gap-1.5 py-1">
+                        {item.units.map((unit) => (
+                          <div
+                            key={unit.id}
+                            className={`w-9 h-7 flex items-center justify-center rounded text-[10px] font-black shadow-sm transition-transform hover:scale-110 cursor-default ${getStatusColor(unit.status)}`}
+                            title={`${unit.id}: ${unit.status}`}
+                          >
+                            {unit.id}
+                          </div>
+                        ))}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };

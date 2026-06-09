@@ -1,17 +1,11 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import logo from '../../assets/images/ssulogo.jpg';
-import { useAuthStore } from '../../../features/auth/store/useAuthStore';
+import { useLogout } from '../../../hooks/UseLogout';
 import '../../styles/App.css';
 
 const AdminHeader: React.FC = () => {
-  const logout = useAuthStore((state) => state.logout);
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
+  const { handleLogout } = useLogout();
 
   // 활성화된 메뉴 강조 스타일
   const linkClass = ({ isActive }: { isActive: boolean }) =>
@@ -44,6 +38,21 @@ const AdminHeader: React.FC = () => {
           <div className="d-flex align-items-center flex-grow-1">
             <ul className="navbar-nav d-flex flex-row ms-5 mb-0">
               <li className="nav-item">
+                <NavLink to="/rent" className={linkClass}>
+                  대여하기
+                </NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink to="/return" className={linkClass}>
+                  반납하기
+                </NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink to="/mypage" className={linkClass}>
+                  마이페이지
+                </NavLink>
+              </li>
+              <li className="nav-item">
                 <NavLink to="/admin/items" className={linkClass}>
                   물품 관리
                 </NavLink>
@@ -54,13 +63,13 @@ const AdminHeader: React.FC = () => {
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink to="/admin/inspect" className={linkClass}>
-                  물품 검수
+                <NavLink to="/admin/stats" className={linkClass}>
+                  통계
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink to="/admin/stats" className={linkClass}>
-                  통계
+                <NavLink to="/admin/inspect" className={linkClass}>
+                  검수하기
                 </NavLink>
               </li>
             </ul>

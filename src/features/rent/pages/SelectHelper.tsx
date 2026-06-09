@@ -10,6 +10,7 @@ type Props = {
 
 export default function SelectHelper({ item, onPrev }: Props) {
   const [assistName, setHelperName] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false);
   const { rent, isLoading } = useRentItems();
   const navigate = useNavigate();
 
@@ -17,18 +18,31 @@ export default function SelectHelper({ item, onPrev }: Props) {
     if (!item) return;
     const normalizedAssistName = assistName.trim();
     if (!normalizedAssistName) return;
-    console.log('itemId', item.id);
-    console.log('assistName', assistName);
     try {
       await rent({
         itemId: item.id,
         assistName: normalizedAssistName,
       });
-      navigate('/');
+      setIsSuccess(true);
     } catch (error) {
       alert('대여 실패');
     }
   };
+
+  if (isSuccess) {
+    return (
+      <div className="text-center py-10 flex flex-col items-center gap-6">
+        <div className="text-6xl">✅</div>
+        <h4 className="fw-bold">대여 신청이 완료되었습니다!</h4>
+        <p className="text-muted">
+          <strong>{item?.name}</strong> 물품이 성공적으로 대여 처리되었습니다.
+        </p>
+        <button className="btn btn-primary px-6" onClick={() => navigate('/')}>
+          홈으로 돌아가기
+        </button>
+      </div>
+    );
+  }
 
   return (
     <>
