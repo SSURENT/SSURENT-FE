@@ -101,7 +101,7 @@ export const AdminStatistics: React.FC = () => {
 
   const lineChartData = useMemo(() => {
     return monthRentalInfoData.map((item) => ({
-      month: `${item.month}월`,
+      month: `${item.year}-${item.month}`,
       value: item.rentalCount,
     }));
   }, [monthRentalInfoData]);
@@ -274,7 +274,10 @@ export const AdminStatistics: React.FC = () => {
                         axisLine={false}
                       />
                       <YAxis fontSize={12} tickLine={false} axisLine={false} />
-                      <Tooltip cursor={{ fill: '#f8f9fa' }} />
+                      <Tooltip
+                        cursor={{ fill: '#f8f9fa' }}
+                        formatter={(value) => [value, '횟수']}
+                      />
                       <Bar
                         dataKey="count"
                         fill="#6c5ce7"
@@ -305,9 +308,20 @@ export const AdminStatistics: React.FC = () => {
                         fontSize={12}
                         tickLine={false}
                         axisLine={false}
+                        tickFormatter={(tick: string) => {
+                          const [, month] = tick.split('-');
+                          return `${month}월`;
+                        }}
                       />
                       <YAxis fontSize={12} tickLine={false} axisLine={false} />
-                      <Tooltip />
+                      <Tooltip
+                        formatter={(value) => [value, '횟수']}
+                        labelFormatter={(label) => {
+                          const str = String(label);
+                          const [year, month] = str.split('-');
+                          return `${year}년 ${month}월`;
+                        }}
+                      />
                       <Line
                         type="monotone"
                         dataKey="value"
