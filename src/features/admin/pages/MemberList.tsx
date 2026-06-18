@@ -7,6 +7,7 @@ const MemberList: React.FC = () => {
   const navigate = useNavigate();
   const [members, setMembers] = useState<AdminUserListResponseDto[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchValue, setSearchValue] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('전체회원');
   const [isOpen, setIsOpen] = useState(false);
@@ -16,10 +17,13 @@ const MemberList: React.FC = () => {
   const fetchMembers = async (status: string) => {
     try {
       setLoading(true);
+      setError(null);
       const data = await adminUserApi.getUsers(status);
       setMembers(data);
     } catch (err) {
       console.error('사용자 목록 조회 실패', err);
+      setError('사용자 목록을 불러오는데 실패했습니다.');
+      setMembers([]);
     } finally {
       setLoading(false);
     }
@@ -130,6 +134,16 @@ const MemberList: React.FC = () => {
         <div className="flex items-center justify-center py-20">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#6c5ce7]"></div>
           <span className="ml-3 text-gray-500 text-sm">로딩 중...</span>
+        </div>
+      ) : error ? (
+        <div className="flex flex-col items-center justify-center py-20">
+          <span className="text-red-500 text-sm mb-2">{error}</span>
+          <button
+            onClick={() => fetchMembers(selectedFilter)}
+            className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition"
+          >
+            다시 시도
+          </button>
         </div>
       ) : filteredMembers.length === 0 ? (
         <div className="flex items-center justify-center py-20 text-gray-400 text-sm">

@@ -59,23 +59,10 @@ const AdminItems: React.FC = () => {
         const arr = Array.isArray(data) ? data : [];
         setItems(arr.map(normalizeItem));
       } else {
-        // 전체 조회: 카테고리별로 조회 후 합치기
-        const cats =
-          categories.length > 0
-            ? categories
-            : await adminCategoryApi.getCategories();
-        if (!categories.length && cats.length) setCategories(cats);
-        const allItems: DisplayItem[] = [];
-        for (const cat of cats) {
-          try {
-            const data = await adminItemApi.getItems(cat.categoryId);
-            const arr = Array.isArray(data) ? data : [];
-            allItems.push(...arr.map(normalizeItem));
-          } catch {
-            /* 개별 카테고리 실패 무시 */
-          }
-        }
-        setItems(allItems);
+        // 백엔드에서 제공하는 단일 엔드포인트 사용 (전체 조회)
+        const data = await adminItemApi.getItems();
+        const arr = Array.isArray(data) ? data : [];
+        setItems(arr.map(normalizeItem));
       }
     } catch (err) {
       console.error('물품 목록 조회 실패', err);

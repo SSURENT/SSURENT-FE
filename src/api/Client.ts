@@ -44,5 +44,17 @@ export const apiClient = async <T>(
     );
   }
 
-  return response.json();
+  if (
+    response.status === 204 ||
+    response.headers.get('content-length') === '0'
+  ) {
+    return null as unknown as T;
+  }
+
+  const text = await response.text();
+  if (!text) {
+    return null as unknown as T;
+  }
+
+  return JSON.parse(text);
 };

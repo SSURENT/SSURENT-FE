@@ -37,15 +37,23 @@ const AdminMemberDetail: React.FC = () => {
     const load = async () => {
       try {
         setLoading(true);
-        const [detail, rentalData] = await Promise.all([
-          adminUserApi.getUserDetail(userId),
-          adminRentalApi.getUserRentalHistory({ userId }),
-        ]);
+        // 회원 상세 조회 (필수)
+        const detail = await adminUserApi.getUserDetail(userId);
         setMember(detail);
         setLocalStatus(detail.status);
-        setRentals(rentalData);
+
+        // 대여 이력 조회 (실패해도 회원 정보는 표시)
+        try {
+          const rentalData = await adminRentalApi.getUserRentalHistory({
+            userId,
+          });
+          setRentals(rentalData);
+        } catch (rentalErr) {
+          console.error('대여 이력 조회 실패', rentalErr);
+          setRentals([]);
+        }
       } catch (err) {
-        console.error('조회 실패', err);
+        console.error('회원 상세 조회 실패', err);
       } finally {
         setLoading(false);
       }
@@ -179,7 +187,7 @@ const AdminMemberDetail: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-50">
-                    {member.penalties.length === 0 ? (
+                    {(member.penalties || []).length === 0 ? (
                       <tr>
                         <td
                           colSpan={4}
@@ -189,7 +197,7 @@ const AdminMemberDetail: React.FC = () => {
                         </td>
                       </tr>
                     ) : (
-                      member.penalties.map(
+                      (member.penalties || []).map(
                         (p: AdminUserPenaltyDto, idx: number) => (
                           <tr
                             key={p.penaltyId}
